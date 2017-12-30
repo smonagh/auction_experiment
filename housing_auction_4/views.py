@@ -1,0 +1,150 @@
+from otree.api import Currency as c, currency_range
+from . import models
+from ._builtin import Page, WaitPage
+from .models import Constants
+from ast import literal_eval
+
+class Instructions(Page):
+    """
+    Page that displays instructions to players
+    """
+    # Only display in the first round
+    def is_displayed(self):
+        if self.subsession.round_number == 1:
+            return self
+
+    # Adjust what instructions are being display according to treatments being
+    # run.
+    def vars_for_template(self):
+        return {'treatment_list':Constants.treatment_list,
+                'player_type':self.player.player_type}
+
+    form_model = models.Player
+    form_fields = ['ask_price']
+
+class SetAsk(Page):
+    """
+    Page where sellers can set there ask prices.
+    """
+
+    def is_displayed(self):
+        if self.player.player_type == 'seller':
+            return self
+
+    def vars_for_template(self):
+        # Return seller reservation value for assigned object
+        return {'reservation_value':self.player.get_seller_reservation(),
+                'assigned_object':self.player.assigned_object}
+
+    form_model = models.Player
+    form_fields = ['ask_price']
+
+class Bid(Page):
+    """
+    Page where buyers can submit their bids for objects.
+    """
+
+    def vars_for_template(self):
+        # Return a list of ask prices, reservation values,and bid = 0 for
+        # each object that is in play.
+        object_list = ['Object {}'.format(i) for i in range(1,
+                                                    Constants.group_split + 1)]
+        # Convert data from strings into lists
+        bid_list = literal_eval(self.group.group_bids)
+        ask_list = literal_eval(self.group.group_asks)
+        res_list = literal_eval(self.player.player_reservations)
+        # Create a zip of all four lists
+        auction_zip = zip(object_list,ask_list,res_list,bid_list)
+        return {'player_type':self.player.player_type,
+                'auction_zip':auction_zip,
+                'object_list':object_list,
+                'time_left':self.group.time_elapsed,
+                'treatment':self.subsession.treatment}
+
+class Bid_Buyer_Full(Bid):
+    """Page for buyers in the full information treatment"""
+    def is_displayed(self):
+        if self.player.player_type == 'buyer' and \
+         self.subsession.treatment == 'full_information':
+            return self
+
+class Bid_Seller_Full(Bid):
+    """Page for seller in the full information treatment"""
+    def is_displayed(self):
+        if self.player.player_type == 'seller' and \
+         self.subsession.treatment == 'full_information':
+            return self
+
+class Bid_Buyer_No(Bid):
+    """Page for buyers in the no information treatment"""
+    def is_displayed(self):
+        if self.player.player_type == 'buyer' and \
+         self.subsession.treatment == 'no_information':
+            return self
+
+class Bid_Seller_No(Bid):
+    """Page for buyers in the no information treatment"""
+    def is_displayed(self):
+        if self.player.player_type == 'seller' and \
+         self.subsession.treatment == 'no_information':
+            return self
+
+class BidWaitPage(WaitPage):
+
+    def after_all_players_arrive(self):
+        """Set group ask variable to be used in next template"""
+        # Check to make sure that asks are above seller reservations
+        if self.player.player_type == "seller":
+            if self.player.ask_price < self.player.get_seller_reservation():
+                self.player.ask_price = self.player.get_seller_reservation()
+        group_asks = self.group.get_group_asks()
+        self.group.group_asks = str(group_asks)
+
+class ResultsWaitPage(WaitPage):
+    """Wait page afte the auction stage"""
+    def after_all_players_arrive(self):
+        self.group.record_winners(self.subsession.round_number,
+        self.subsession.id,self.group.id_in_subsession)
+
+
+class Results(Page):
+    """Results shown after each period"""
+    def vars_for_template(self):
+        object_list = ['Object {}'.format(i) for i in range(1,
+                                                    Constants.group_split + 1)]
+        ask_list = literal_eval(self.group.group_asks)
+        bid_list = literal_eval(self.group.group_bids)
+        was_traded = literal_eval(self.group.was_traded)
+        result_zip = zip(object_list,ask_list,bid_list,was_traded)
+        return{'player_type':self.player.player_type,'result_zip':result_zip}
+
+    def before_next_page(self):
+        # if last round calculate final payoffs
+        if self.subsession.round_number == Constants.num_rounds:
+            self.player.set_final_payoff()
+
+class FinalResults(Page):
+    """Disply final earnings in the game"""
+    def is_displayed(self):
+        # If the last round of the game then return page
+        if self.subsession.round_number == Constants.num_rounds:
+            return self
+    def vars_for_template(self):
+        payout_list = []
+        for i in self.player.in_all_rounds():
+            payout_list.append(i.payout)
+        return {'player_payouts':payout_list}
+
+
+page_sequence = [
+    Instructions,
+    SetAsk,
+    BidWaitPage,
+    Bid_Buyer_Full,
+    Bid_Seller_Full,
+    Bid_Buyer_No,
+    Bid_Seller_No,
+    ResultsWaitPage,
+    Results,
+    FinalResults
+]

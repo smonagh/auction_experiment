@@ -1,0 +1,20 @@
+{% extends "housing_auction_4/Bid.html" %}
+{% load staticfiles otree %}
+
+{% block bid_seller_no %}
+<div class="">
+<h3> Please wait for buyers to finish submitting bids </h3>
+</div>
+<table style="width:100%" border="spacing:10px" >
+  <tr>
+    <th><center>Object</center></th>
+    <th><center>Ask Price</center></th>
+    <th><center>Current Bid</center></th>
+  </tr>
+  <tr>
+    <td>Object {{player.assigned_object}}</td>
+    <td>{{player.ask_price}}</td>
+    <td id="current_bid_{{player.assigned_object}}"> </td>
+  </tr>
+</table>
+{% endblock %}

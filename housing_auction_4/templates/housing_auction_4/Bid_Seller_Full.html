@@ -1,0 +1,26 @@
+{% extends "housing_auction_4/Bid.html" %}
+{% load staticfiles otree %}
+
+{% block bid_seller_full %}
+<div class="">
+<h3> Please wait for buyers to finish submitting bids </h3>
+</div>
+<table style="width:100%" border="spacing:10px" >
+<tr>
+<th>Object</th>
+<th>Minimum Ask Price</th>
+<th>Standing Bid</th>
+</tr>
+
+{% for object,ask,res,bid in auction_zip %}
+    <tr id="row_{{forloop.counter}}">
+        <td id="object_{{forloop.counter}}">{{object}}</td>
+        <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
+        {% if player_type == "buyer" %}
+        <td id="reservation_{{forloop.counter}}">{{res}}</td>
+        {% endif %}
+        <td id="current_bid_{{forloop.counter}}">{{bid}}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
