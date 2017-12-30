@@ -15,7 +15,7 @@ if environ.get('OTREE_PRODUCTION') not in {None, '', '0'}:
 else:
     DEBUG = True
 
-ADMIN_USERNAME = 'admin'
+ADMIN_USERNAME = 'ICES'
 
 # for security, best to set admin password in an environment variable
 ADMIN_PASSWORD = environ.get('OTREE_ADMIN_PASSWORD')
