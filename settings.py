@@ -104,6 +104,9 @@ SESSION_CONFIGS = [
         'display_name': 'Housing Auction',
         'num_demo_participants': 4,
         'treatment_string':"['no_information','full_information']",
+        'doc':"""Enter treatments to be played in session. Must be entered in
+                 the form of a list []. Options are no_information, partial_information,
+                 and full_information. Treatments are played in order entered.""",
         'periods_per_treatment':1,
         'players_per_group':4,
         'seller_res_min':1,
