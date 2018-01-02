@@ -24,7 +24,8 @@ class Constants(BaseConstants):
     name_in_url = 'housing_auction_4'
     players_per_group = 4
     periods_per_treatment = 1
-    treatment_list = ['full_information','no_information']
+    treatment_string = "['full_information','no_information']"
+    treatment_list = literal_eval(treatment_string)
     conversion_rate = 2
     num_rounds = len(treatment_list)*periods_per_treatment
     group_split = int(players_per_group/2)
