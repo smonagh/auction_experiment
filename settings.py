@@ -103,7 +103,7 @@ SESSION_CONFIGS = [
         {'name':'housing_auction_4',
         'display_name': 'Housing Auction',
         'num_demo_participants': 4,
-        'treatment_list':['no_information','full_information'],
+        'treatment_string':"['no_information','full_information']",
         'periods_per_treatment':1,
         'players_per_group':4,
         'seller_res_min':1,
