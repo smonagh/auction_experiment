@@ -1,0 +1,238 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree%}
+
+{% block content %}
+<h1> Experiment Instructions </h1>
+
+<div class="jumbotron">
+<p>Thank you for participating! You have earned $5 for showing up on time.
+The instructions explain how you can make decisions and earn more money,
+so please read carefully. Talking with other participants or use of cell
+phones is <b>not</b> permitted during the course of this experiment.
+If you have questions at any point, raise your hand and an experimenter will
+will come and assist you.</p>
+
+<p>You have been assigned the role <b>seller</b> and will be paired randomly with
+  a group of other participants. Your identity in this group will remain anonymous
+  , and likewise, the identities of all other group members will remain
+  anonymous as well. There will be members in your group who are assigned to the
+  role of <b>buyer</b> and other members who are assigned to the role of
+  <b>seller</b>. All group membership and assigned roles will remain fixed
+  during the course of the experiment.
+
+<h2> Experimental Points </h2>
+<p> During the experiment you have the opportunity to earn experimental dollars (E$).
+There is a conversion ratio of {{Constants.conversion_rate}} E$ to 1 US$. At the
+end of the experiment, your earnings in experimental dollars will be converted
+and paid out to you in US$. </p>
+
+<h2> Overview </h2>
+<p>In this experiment, you will be assigned an object that will be put up for
+sale in an auction. You will be assigned a reservation value for this object. This reservation value
+is the minimum price at which you have to sell this object to earn a positive return.
+This reservation value will be drawn uniformly from the integer range 1 to 10. This
+means that each integer between 1 and 10 is equally likely. Each other buyer and seller
+in the group will have their reservations drawn independently from the same distribution.
+This means that your own reservation value will not give you any information about
+the reservation values of other players. You will retain the same reservation value
+for your assigned object in each of the {{Constants.num_rounds}} rounds played.
+
+<p> In the first stage, you will set a minimum asking price for your assigned
+  object. This is the minimum price that your object will sell for. If a high enough
+  bid is not submitted to meet the minimum asking price, then the object will
+  not sell. However, if the highest bid submitted for your object does exceed the
+  minimum ask price, then the object will be sold to the highest bidder at that
+  bid. You will be asked to submit a minimum ask price on a slider as displayed below</p>
+
+  {% formfield player.ask_price with label="Please submit an ask price? " %}
+
+<p>In the second stage, buyers will have an opportunity to bid for your object and
+  the objects of other sellers. You will be presented with a table that presents you
+  with informaton regarding auction. An example of what you might see is displayed below
+</p>
+<div>
+  <table>
+    <tr>
+      <th><center>Object</center> </th>
+      <th><center>Minimum Ask</center></th>
+      <th><center>Current Bid</center></th>
+    </tr>
+    <tr>
+      <td>Object 1</td>
+      <td>5</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>Object 2</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>Object 3</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+  </table>
+
+</div>
+
+  <p>
+    This two stage game will be repeated for a total of {{Constants.num_rounds}} rounds. In each round,
+    you and all other players will retain the same reservation values for each
+    object that you did in the first round. However, sellers may update their
+    ask prices and buyers may submit new bids. At the end of each round you will
+    be presented with your earnings for the round. At the end of {{Constants.num_rounds}}
+    rounds,
+    you will recieve your final payout for the experiment which is the sum of
+    all your earnings in each of the previous rounds.
+  </p>
+
+  <h2> Your Decision </h2>
+
+  <p>
+    In the first stage, you will be asked to set a minimum asking price for your
+    object. This is the lowest price at which bidders will be able to purchase
+    your object from you. You will be asked to set this price between 0 and 10
+    E$ on a slider. Once you have set the price that you like, then click on the
+    <b>Next</b> button to submit your ask price. After each of the sellers has
+    submitted their ask prices, all players will then proceed to the auction
+    stage. During the auction stage, you may observe bids that are made for your
+    object. When all buyers have indicated that they are finished bidding, the auction
+    stage will end.
+  </p>
+
+  <h2>Payoff </h2>
+  <p>
+  After the auction stage, your payout will be calculated and displayed to you.
+  If you did not sell an object in the auction stage, then your earnings for
+  that round will be 0 E$. However, if you did sell your object,
+   then your payoff for the round will be determined
+  by the following formula,
+ </p>
+ <p style="text-align:center;"> <b>Payout = Bid - Reservation Value</b> </p>
+
+ <p> For instance, if your reservation value is 3 E$ and the bid for your object is 7 E$, then
+   your payout for that round will be 4 E$.
+
+  <h2> End of Experiment </h2>
+  <p> At the end of the experiment you will be taken to a screen that displays
+    your earnings in each round that you played, as well as the sum of
+    earnings across each of the rounds, and that amount converted into
+    US$. Please wait in your seat once you reach this screen. The experimenter
+    will call you in one at a time to be paid out privately. Since you will be
+    asked to leave when finished, please take all of your belongings up with you
+    when you are called</p>
+
+
+<button class="btn btn-primary" type="submit">Finished Reading Instructions</button
+</div>
+
+
+{% endblock %}
+{% block styles %}
+<style>
+.jumbotron p{
+  padding-bottom:1em;
+}
+    table a:link {
+	color: #666;
+	font-weight: bold;
+	text-decoration:none;
+}
+table a:visited {
+	color: #999999;
+	font-weight:bold;
+	text-decoration:none;
+}
+table a:active,
+table a:hover {
+	color: #bd5a35;
+	text-decoration:underline;
+}
+table {
+	font-family:Arial, Helvetica, sans-serif;
+	color:#666;
+	font-size:16px;
+	text-shadow: 1px 1px 0px #fff;
+	background:#eaebec;
+	margin:10px;
+	border:#ccc 1px solid;
+
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+
+	-moz-box-shadow: 0 1px 2px #d1d1d1;
+	-webkit-box-shadow: 0 1px 2px #d1d1d1;
+	box-shadow: 0 1px 2px #d1d1d1;
+}
+table th {
+	padding:15px 19px 15px 19px;
+	border-top:1px solid #fafafa;
+	border-bottom:1px solid #e0e0e0;
+
+	background: #ededed;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+	background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
+}
+table th:first-child {
+	text-align: left;
+	padding-left:20px;
+}
+table tr:first-child th:first-child {
+	-moz-border-radius-topleft:3px;
+	-webkit-border-top-left-radius:3px;
+	border-top-left-radius:3px;
+}
+table tr:first-child th:last-child {
+	-moz-border-radius-topright:3px;
+	-webkit-border-top-right-radius:3px;
+	border-top-right-radius:3px;
+}
+table tr {
+	text-align: center;
+	padding-left:210px;
+}
+table td:first-child {
+	text-align: left;
+	padding-left:20px;
+	border-left: 0;
+}
+table td {
+	padding:6px;
+	border-top: 1px solid #ffffff;
+	border-bottom:1px solid #e0e0e0;
+	border-left: 1px solid #e0e0e0;
+
+	background: #fafafa;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
+}
+table tr.even td {
+	background: #f6f6f6;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
+	background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
+}
+table tr:last-child td {
+	border-bottom:0;
+}
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft:3px;
+	-webkit-border-bottom-left-radius:3px;
+	border-bottom-left-radius:3px;
+}
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright:3px;
+	-webkit-border-bottom-right-radius:3px;
+	border-bottom-right-radius:3px;
+}
+table tr:hover td {
+	background: #f2f2f2;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
+}
+.btn{
+
+}
+</style>
+{% endblock %}

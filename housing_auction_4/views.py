@@ -4,13 +4,13 @@ from ._builtin import Page, WaitPage
 from .models import Constants
 from ast import literal_eval
 
-class Instructions(Page):
+class Instructions_Seller(Page):
     """
-    Page that displays instructions to players
+    Page that displays instructions to sellers
     """
     # Only display in the first round
     def is_displayed(self):
-        if self.subsession.round_number == 1:
+        if self.subsession.round_number == 1 and self.player.player_type == 'seller':
             return self
 
     # Adjust what instructions are being display according to treatments being
@@ -21,6 +21,26 @@ class Instructions(Page):
 
     form_model = models.Player
     form_fields = ['ask_price']
+
+class Instructions_Buyer(Page):
+    """
+    Page that displays instructions to buyers
+    """
+    # Only display in the first round
+    def is_displayed(self):
+        if self.subsession.round_number == 1 and self.player.player_type == 'buyer':
+            return self
+
+    # Adjust what instructions are being display according to treatments being
+    # run.
+    def vars_for_template(self):
+        return {'treatment_list':Constants.treatment_list,
+                'player_type':self.player.player_type}
+
+class PreWaitPage(WaitPage):
+
+    def after_all_players_arrive(self):
+        pass
 
 class SetAsk(Page):
     """
@@ -94,9 +114,10 @@ class BidWaitPage(WaitPage):
     def after_all_players_arrive(self):
         """Set group ask variable to be used in next template"""
         # Check to make sure that asks are above seller reservations
-        if self.player.player_type == "seller":
-            if self.player.ask_price < self.player.get_seller_reservation():
-                self.player.ask_price = self.player.get_seller_reservation()
+        for player in self.group.get_players():
+            if player.player_type == "seller":
+                if player.ask_price < player.get_seller_reservation():
+                    player.ask_price = player.get_seller_reservation()
         group_asks = self.group.get_group_asks()
         self.group.group_asks = str(group_asks)
 
@@ -137,7 +158,9 @@ class FinalResults(Page):
 
 
 page_sequence = [
-    Instructions,
+    Instructions_Seller,
+    Instructions_Buyer,
+    PreWaitPage,
     SetAsk,
     BidWaitPage,
     Bid_Buyer_Full,
