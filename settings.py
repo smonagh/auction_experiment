@@ -102,13 +102,13 @@ SESSION_CONFIG_DEFAULTS = {
 SESSION_CONFIGS = [
         {'name':'housing_auction_4',
         'display_name': 'Housing Auction',
-        'num_demo_participants': 4,
+        'num_demo_participants': 2,
         'treatment_string':"['no_information','full_information']",
         'doc':"""Enter treatments to be played in session. Must be entered in
                  the form of a list []. Options are no_information, partial_information,
                  and full_information. Treatments are played in order entered.""",
         'periods_per_treatment':1,
-        'players_per_group':4,
+        'players_per_group':2,
         'seller_res_min':1,
         'seller_res_max':10,
         'buyer_res_min':1,
