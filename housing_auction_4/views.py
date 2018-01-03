@@ -1,7 +1,8 @@
 from otree.api import Currency as c, currency_range
 from . import models
 from ._builtin import Page, WaitPage
-from .models import Constants
+from .models import Constants, Auction
+from datetime import datetime
 from ast import literal_eval
 
 class Instructions_Seller(Page):
@@ -65,6 +66,18 @@ class Bid(Page):
     """
 
     def vars_for_template(self):
+        # Create record in database for start time
+        auction = Auction(time_stamp=str(datetime.now()),
+                          group_id=self.group.id_in_subsession,
+                          subsession_id=self.subsession.id,
+                          round_number=self.subsession.round_number,
+                          player_id = -1,
+                          id_in_group = -1,
+                          object_id = -1,
+                          player_bid = -1,
+                          last_bid = -1,
+                          ask_price = -1)
+        auction.save()
         # Return a list of ask prices, reservation values,and bid = 0 for
         # each object that is in play.
         object_list = ['Object {}'.format(i) for i in range(1,
@@ -80,6 +93,21 @@ class Bid(Page):
                 'object_list':object_list,
                 'time_left':self.group.time_elapsed,
                 'treatment':self.subsession.treatment}
+
+        def before_next_page(self):
+            # Create record in database for endtime
+            auction = Auction(time_stamp=str(datetime.now()),
+                              group_id=self.group.id_in_subsession,
+                              subsession_id=self.subsession.id,
+                              round_number=self.subsession.round_number,
+                              player_id = -1,
+                              id_in_group = -1,
+                              object_id = -1,
+                              player_bid = -1,
+                              last_bid = -1,
+                              ask_price = -1)
+            auction.save()
+
 
 class Bid_Buyer_Full(Bid):
     """Page for buyers in the full information treatment"""

@@ -22,7 +22,7 @@ class Constants(BaseConstants):
     and full_information.
     """
     name_in_url = 'housing_auction_4'
-    players_per_group = 4
+    players_per_group = 2
     periods_per_treatment = 1
     treatment_string = """['full_information','no_information']"""
     treatment_list = literal_eval(treatment_string)
