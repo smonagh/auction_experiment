@@ -94,20 +94,6 @@ class Bid(Page):
                 'time_left':self.group.time_elapsed,
                 'treatment':self.subsession.treatment}
 
-        def before_next_page(self):
-            # Create record in database for endtime
-            auction = Auction(time_stamp=str(datetime.now()),
-                              group_id=self.group.id_in_subsession,
-                              subsession_id=self.subsession.id,
-                              round_number=self.subsession.round_number,
-                              player_id = -1,
-                              id_in_group = -1,
-                              object_id = -1,
-                              player_bid = -1,
-                              last_bid = -1,
-                              ask_price = -1)
-            auction.save()
-
 
 class Bid_Buyer_Full(Bid):
     """Page for buyers in the full information treatment"""
@@ -152,6 +138,18 @@ class BidWaitPage(WaitPage):
 class ResultsWaitPage(WaitPage):
     """Wait page afte the auction stage"""
     def after_all_players_arrive(self):
+        # Create record in database for endtime
+        auction = Auction(time_stamp=str(datetime.now()),
+                          group_id=self.group.id_in_subsession,
+                          subsession_id=self.subsession.id,
+                          round_number=self.subsession.round_number,
+                          player_id = -1,
+                          id_in_group = -1,
+                          object_id = -1,
+                          player_bid = -1,
+                          last_bid = -1,
+                          ask_price = -1)
+        auction.save()
         self.group.record_winners(self.subsession.round_number,
         self.subsession.id,self.group.id_in_subsession)
 
