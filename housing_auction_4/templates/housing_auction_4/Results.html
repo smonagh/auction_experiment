@@ -9,11 +9,11 @@
 <div>
 {% if player.is_winner %}
     {% if player_type == "buyer" %}
-        <p>You valued Object {{player.object_traded}}
+        <p>You valued Widget {{player.object_traded}}
             at {{player.object_reservation}} E$ and bought it for a price
              of {{player.winning_bid}} E$</p>
     {% elif player_type == "seller" %}
-        <p>You valued Object {{player.object_traded}}
+        <p>You valued Widget {{player.object_traded}}
             at {{player.object_reservation}} E$ and sold it for a price of
              {{player.winning_bid}} E$</p>
     {% endif %}
@@ -31,10 +31,10 @@
 
 <table style="width:100%" border="spacing:10px" >
     <tr>
-    <th><center>Object</center></th>
+    <th><center>Widget</center></th>
         <th><center>Ask Price</center></th>
         <th><center>Highest Bid</center></th>
-        <th><center>Was Object Traded?</center></th>
+        <th><center>Was Widget Traded?</center></th>
     </tr>
 
 {% for object,ask,bid,object_traded in result_zip %}

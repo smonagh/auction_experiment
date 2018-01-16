@@ -6,6 +6,7 @@
 <div class="jumbotron">
 <p> The experiment has concluded. Please remain seated until instructed by
   the experimenter.</p>
+<p> You were randomly assigned earnings from round {{player.payout_round}}</p>
 <p> You have earned {{player.final_payout}} E$ in total.</p>
 <p> There is a conversion rate of {{Constants.conversion_rate}} E$/1 US$,
    so you have earned ${{player.final_us_payout}} </p>
@@ -20,10 +21,10 @@
     <th><center>Payout</center></th>
   </tr>
   {% for payout in player_payouts %}
-  <tr>
-    <td>{{forloop.counter}}</td>
-    <td>{{payout}} E$</td>
-  </tr>
+    <tr>
+      <td>{{forloop.counter}}</td>
+      <td>{{payout}} E$</td>
+    </tr>
   {% endfor %}
 
 </table>

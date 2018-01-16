@@ -34,6 +34,7 @@ class Constants(BaseConstants):
     buyer_res_min = 1
     buyer_res_max = 10
 
+
 class Auction(Model):
     # Database to record real time auction activity
     subsession_id = models.IntegerField()
@@ -89,6 +90,7 @@ class Subsession(BaseSubsession):
             for player in group.get_players():
                 # Assign player type
                 player.player_type = next(iterator)
+                player.budget = player.endowment
                 # Assign player reservation values
                 dict = self.reservation_assignment(player,
                 player.player_type)
@@ -117,6 +119,7 @@ class Subsession(BaseSubsession):
 
             # Define player level variables
             for player in group.get_players():
+                player.budget = player.endowment
                 player.player_reservations = player.in_round(1).player_reservations
                 player.assigned_object = player.in_round(1).assigned_object
                 player.player_type = player.in_round(1).player_type
@@ -186,6 +189,18 @@ class Group(BaseGroup):
             if player.id_in_subsession == player_id:
                 return player.buyer_id
 
+    def get_player_budget(self,player_id):
+        """Get player remaining endowment"""
+        my_player = self.get_player_by_id(player_id)
+        player_budget = my_player.budget
+        return player_budget
+
+    def get_player_endowment(self,player_id):
+        """Get player endowment"""
+        my_player = self.get_player_by_id(player_id)
+        player_endowment = my_player.endowment
+        return player_endowment
+
     def record_winners(self,round_number,subsession_id,group_id):
         """Function to record the outcome of the auction period"""
         from . import consumers
@@ -243,6 +258,9 @@ class Player(BasePlayer):
     player_type = models.CharField()
     buyer_id = models.IntegerField(initial=-1)
     seller_id = models.IntegerField(initial=-1)
+    payout_round = models.IntegerField()
+    endowment = models.IntegerField(initial=10)
+    budget = models.IntegerField()
 
 
     def get_seller_reservation(self):
@@ -274,9 +292,7 @@ class Player(BasePlayer):
 
     def set_final_payoff(self):
 
-        payout = 0
-        for past_player in self.in_all_rounds():
-            payout += past_player.payout
-
-        self.final_payout = payout
+        #Set round that player recieves payoff in randomly
+        self.payout_round = random.randint(1,Constants.num_rounds)
+        self.final_payout = self.in_round(self.payout_round).payout
         self.final_us_payout = self.final_payout/Constants.conversion_rate

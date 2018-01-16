@@ -4,8 +4,11 @@
 {% block bid_buyer_no %}
 <div class="">
 
-<h3>Please submit bids for the objects that you would like to purchase</h3>
+<h3>Please submit bids for the widgets that you would like to purchase</h3>
 <!-- For loop to create highest bidder entries for each object -->
+<h5 style="white-space:nowrap; overflow:hidden;"> Your remaining budget to
+  spend on bids is: <div style="text-align:right; display:inline;"
+  id="budget">{{player.budget}} </div></h5>
 {% for i in object_list %}
   <h5 hidden id="highest_bid_{{forloop.counter}}" sytle="white-space:nowrap; overflow:hidden;">
     You are the highest bidder for {{i}} with a bid of <div id="highest_bid_amount_{{forloop.counter}}"
@@ -16,7 +19,7 @@
 
 <table style="width:100%" border="spacing:10px" >
     <tr>
-    <th><center>Object</center></th>
+    <th><center>Widget</center></th>
         <th hidden><center>Minimum Ask Price</center></th>
         <th><center>Your Value</center></th>
         <th hidden><center>Standing Bid</center></th>

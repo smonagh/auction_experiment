@@ -71,12 +71,16 @@ socket.onmessage = function (event) {
        };
        // if player is not the highest bidder
      } else{
-    // Hide text indicating player is highest bidder
-    $('#highest_bid_'+obj.id).hide();
+
     // Show text indicating that player is highest bidder
     if (obj.bidder_id == {{player.id_in_subsession}}){
+       console.log(obj.budget)
        $('#highest_bid_'+ obj.id).show();
        $('#highest_bid_amount_'+obj.id).html(obj.bid)
+       $('#budget').html(obj.budget)
+     }else if (obj.bidder_id != {{player.id_in_subsession}}){
+       // Hide text indicating player is highest bidder
+       $('#highest_bid_'+obj.id).hide();
      };
    };
    // Update text to reflect new highest bid
@@ -98,7 +102,7 @@ sendmessage = function(val,id,current_bid,ask_price,reservation){
         //Prevent players from submitting a bid greater than their reservation
         if (my_bid > reservation){
             alert(`ERROR: You can not enter a bid that is greater than your
-             reservation value of ${reservation} for the object`);
+             reservation value of ${reservation} for the widget`);
         //Prevent players from submitting a bid that is not improving
         }else if (my_bid <= current_bid) {
             alert(`ERROR: You have entered bid of ${my_bid} which is not greater

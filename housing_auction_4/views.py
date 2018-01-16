@@ -80,7 +80,7 @@ class Bid(Page):
         auction.save()
         # Return a list of ask prices, reservation values,and bid = 0 for
         # each object that is in play.
-        object_list = ['Object {}'.format(i) for i in range(1,
+        object_list = ['Widget {}'.format(i) for i in range(1,
                                                     Constants.group_split + 1)]
         # Convert data from strings into lists
         bid_list = literal_eval(self.group.group_bids)

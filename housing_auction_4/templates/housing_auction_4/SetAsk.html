@@ -9,15 +9,15 @@ Please set your ask price
 
 {% block content %}
   <div class="jumbotron">
-    <p> You have been assigned object {{assigned_object}} </p>
+    <p> You have been assigned widget {{assigned_object}} </p>
     <p>Please use the slider below to enter the minimum number of E$ that you
-       ask buyers to pay for your object.</p>
-    <p>The value of the object to you is {{reservation_value}} E$ and you may
+       ask buyers to pay for your widget.</p>
+    <p>The value of the widget to you is {{reservation_value}} E$ and you may
        not ask for less than {{reservation_value}} E$. If you do so, then your
        ask price will be set to your reservation value</p>
        <!-- Still need to implment in views -->
     <p>The amount that you will earn in this period is the price that you
-       sell the object at minus {{reservation_value}} E$</p>
+       sell the widget at minus {{reservation_value}} E$</p>
     <!-- Code to implement slider input -->
     {% formfield player.ask_price with label="Please submit an ask price? " %}
 

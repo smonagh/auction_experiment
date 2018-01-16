@@ -17,7 +17,6 @@ def ws_message(message, group_name):
     group_id = group_name[5:]
     jsonmessage = json.loads(message.content['text'])
     mygroup = OtreeGroup.objects.get(id=group_id)
-    print(jsonmessage)
     # Check to see if soft close
     if jsonmessage['identifier'] == 'close':
         bid_status = soft_close(mygroup,jsonmessage)
@@ -27,13 +26,14 @@ def ws_message(message, group_name):
             "text": textforgroup,
         })
     elif jsonmessage['identifier'] == 'bid':
-        # Check to see if player is highest bidder
-        highest_bidder = check_highest_bidder(mygroup,jsonmessage)
+        # Check to make sure bid is within the budget constraint
+        highest_bidder = check_budget_constraint(mygroup,jsonmessage)
         # If he is highest bidder send message to throw alert window
         if highest_bidder:
             my_dict = {'highest_bid':True,
             'bidder_id':jsonmessage['vars']['player_id'],
-            'bid_status':'not done'}
+            'bid_status':'not done',
+            }
             textforgroup = json.dumps(my_dict)
             Group(group_name).send({
                 "text": textforgroup,
@@ -42,7 +42,11 @@ def ws_message(message, group_name):
         else:
             save_auction(jsonmessage,mygroup,0)
             my_dict = update_price(jsonmessage,mygroup)
+            print(my_dict)
             mygroup.save()
+            for player in mygroup.get_players():
+                print(player)
+                player.save()
             textforgroup = json.dumps(my_dict)
             Group(group_name).send({
                     "text": textforgroup,
@@ -80,13 +84,13 @@ def update_price(message,group):
     return_dict['bid'] = bids_list[object_id - 1]
     return_dict['bidder_id'] = message['vars']['player_id']
     return_dict['id'] = message['vars']['object_id']
-
+    return_dict['budget'] = group.get_player_budget(message['vars']['player_id'])
     return return_dict
 
-def check_highest_bidder(group,message):
+def check_budget_constraint(group,message):
     """
-    Check to see if the player is currently the highest bidder for
-    an object.
+    Check to see if the player is currently the bidding more than their
+    endowment
     """
     # Get player id and initialize check to false
     player_id = message['vars']['player_id']
@@ -105,7 +109,7 @@ def check_highest_bidder(group,message):
     # result list
     result_list = []
     for i in objects_returned:
-        cursor.execute('''SELECT player_id FROM housing_auction_4_auction WHERE
+        cursor.execute('''SELECT player_id, player_bid FROM housing_auction_4_auction WHERE
                         round_number = {} AND object_id = {} AND subsession_id = {}
                         AND player_bid = {} AND group_id = {};
                         '''.format(group.subsession.round_number,
@@ -113,10 +117,23 @@ def check_highest_bidder(group,message):
                                    i[1],group.id_in_subsession))
         result = cursor.fetchall()
         result_list.append(result)
-    # If player id matches any that are in the result list return highest bidder
+    # If player id matches any that are in the result list return amount bidded
+    amount_spent = 0
     for i in result_list:
-        if i[0][0] == player_id:
-            check = True
+        if i[0][0] == player_id and i[0][1] > 0:
+            amount_spent += i[0][1]
+    # If player's outstanding bids are more than endowment return check = True
+    if amount_spent > group.get_player_endowment(message['vars']['player_id']):
+        check = True
+    else:
+        # update player budget information in Database
+        print('***amount spent:  ', 0 - amount_spent - int(message['vars']['bid']))
+        print(group.get_player_by_id(message['vars']['player_id']).budget)
+        player = group.get_player_by_id(message['vars']['player_id'])
+        player.budget = player.endowment - amount_spent - int(message['vars']['bid'])
+        print(player,player.budget)
+        player.save()
+        print(group.get_player_by_id(message['vars']['player_id']).budget)
     return check
 
 def return_auction_info(object_id,round_number,subsession_id,group_id):
@@ -156,14 +173,11 @@ def soft_close(mygroup,jsonmessage):
     group_fin_bid = literal_eval(mygroup.group_fin_bid)
     # Find relevant buyer id
     buyer_id = mygroup.get_player_buyer_id(player_id)
-    print('*********Player ID: ',player_id)
-    print('*********Buyer ID: ',buyer_id)
     # Change relevant entry in group fin bids
     group_fin_bid[buyer_id] = True
     # Convert back to string and write to Database
     mygroup.group_fin_bid = str(group_fin_bid)
     mygroup.save()
-    print('**********FIN bid list: ',mygroup.group_fin_bid)
     # Check to see if all players have clicked the button
     check = True
     for i in group_fin_bid:
