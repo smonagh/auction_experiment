@@ -92,9 +92,9 @@ class Subsession(BaseSubsession):
                 player.player_type = next(iterator)
                 player.budget = player.endowment
                 # Assign player reservation values
-                dict = self.reservation_assignment(player,
+                my_dict = self.reservation_assignment(player,
                 player.player_type)
-                player.player_reservations = str(dict)
+                player.player_reservations = str(my_dict)
                 # If player is a seller assign him an object and give id
                 if player.player_type == 'seller':
                     player.assigned_object = object_id_list[seller_index]
@@ -140,6 +140,7 @@ class Subsession(BaseSubsession):
            and return a list"""
         # Create a dictionary entry for each reseravtion values
         reservation_list = []
+        """
         for i in range(0,Constants.group_split):
             if player_type == 'buyer':
                 reservation_list.append(int(
@@ -149,6 +150,31 @@ class Subsession(BaseSubsession):
                 reservation_list.append(
                 int(np.random.uniform(Constants.seller_res_min,
                                   Constants.seller_res_max,1)[0]))
+        """
+        if self.id_in_group == 1:
+            reservation_list.append(23)
+            reservation_list.append(22)
+            reservation_list.append(21)
+        elif self.id_in_group == 3:
+            reservation_list.append(26)
+            reservation_list.append(24)
+            reservation_list.append(22)
+        elif self.id_in_group == 5:
+            reservation_list.append(20)
+            reservation_list.append(21)
+            reservation_list.append(17)
+        elif self.id_in_group == 2:
+            reservation_list.append(18)
+            reservation_list.append(0)
+            reservation_list.append(0)
+        elif self.id_in_group == 4:
+            reservation_list.append(0)
+            reservation_list.append(15)
+            reservation_list.append(0)
+        elif self.id_in_group == 6:
+            reservation_list.append(0)
+            reservation_list.append(0)
+            reservation_list.append(19)
 
         return reservation_list
 
