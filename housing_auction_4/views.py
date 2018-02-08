@@ -184,8 +184,8 @@ class FinalResults(Page):
 
 
 page_sequence = [
-    Instructions_Seller,
-    Instructions_Buyer,
+    #Instructions_Seller,
+    #Instructions_Buyer,
     PreWaitPage,
     SetAsk,
     BidWaitPage,

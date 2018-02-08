@@ -22,7 +22,7 @@ class Constants(BaseConstants):
     and full_information.
     """
     name_in_url = 'housing_auction_4'
-    players_per_group = 2
+    players_per_group = 6
     periods_per_treatment = 1
     treatment_string = """['full_information','no_information']"""
     treatment_list = literal_eval(treatment_string)
@@ -97,7 +97,14 @@ class Subsession(BaseSubsession):
                 player.player_reservations = str(my_dict)
                 # If player is a seller assign him an object and give id
                 if player.player_type == 'seller':
-                    player.assigned_object = object_id_list[seller_index]
+                    #This is for random assignment of seller objects
+                    #player.assigned_object = object_id_list[seller_index]
+                    if player.id_in_group == 2:
+                        player.assigned_object = 1
+                    elif player.id_in_group == 4:
+                        player.assigned_object = 2
+                    elif player.id_in_group == 6:
+                        player.assigned_object = 3
                     player.seller_id = seller_index
                     seller_index += 1
                 # If player is a buyer given him a buyer id
@@ -151,27 +158,27 @@ class Subsession(BaseSubsession):
                 int(np.random.uniform(Constants.seller_res_min,
                                   Constants.seller_res_max,1)[0]))
         """
-        if self.id_in_group == 1:
+        if player.id_in_group == 1:
             reservation_list.append(23)
             reservation_list.append(22)
             reservation_list.append(21)
-        elif self.id_in_group == 3:
+        elif player.id_in_group == 3:
             reservation_list.append(26)
             reservation_list.append(24)
             reservation_list.append(22)
-        elif self.id_in_group == 5:
+        elif player.id_in_group == 5:
             reservation_list.append(20)
             reservation_list.append(21)
             reservation_list.append(17)
-        elif self.id_in_group == 2:
+        elif player.id_in_group == 2:
             reservation_list.append(18)
             reservation_list.append(0)
             reservation_list.append(0)
-        elif self.id_in_group == 4:
+        elif player.id_in_group == 4:
             reservation_list.append(0)
             reservation_list.append(15)
             reservation_list.append(0)
-        elif self.id_in_group == 6:
+        elif player.id_in_group == 6:
             reservation_list.append(0)
             reservation_list.append(0)
             reservation_list.append(19)
@@ -269,7 +276,7 @@ class Player(BasePlayer):
     Player class to record unique data associated with each player
     """
     ask_price = models.IntegerField(initial=Constants.seller_res_min,
-    min=Constants.seller_res_min,max = Constants.seller_res_max,
+    min= 1,max = 40,
     widget=widgets.SliderInput)
     is_winner = models.BooleanField(initial=False)
     assigned_object = models.IntegerField(initial=-1)

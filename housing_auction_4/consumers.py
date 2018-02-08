@@ -27,7 +27,7 @@ def ws_message(message, group_name):
         })
     elif jsonmessage['identifier'] == 'bid':
         # Check to make sure bid is within the budget constraint
-        highest_bidder = check_budget_constraint(mygroup,jsonmessage)
+        highest_bidder = check_highest_bidder(mygroup,jsonmessage)
         # If he is highest bidder send message to throw alert window
         if highest_bidder:
             my_dict = {'highest_bid':True,
@@ -87,10 +87,9 @@ def update_price(message,group):
     return_dict['budget'] = group.get_player_budget(message['vars']['player_id'])
     return return_dict
 
-def check_budget_constraint(group,message):
+def check_highest_bidder(group,message):
     """
-    Check to see if the player is currently the bidding more than their
-    endowment
+    Check to see if the player is already the highest bidder
     """
     # Get player id and initialize check to false
     player_id = message['vars']['player_id']
@@ -109,7 +108,7 @@ def check_budget_constraint(group,message):
     # result list
     result_list = []
     for i in objects_returned:
-        cursor.execute('''SELECT player_id, player_bid FROM housing_auction_4_auction WHERE
+        cursor.execute('''SELECT player_id FROM housing_auction_4_auction WHERE
                         round_number = {} AND object_id = {} AND subsession_id = {}
                         AND player_bid = {} AND group_id = {};
                         '''.format(group.subsession.round_number,
@@ -117,23 +116,11 @@ def check_budget_constraint(group,message):
                                    i[1],group.id_in_subsession))
         result = cursor.fetchall()
         result_list.append(result)
-    # If player id matches any that are in the result list return amount bidded
-    amount_spent = 0
+    # If player id matches any that are in the list prevent process from finishing
     for i in result_list:
-        if i[0][0] == player_id and i[0][1] > 0:
-            amount_spent += i[0][1]
-    # If player's outstanding bids are more than endowment return check = True
-    if amount_spent > group.get_player_endowment(message['vars']['player_id']):
-        check = True
-    else:
-        # update player budget information in Database
-        print('***amount spent:  ', 0 - amount_spent - int(message['vars']['bid']))
-        print(group.get_player_by_id(message['vars']['player_id']).budget)
-        player = group.get_player_by_id(message['vars']['player_id'])
-        player.budget = player.endowment - amount_spent - int(message['vars']['bid'])
-        print(player,player.budget)
-        player.save()
-        print(group.get_player_by_id(message['vars']['player_id']).budget)
+        if i[0][0] == player_id:
+            check = True
+
     return check
 
 def return_auction_info(object_id,round_number,subsession_id,group_id):

@@ -66,8 +66,7 @@ socket.onmessage = function (event) {
      if (obj.highest_bid == true){
        if (obj.bidder_id == {{player.id_in_subsession}}){
          console.log('warning message')
-          alert(`You are currently the highest bidder for an object and
-                 cannot bid for an object.`);
+          alert(`You are currently the highest bidder for an object`);
        };
        // if player is not the highest bidder
      } else{

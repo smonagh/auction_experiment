@@ -102,7 +102,7 @@ SESSION_CONFIG_DEFAULTS = {
 SESSION_CONFIGS = [
         {'name':'housing_auction_4',
         'display_name': 'Housing Auction',
-        'num_demo_participants': 2,
+        'num_demo_participants': 6,
         'treatment_string':"['no_information','full_information']",
         'doc':"""Enter treatments to be played in session. Must be entered in
                  the form of a list []. Options are no_information, partial_information,
