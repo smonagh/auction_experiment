@@ -42,9 +42,11 @@
             <td id="object_{{forloop.counter}}">{{object}}</td>
             <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
             <td id="highest_bid_{{forloop.counter}}">{{bid}}</td>
-            <td id="object_traded_{{forloop.counter}}">{{object_traded}}</td>
-
-
+            {% if object_traded %}
+                <td id="object_traded_{{forloop.counter}}">Yes</td>
+            {% else %}
+                <td id="object_traded_{{forloop.counter}}">No</td>
+            {% endif %}
         </tr>
 {% endfor %}
 </table>

@@ -66,17 +66,16 @@ socket.onmessage = function (event) {
      if (obj.highest_bid == true){
        if (obj.bidder_id == {{player.id_in_subsession}}){
          console.log('warning message')
-          alert(`You are currently the highest bidder for an object`);
+          alert(`You are currently the highest bidder for a widget`);
        };
        // if player is not the highest bidder
-     } else{
-
+    } else {
     // Show text indicating that player is highest bidder
     if (obj.bidder_id == {{player.id_in_subsession}}){
-       console.log(obj.budget)
+       console.log(obj.budget);
        $('#highest_bid_'+ obj.id).show();
-       $('#highest_bid_amount_'+obj.id).html(obj.bid)
-       $('#budget').html(obj.budget)
+       $('#highest_bid_amount_'+obj.id).html(obj.bid);
+       $('#budget').html(obj.budget);
      }else if (obj.bidder_id != {{player.id_in_subsession}}){
        // Hide text indicating player is highest bidder
        $('#highest_bid_'+obj.id).hide();
@@ -93,10 +92,10 @@ console.log('disconnected from oTree');
 
 // Function to send bid data to the backend
 sendmessage = function(val,id,current_bid,ask_price,reservation){
-        var my_bid = document.getElementById(val).value;
-        var current_bid = current_bid;
-        var ask_price = ask_price;
-        var reservation = reservation;
+        var my_bid = parseInt(document.getElementById(val).value);
+        var current_bid = parseInt(current_bid);
+        var ask_price = parseInt(ask_price);
+        reservation = parseInt(reservation);
         console.log(my_bid,current_bid,ask_price,reservation)
         //Prevent players from submitting a bid greater than their reservation
         if (my_bid > reservation){

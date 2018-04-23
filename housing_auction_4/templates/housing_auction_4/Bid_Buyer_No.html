@@ -10,7 +10,7 @@
   spend on bids is: <div style="text-align:right; display:inline;"
   id="budget">{{player.budget}} </div></h5>-->
 {% for i in object_list %}
-  <h5 hidden id="highest_bid_{{forloop.counter}}" sytle="white-space:nowrap; overflow:hidden;">
+  <h5 id="highest_bid_{{forloop.counter}}" style="white-space:nowrap; display: none;">
     You are the highest bidder for {{i}} with a bid of <div id="highest_bid_amount_{{forloop.counter}}"
     style="display:inline; text-align:right;"></div>
   </h5>
