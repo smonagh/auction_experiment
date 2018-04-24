@@ -30,6 +30,34 @@
 <script type="text/javascript" src="/static/otree/js/jquery.countdown.min.js"></script>
 <!-- Javascript to manage realtime bidding and interface with backend -->
 <script>
+
+//Displaying errors in a hidden span on the page (substitute for alert).
+function displayError(err){
+    $('#ErrorText').text(err);
+    $('#ErrorContainer').show();
+    setTimeout(function(){$('#ErrorContainer').hide()},5000);
+}
+
+//Timeout function. Alert stops the counting, therefore errors are inline instead of alerts.
+var timeoutHandle = setInterval(TimeoutTimer, 1000);
+var timeout=30;
+function TimeoutTimer(){
+    timeout=timeout-1; //decrement timer
+    if (timeout>1 && timeout<=10){
+        //Only show timer when <=10 seconds remain
+        $('#TimerText').text(String(timeout));
+        $('#TimerContainer').show();
+    } else if (timeout>10){
+        //Hide timer when >10 seconds remain
+        $('#TimerContainer').hide();
+    } else if (timeout>-100){
+        //Send message that timeout has ended.
+        timeout=-100
+        console.log('closing for timeout');
+        soft_close();
+    }
+}
+
 //Prevent enter key from submitting the page_submit
 //Not optimal but should stop all relevant use cases.
 for (i=0;i<10;i++){
@@ -61,15 +89,23 @@ socket.onmessage = function (event) {
      if (obj.bid_status == 'done'){
        // If they are then submit page
        $('#page_submit').click();
+       console.log(obj);
      };
+
      // Check to make sure player is not highest bidder
      if (obj.highest_bid == true){
        if (obj.bidder_id == {{player.id_in_subsession}}){
          console.log('warning message')
-          alert(`You are currently the highest bidder for a widget`);
+          displayError('You are currently the highest bidder for a widget');
        };
        // if player is not the highest bidder
     } else {
+
+    // Reset timeout
+    if (!obj.hasOwnProperty('bid_status')){
+        timeout=30;
+    }
+
     // Show text indicating that player is highest bidder
     if (obj.bidder_id == {{player.id_in_subsession}}){
        console.log(obj.budget);
@@ -99,14 +135,12 @@ sendmessage = function(val,id,current_bid,ask_price,reservation){
         console.log(my_bid,current_bid,ask_price,reservation)
         //Prevent players from submitting a bid greater than their reservation
         if (my_bid > reservation){
-            alert(`ERROR: You can not enter a bid that is greater than your
-             reservation value of ${reservation} for the widget`);
+             displayError('You can not enter a bid that is greater than your reservation value of '+String(reservation)+' for the widget');
         //Prevent players from submitting a bid that is not improving
         }else if (my_bid <= current_bid) {
-            alert(`ERROR: You have entered bid of ${my_bid} which is not greater
-               than the standing bid`);
+            displayError('You have entered bid of '+String(my_bid)+' which is not greater than the standing bid');
         //Return data to backend if none of the previous errors were thrown
-      }else if (my_bid > current_bid){
+        }else if (my_bid > current_bid){
 
             var msg = {
                 identifier: 'bid',
@@ -147,9 +181,12 @@ soft_close = function(){
     }
   };
   if (socket.readyState === socket.OPEN) {
-  socket.send(JSON.stringify(msg))};
+    socket.send(JSON.stringify(msg))
+  };
+  if (1!={{ Constants.end_on_timer }}){
   $('#close_button').hide();
   $('#after_close').show();
+  };
 };
 </script>
 {% endblock %}

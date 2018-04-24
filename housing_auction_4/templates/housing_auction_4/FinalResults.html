@@ -6,14 +6,8 @@
 <div class="jumbotron">
 <p> The experiment has concluded. Please remain seated until instructed by
   the experimenter.</p>
-<p> You were randomly assigned earnings from round {{player.payout_round}}</p>
-<p> You have earned {{player.final_payout}} E$ in total.</p>
-<p> There is a conversion rate of {{Constants.conversion_rate}} E$/1 US$,
-   so you have earned ${{player.final_us_payout}} </p>
-</div>
 <p> Your earnings in experimental dollars for each round are listed in
     table below </p>
-
 <!-- Table to display their earnings in each round that they played -->
 <table style="width:100%" border="spacing:10px">
   <tr>
@@ -28,6 +22,12 @@
   {% endfor %}
 
 </table>
+
+<p> You were randomly assigned earnings from round {{player.payout_round}}</p>
+<p> You have earned {{player.final_payout}} E$ in total.</p>
+<p> There is a conversion rate of {{Constants.conversion_rate}} E$/1 US$,
+   so you have earned {{player.final_us_payout}} US$ in addition to 5 US$ show up fee.</p>
+</div>
 
 {% endblock %}
 {% block styles %}

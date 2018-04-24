@@ -38,8 +38,12 @@ def ws_message(message, group_name):
             Group(group_name).send({
                 "text": textforgroup,
             })
-        # If not, send message to update information on players screen
-        else:
+        else:  # If not, send message to update information on players screen
+            if Constants.end_on_timer:
+                group_fin_bid = [False for i in range(0,Constants.group_split)]  # Reset all players to unfinished since new admissible bid arrived.
+                mygroup.group_fin_bid = str(group_fin_bid) # Convert back to string and write to Database
+                mygroup.save()
+            # Send messages to players
             save_auction(jsonmessage,mygroup,0)
             my_dict = update_price(jsonmessage,mygroup)
             print(my_dict)

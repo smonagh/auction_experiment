@@ -20,19 +20,21 @@ class Constants(BaseConstants):
     treatment_list contains that possible treatments that will be run in the
     session. Current options include no_information,partial_information,
     and full_information.
+    end_on_timer if true will end trading stage after 30 seconds of inactivity.
     """
     name_in_url = 'housing_auction_4'
     players_per_group = 6
-    periods_per_treatment = 1
-    treatment_string = """['full_information','no_information']"""
+    periods_per_treatment = 10
+    treatment_string = """['full_information']"""#"""['full_information','no_information']"""
     treatment_list = literal_eval(treatment_string)
-    conversion_rate = 2
+    conversion_rate = 1
     num_rounds = len(treatment_list)*periods_per_treatment
     group_split = int(players_per_group/2)
     seller_res_min = 1
     seller_res_max = 10
     buyer_res_min = 1
     buyer_res_max = 10
+    end_on_timer = 1
 
 
 class Auction(Model):
@@ -159,29 +161,29 @@ class Subsession(BaseSubsession):
                                   Constants.seller_res_max,1)[0]))
         """
         if player.id_in_group == 1:
-            reservation_list.append(23)
-            reservation_list.append(22)
-            reservation_list.append(21)
+            reservation_list.append(23*2)
+            reservation_list.append(22*2)
+            reservation_list.append(21*2)
         elif player.id_in_group == 3:
-            reservation_list.append(26)
-            reservation_list.append(24)
-            reservation_list.append(22)
+            reservation_list.append(26*2)
+            reservation_list.append(24*2)
+            reservation_list.append(22*2)
         elif player.id_in_group == 5:
-            reservation_list.append(20)
-            reservation_list.append(21)
-            reservation_list.append(17)
+            reservation_list.append(20*2)
+            reservation_list.append(21*2)
+            reservation_list.append(17*2)
         elif player.id_in_group == 2:
-            reservation_list.append(18)
+            reservation_list.append(18*2)
             reservation_list.append(0)
             reservation_list.append(0)
         elif player.id_in_group == 4:
             reservation_list.append(0)
-            reservation_list.append(15)
+            reservation_list.append(15*2)
             reservation_list.append(0)
         elif player.id_in_group == 6:
             reservation_list.append(0)
             reservation_list.append(0)
-            reservation_list.append(19)
+            reservation_list.append(19*2)
 
         return reservation_list
 

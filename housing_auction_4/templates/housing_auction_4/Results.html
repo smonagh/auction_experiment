@@ -19,20 +19,20 @@
     {% endif %}
 
 {% else %}
-    <p>You did not make a transaction in this period.</p>
+    <p>You did not make a transaction in this round.</p>
 
 {% endif %}
-    <p>Your earnings in this period are {{player.payout}}E$</p>
+    <p>Your earnings in this round are {{player.payout}}E$</p>
 <!-- Show table with outcomes if the full information treatment -->
 {% if subsession.treatment == 'full_information' %}
-<p>Recorded below are the ask prices, highest bids, and transactions for
-   this period.</p>
+<p>Recorded below are the minimum prices, highest bids, and transactions for
+   this round.</p>
 
 
 <table style="width:100%" border="spacing:10px" >
     <tr>
     <th><center>Widget</center></th>
-        <th><center>Ask Price</center></th>
+        <th><center>Minimum Price</center></th>
         <th><center>Highest Bid</center></th>
         <th><center>Was Widget Traded?</center></th>
     </tr>

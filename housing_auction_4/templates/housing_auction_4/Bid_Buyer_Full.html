@@ -15,11 +15,19 @@
     style="display:inline; text-align:right;"></div>
   </h5>
 {% endfor %}
+<!-- Hidden text indicating remaining time until round ends-->
+<h5 id="TimerContainer"  style="white-space:nowrap; display: none;">
+    This round will end in about <span style="font-weight:bold; color:red;" id="TimerText">10</span> seconds if no successful bids are made.
+</h5>
+<!-- Hidden text indicating invalid bid-->
+<h5 id="ErrorContainer"  style="white-space:nowrap; display: none;">
+    <span style="font-weight:bold; color:red;" id="RedError">ERROR, INVALID BID: </span><span id="ErrorText"></span>
+</h5>
 </div>
 <table style="width:100%" border="spacing:10px" >
     <tr>
     <th><center>Widget</center></th>
-        <th><center>Minimum Ask Price</center></th>
+        <th><center>Minimum Price</center></th>
         <th><center>Your Value</center></th>
         <th><center>Standing Bid</center></th>
         <th><center>Enter Bid</center></th>
@@ -52,8 +60,13 @@
     {% endfor %}
   </table>
     <!-- Button for soft close -->
+{% if Constants.end_on_timer %}
     <button id="close_button" class="btn btn-primary"
-    onclick='soft_close()' type='button' >Finished Bidding</button>
+    onclick='soft_close()' type='button' style="display:none;">Finished Bidding</button>
+{% else %}
+    <button id="close_button" class="btn btn-primary"
+    onclick='soft_close()' type='button'>Finished Bidding</button>
+{% endif %}
     <p id="after_close" hidden>Please wait for other players to finish bidding </p>
 
 {% endblock %}

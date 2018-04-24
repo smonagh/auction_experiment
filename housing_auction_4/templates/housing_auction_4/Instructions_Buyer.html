@@ -4,46 +4,76 @@
 {% block content %}
 <h1> Experiment Instructions </h1>
 <div class="jumbotron">
-<p>Thank you for participating! You have earned $5 for showing up on time.
-   These instructions explain how you can make decisions and earn more money,
-    so please read carefully. Talking with other participants or use of cell
-     phones is <b>not</b> permitted during the course of this experiment.
-      If you have questions at any point, please raise your hand and an
-       experimenter will come and assist you.</p>
-
-<p>You have been assigned the role <b>buyer</b> and will be paired randomly with
-  a group of other participants. Your identity in this group will remain anonymous
-  , and likewise, the identities of all other group members will remain
-  anonymous as well. There will be members in your group who are assigned to the
-  role of <b>buyer</b> and other members who are assigned to the role of
-  <b>seller</b>. All group membership and assigned roles will remain fixed
-  during the course of the experiment.</p>
+<p>Thank you for participating! You have earned 5 US$ for showing up on time.
+ The instructions explain how you can make decisions and earn more money,
+  so please read carefully. Talking with other participants or use of cell
+   phones is <b>not</b> permitted during the course of this experiment.
+    If you have questions at any point, raise your hand and an experimenter will
+     will come to assist you.</p>
 
 <h2> Experimental Points </h2>
+
 <p> During the experiment you have the opportunity to earn experimental dollars (E$).
-At the end of the experiment, your earnings will be converted at ratio
-{{Constants.conversion_rate}} E$ to 1 US$ and paid out to you in US$. </p>
+ At the end of the experiment, your earnings will be converted at ratio
+  {{Constants.conversion_rate}} E$ to 1 US$ and paid out to you in US$ in addition
+   to the show up fee. </p>
 
 <h2> Overview </h2>
-<p>In this experiment you are a buyer. Your goal is to buy one widget from a seller.
-   The widget you buy is worth money at the end of the experiment.
-    The total amount you earn in this experiment is equal to the total value
-     of the widget you bought minus your total costs for buying that
-      widget.</p>
 
-<p>In the first stage of the experiment each seller will post their desired
-   price for their widget for you and the other buyers to see. Then,
-    in the second stage, you will try to buy one widget by submitting a bid to
-     a seller. When bidding, you will see a table with
-      information about the widgets. An example of what you might see
-        is displayed below.</p>
+<p>You will be paired randomly with a group of other participants.
+  Your identity in this group will remain anonymous, and likewise,
+   the identities of all other group members will remain
+    anonymous as well. </p>
+
+<p>In this experiment you are a <b>buyer</b>.
+
+<p>There will be multiple sellers and other buyers in your group. The group will
+ remain together and the roles will remain the same during the entire experiment.</p>
+
+<h2> Widgets </h2>
+
+<p>You will have the opportunity to buy one widget from a seller in each round.
+  Today’s experiment will include {{Constants.num_rounds}} identical rounds.</p>
+
+  <p> Each widget has a value to you.
+    The same widget may have a different value for its seller and different buyers.
+   Each buyer has different values for the widgets. Likewise, each seller has a different
+      value for their own widget. The values will remain constant across rounds throughout the experiment.</p>
+
+<h2> Earnings </h2>
+The earnings in each round equal to the total value
+     of the widget you bought minus your total payment (bid) for buying that
+      widget:</p>
+
+<p style="text-align:center;"> <b>Earnings = Widget's Value - Bid</b> </p>
+
+<p> For instance, if your value for a widget was 7 E$ and you bought
+   the widget with bid of 3 E$, then your earnings for that round will be 4 E$.
+   If you do not buy the widget, your earnings for the round will be 0 E$.
+</p>
+
+<p>Note, however, that only one round will be randomly chosen at the end of the experiment to be payed in US$.</p>
+
+<h2> Trading </h2>
+
+<p>Each round consists of two stages.</p>
+
+<p>In the first stage of each round, each seller will post their desired
+   minimum price for their widget for you and the other buyers to see. As a buyer,
+   you will not
+     actively participate in this stage. After each of the sellers has submitted their minimum price, all
+       players will then proceed to the second, trading stage.</p>
+
+     Then, in the second stage, you will try to buy one widget by submitting bids to
+     sellers. When bidding, you will see a table with
+      information about the widgets:</p>
 <div>
   <table>
     <tr>
       <th><center>Widget</center> </th>
-      <th><center>Minimum Ask</center></th>
-      <th><center>Reservation</center></th>
-      <th><center>Current Bid</center></th>
+      <th><center>Minimum Price</center></th>
+      <th><center>Value</center></th>
+      <th><center>Standing Bid</center></th>
       <th><center>Enter Bid</center></th>
     </tr>
     <tr>
@@ -79,12 +109,16 @@ At the end of the experiment, your earnings will be converted at ratio
   </table>
 
 </div>
-  <p>
-    You can exchange the widgets you purchase from sellers for money at the end
-     of the experiment. Each widget has a money value that is assigned for you.
-       That is, your
-        value for a widget is not necessarily the same as another buyer’s value
-         for that same widget.</p>
+
+<p>You can submit bids for any of the widgets listed.
+ If you have the highest bid for the widget when the round ends,
+   and this bid is higher than the minimum price requested by the seller for this
+    widget, then you purchase this widget at a price equal to your bid. If you did not have
+    the highest bid for any object at the end of the round,
+    then you do not buy anything and earn 0 E$.</p>
+
+    <p>If at any time you have the highest bid for a widget,
+       this will be noted on the top of your screen.  </p>
 
   <p>
     You are restricted to purchasing one object per round.
@@ -92,25 +126,8 @@ At the end of the experiment, your earnings will be converted at ratio
     be permitted to bid for another object until another buyer in your group
     outbids you for the same object.
   </p>
-  <p>
-    Today’s experiment will include N rounds.
-     Your value for widgets will always be the same, but you will be able to
-      change your bids, and sellers will be able to change their asks, within
-       each new round. At the end of each round you will be told your earnings
-        for that round. However, note that only one round will be randomly chosen to be
-         paid at the end of the experiment.
-  </p>
 
-  <h2> Your Decision </h2>
-
-  <p>
-    In the second stage, you can submit bids for any of the widgets listed.
-     You can continue to submit bids until all buyers have clicked the button to
-      end the round. At that point, if you have the highest bid for the widget,
-       and this bid is higher than the price requested by the seller for this
-        widget, then you purchase this widget at a price equal to your bid.</p>
-
-  <p>There are three important rules for bidding.</p>
+  <p>There are three important rules for bidding:</p>
 
   <ol>
     <li> Your bid must be higher than the currently highest bid. </li>
@@ -118,36 +135,19 @@ At the end of the experiment, your earnings will be converted at ratio
     <li> You may not have the highest bid for more than one object at a time. </li>
   </ol>
 
-  <p>If at any time you have the highest bid for a widget,
-     this will be noted on the top of your screen.  </p>
+ <p> Trading stage ends when there is no active bidding for 30 seconds.
+   At the end of each round you will be told your earnings for that round. However, remember
+    that only one round will be randomly chosen to be
+     paid at the end of the experiment.</p>
 
-  <p>You can only purchase a widget if you have the highest bid for that object
-     at the end of the round. If you did not have the highest bid for any object
-      at the end of the round, then you do not make a transaction in that round.
-    </p>
-
-  <h2>Payoff </h2>
-  <p>
-    At the end of each round, your earnings will be calculated and displayed
-     to you. If you did not purchase a widget during a round, then your
-      earnings for that round will be 0 E$. If you did have the winning bid for
-      one or more widgets at the end of the auction stage, then your payoff for
-       the round will be determined by the following formula,
-  </p>
- <p style="text-align:center;"> <b>Payout = Widget's Value - Bid</b> </p>
-
- <p> For instance, if your money value for a widget was 7 E$ and you bought
-    the widget with bid of 3 E$, then your earnings for that round will be 4 E$.
- </p>
-
-  <h2> End of Experiment </h2>
-  <p> At the end of the experiment you will be taken to a screen that displays
-     your E$ earnings in each round, the round that was randomly chosen as the
-      payoff round, and the earnings from that round converted into US$.
-       Please wait in your seat once you reach this screen. An experimenter will
-        call you in one at a time to be paid privately. When called, please
-         take all your belongings up since the experiment ends once you have
-          received your payment.</p>
+ <h2> End of Experiment </h2>
+ <p> At the end of the experiment you will be taken to a screen that displays
+  your E$ earnings in each round, the round that was randomly chosen as the
+   payoff round, and the earnings from that round converted into US$. Please
+    wait in your seat once you reach this screen. An experimenter will call
+     you in one at a time to be paid privately. When called, please take all
+      your belongings up since the experiment ends once you have received your
+       payment.</p>
 
   <button class="btn btn-primary" type="submit">Finished Reading Instructions</button
   </div>
