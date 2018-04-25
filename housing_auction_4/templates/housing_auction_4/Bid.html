@@ -43,7 +43,7 @@ var timeoutHandle = setInterval(TimeoutTimer, 1000);
 var timeout=30;
 function TimeoutTimer(){
     timeout=timeout-1; //decrement timer
-    if (timeout>1 && timeout<=10){
+    if (timeout>0 && timeout<=10){
         //Only show timer when <=10 seconds remain
         $('#TimerText').text(String(timeout));
         $('#TimerContainer').show();

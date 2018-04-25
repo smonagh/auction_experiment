@@ -27,7 +27,7 @@ class Constants(BaseConstants):
     periods_per_treatment = 10
     treatment_string = """['full_information']"""#"""['full_information','no_information']"""
     treatment_list = literal_eval(treatment_string)
-    conversion_rate = 1
+    conversion_rate = 10
     num_rounds = len(treatment_list)*periods_per_treatment
     group_split = int(players_per_group/2)
     seller_res_min = 1
@@ -161,29 +161,29 @@ class Subsession(BaseSubsession):
                                   Constants.seller_res_max,1)[0]))
         """
         if player.id_in_group == 1:
-            reservation_list.append(23*2)
-            reservation_list.append(22*2)
-            reservation_list.append(21*2)
+            reservation_list.append(23*20)
+            reservation_list.append(22*20)
+            reservation_list.append(21*20)
         elif player.id_in_group == 3:
-            reservation_list.append(26*2)
-            reservation_list.append(24*2)
-            reservation_list.append(22*2)
+            reservation_list.append(26*20)
+            reservation_list.append(24*20)
+            reservation_list.append(22*20)
         elif player.id_in_group == 5:
-            reservation_list.append(20*2)
-            reservation_list.append(21*2)
-            reservation_list.append(17*2)
+            reservation_list.append(20*20)
+            reservation_list.append(21*20)
+            reservation_list.append(17*20)
         elif player.id_in_group == 2:
-            reservation_list.append(18*2)
+            reservation_list.append(18*20)
             reservation_list.append(0)
             reservation_list.append(0)
         elif player.id_in_group == 4:
             reservation_list.append(0)
-            reservation_list.append(15*2)
+            reservation_list.append(15*20)
             reservation_list.append(0)
         elif player.id_in_group == 6:
             reservation_list.append(0)
             reservation_list.append(0)
-            reservation_list.append(19*2)
+            reservation_list.append(19*20)
 
         return reservation_list
 
@@ -278,7 +278,7 @@ class Player(BasePlayer):
     Player class to record unique data associated with each player
     """
     ask_price = models.IntegerField(initial=Constants.seller_res_min,
-    min= 1,max = 40,
+    min= 1,max = 800,
     widget=widgets.SliderInput)
     is_winner = models.BooleanField(initial=False)
     assigned_object = models.IntegerField(initial=-1)
