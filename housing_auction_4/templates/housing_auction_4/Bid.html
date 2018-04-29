@@ -85,11 +85,11 @@ socket.onopen = function () {
 // Processes data that is back from the server
 socket.onmessage = function (event) {
      var obj = jQuery.parseJSON(event.data);
+     console.log(obj);
      // Check to see if all players are done
      if (obj.bid_status == 'done'){
        // If they are then submit page
        $('#page_submit').click();
-       console.log(obj);
      };
 
      // Check to make sure player is not highest bidder
@@ -108,17 +108,19 @@ socket.onmessage = function (event) {
 
     // Show text indicating that player is highest bidder
     if (obj.bidder_id == {{player.id_in_subsession}}){
-       console.log(obj.budget);
-       $('#highest_bid_'+ obj.id).show();
-       $('#highest_bid_amount_'+obj.id).html(obj.bid);
+       $('#highest_bid_'+ obj.object_id).show();
+       $('#highest_bid_amount_'+obj.object_id).html(obj.bid);
        $('#budget').html(obj.budget);
      }else if (obj.bidder_id != {{player.id_in_subsession}}){
        // Hide text indicating player is highest bidder
-       $('#highest_bid_'+obj.id).hide();
+       $('#highest_bid_'+obj.object_id).hide();
      };
+
+
+    // Update text to reflect new highest bid
+    update_price(obj.bid,obj.object_id);
    };
-   // Update text to reflect new highest bid
-   update_price(obj.bid,obj.id);
+
    };
 
 // Log socket close

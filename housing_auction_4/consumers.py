@@ -87,8 +87,8 @@ def update_price(message,group):
     return_dict['highest_bid'] = 'False'
     return_dict['bid'] = bids_list[object_id - 1]
     return_dict['bidder_id'] = message['vars']['player_id']
-    return_dict['id'] = message['vars']['object_id']
-    return_dict['budget'] = group.get_player_budget(message['vars']['player_id'])
+    return_dict['budget'] = group.get_player_budget(message['vars']['id_in_group'])
+    return_dict['object_id'] = object_id
     return return_dict
 
 def check_highest_bidder(group,message):

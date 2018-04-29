@@ -117,6 +117,19 @@ SESSION_CONFIGS = [
 
 ]
 
+# ROOM Settings for lab experiments
+
+ROOM_DEFAULTS = {}
+
+ROOMS = [
+    {
+        'name': 'ICES_lab',
+        'display_name': 'ICES Experimental Economics Lab',
+        'use_secure_urls': True,
+        'participant_label_file': 'participants.txt'
+    },
+]
+
 # anything you put after the below line will override
 # oTree's default settings. Use with caution.
 otree.settings.augment_settings(globals())
