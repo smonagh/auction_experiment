@@ -95,33 +95,30 @@ socket.onmessage = function (event) {
      // Check to make sure player is not highest bidder
      if (obj.highest_bid == true){
        if (obj.bidder_id == {{player.id_in_subsession}}){
-         console.log('warning message')
+          console.log('warning message')
           displayError('You are currently the highest bidder for a widget');
        };
        // if player is not the highest bidder
     } else {
 
-    // Reset timeout
-    if (!obj.hasOwnProperty('bid_status')){
-        timeout=30;
-    }
+        // Show text indicating that player is highest bidder
+        if (obj.bidder_id == {{player.id_in_subsession}}){
+           $('#highest_bid_'+ obj.object_id).show();
+           $('#highest_bid_amount_'+obj.object_id).html(obj.bid);
+           $('#budget').html(obj.budget);
+         }else if (obj.bidder_id != {{player.id_in_subsession}}){
+           // Hide text indicating player is highest bidder
+           $('#highest_bid_'+obj.object_id).hide();
+         };
 
-    // Show text indicating that player is highest bidder
-    if (obj.bidder_id == {{player.id_in_subsession}}){
-       $('#highest_bid_'+ obj.object_id).show();
-       $('#highest_bid_amount_'+obj.object_id).html(obj.bid);
-       $('#budget').html(obj.budget);
-     }else if (obj.bidder_id != {{player.id_in_subsession}}){
-       // Hide text indicating player is highest bidder
-       $('#highest_bid_'+obj.object_id).hide();
-     };
-
-
-    // Update text to reflect new highest bid
-    update_price(obj.bid,obj.object_id);
-   };
-
-   };
+        // Reset timeout if this was a valid bid
+        if (!obj.hasOwnProperty('bid_status')){
+            timeout=30;
+            // Update text to reflect new highest bid
+            update_price(obj.bid,obj.object_id);
+        }
+    };
+};
 
 // Log socket close
 socket.onclose = function (event) {
@@ -179,7 +176,8 @@ soft_close = function(){
   var msg = {
     identifier:'close',
     vars:{
-      player_id:{{player.id_in_subsession}}
+      player_id:{{player.id_in_subsession}},
+      id_in_group: {{player.id_in_group}}
     }
   };
   if (socket.readyState === socket.OPEN) {

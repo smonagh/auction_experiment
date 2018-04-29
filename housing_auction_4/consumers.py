@@ -40,9 +40,9 @@ def ws_message(message, group_name):
             })
         else:  # If not, send message to update information on players screen
             if Constants.end_on_timer:
-                group_fin_bid = [False for i in range(0,Constants.group_split)]  # Reset all players to unfinished since new admissible bid arrived.
-                mygroup.group_fin_bid = str(group_fin_bid) # Convert back to string and write to Database
-                mygroup.save()
+                for i in mygroup.get_players():
+                    i.fin_bid = False
+                    i.save()
             # Send messages to players
             save_auction(jsonmessage,mygroup,0)
             my_dict = update_price(jsonmessage,mygroup)
@@ -155,25 +155,23 @@ def return_auction_info(object_id,round_number,subsession_id,group_id):
 
 def soft_close(mygroup,jsonmessage):
     """
-    Function updates group_fin_bid to indicate a player has
+    Function updates fin_bid to indicate a player has
     finished bidding.
     """
     # Get player id
     player_id = jsonmessage['vars']['player_id']
+    id_in_group = jsonmessage['vars']['id_in_group']
     # Convert backend data from string to list
-    group_fin_bid = literal_eval(mygroup.group_fin_bid)
-    # Find relevant buyer id
-    buyer_id = mygroup.get_player_buyer_id(player_id)
-    # Change relevant entry in group fin bids
-    group_fin_bid[buyer_id] = True
-    # Convert back to string and write to Database
-    mygroup.group_fin_bid = str(group_fin_bid)
-    mygroup.save()
+    player=mygroup.get_player_by_id(id_in_group)
+    player.fin_bid=True
+    player.save()
+
     # Check to see if all players have clicked the button
     check = True
-    for i in group_fin_bid:
-        if i == False:
-            check = False
+    for i in mygroup.get_players():
+        if i.buyer_id > -1:
+            if i.fin_bid == False:
+                check = False
     if check:
         return 'done'
     else:

@@ -77,13 +77,11 @@ class Subsession(BaseSubsession):
             # Define group level variables
             group_bids = [0 for i in range(0,Constants.group_split)]
             group_asks = [0 for i in range(0,Constants.group_split)]
-            group_fin_bid = [False for i in range(0,Constants.group_split)]
             was_traded = [False for i in range(0,Constants.group_split)]
             # Convert to strings for database
             group.group_bids = str(group_bids)
             group.group_asks = str(group_asks)
             group.was_traded = str(was_traded)
-            group.group_fin_bid = str(group_fin_bid)
 
             # Define player level variables
             # Create index for seller object assignment
@@ -97,6 +95,8 @@ class Subsession(BaseSubsession):
                 my_dict = self.reservation_assignment(player,
                 player.player_type)
                 player.player_reservations = str(my_dict)
+                # Assign intial variable for "finished bidding"
+                player.fin_bid = False
                 # If player is a seller assign him an object and give id
                 if player.player_type == 'seller':
                     #This is for random assignment of seller objects
@@ -124,7 +124,6 @@ class Subsession(BaseSubsession):
             group.group_bids = group.in_round(1).group_bids
             group.group_asks = group.in_round(1).group_asks
             group.was_traded = group.in_round(1).was_traded
-            group.group_fin_bid = group.in_round(1).group_fin_bid
 
             # Define player level variables
             for player in group.get_players():
@@ -134,6 +133,7 @@ class Subsession(BaseSubsession):
                 player.player_type = player.in_round(1).player_type
                 player.buyer_id = player.in_round(1).buyer_id
                 player.seller_id = player.in_round(1).seller_id
+                player.fin_bid = False;
 
 
         # Assign subsession treatment value
@@ -195,7 +195,6 @@ class Group(BaseGroup):
     auction_time = models.IntegerField(initial=0)
     group_bids = models.CharField()
     group_asks = models.CharField()
-    group_fin_bid = models.CharField()
     was_traded = models.CharField()
     time_elapsed = models.IntegerField(initial=0)
 
@@ -296,6 +295,7 @@ class Player(BasePlayer):
     payout_round = models.IntegerField()
     endowment = models.IntegerField(initial=10)
     budget = models.IntegerField()
+    fin_bid = models.BooleanField(initial=False)
 
 
     def get_seller_reservation(self):
