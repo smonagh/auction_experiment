@@ -40,15 +40,15 @@ function displayError(err){
 
 //Timeout function. Alert stops the counting, therefore errors are inline instead of alerts.
 var timeoutHandle = setInterval(TimeoutTimer, 1000);
-var timeout=30;
+var timeout=50;
 function TimeoutTimer(){
     timeout=timeout-1; //decrement timer
-    if (timeout>0 && timeout<=10){
-        //Only show timer when <=10 seconds remain
+    if (timeout>0 && timeout<=30){
+        //Only show timer when <=30 seconds remain
         $('#TimerText').text(String(timeout));
         $('#TimerContainer').show();
-    } else if (timeout>10){
-        //Hide timer when >10 seconds remain
+    } else if (timeout>30){
+        //Hide timer when >30 seconds remain
         $('#TimerContainer').hide();
     } else if (timeout>-100){
         //Send message that timeout has ended.
@@ -64,6 +64,7 @@ for (i=0;i<10;i++){
   $('#input_'+i).keypress(function(e) {
       if(e.which == 13) { // Checks for the enter key
           e.preventDefault(); // Stops enter from submitting form
+          $("#bid_btn_"+this.id[this.id.length -1]).click();
       }
   });
 };
@@ -113,7 +114,7 @@ socket.onmessage = function (event) {
 
         // Reset timeout if this was a valid bid
         if (!obj.hasOwnProperty('bid_status')){
-            timeout=30;
+            timeout=50;
             // Update text to reflect new highest bid
             update_price(obj.bid,obj.object_id);
         }
