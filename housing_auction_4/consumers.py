@@ -46,10 +46,10 @@ def ws_message(message, group_name):
             # Send messages to players
             save_auction(jsonmessage,mygroup,0)
             my_dict = update_price(jsonmessage,mygroup)
-            print(my_dict)
+            print("[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: bid made: "+ str(my_dict))
             mygroup.save()
             for player in mygroup.get_players():
-                print(player)
+                #print(player)
                 player.save()
             textforgroup = json.dumps(my_dict)
             Group(group_name).send({
@@ -173,6 +173,7 @@ def soft_close(mygroup,jsonmessage):
             if i.fin_bid == False:
                 check = False
     if check:
+        print("[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]:round ends for group of player " + str(jsonmessage['vars']['player_id']))
         return 'done'
     else:
         return 'not done'
