@@ -4,6 +4,7 @@ from ._builtin import Page, WaitPage
 from .models import Constants, Auction
 from datetime import datetime
 from ast import literal_eval
+from math import ceil
 
 class Instructions_Seller(Page):
     """
@@ -17,7 +18,7 @@ class Instructions_Seller(Page):
     # Adjust what instructions are being display according to treatments being
     # run.
     def vars_for_template(self):
-        return {'treatment_list':Constants.treatment_list,
+        return {'treatment_string':self.session.config['treatment_string'],
                 'player_type':self.player.player_type}
 
     form_model = models.Player
@@ -35,7 +36,7 @@ class Instructions_Buyer(Page):
     # Adjust what instructions are being display according to treatments being
     # run.
     def vars_for_template(self):
-        return {'treatment_list':Constants.treatment_list,
+        return {'treatment_string':self.subsession.treatment,
                 'player_type':self.player.player_type}
 
 class PreWaitPage(WaitPage):
@@ -49,7 +50,7 @@ class SetAsk(Page):
     """
 
     def is_displayed(self):
-        if self.player.player_type == 'seller':
+        if self.player.player_type == 'seller' and self.subsession.treatment == 'minimum_price':
             return self
 
     def vars_for_template(self):
@@ -92,35 +93,36 @@ class Bid(Page):
                 'auction_zip':auction_zip,
                 'object_list':object_list,
                 'time_left':self.group.time_elapsed,
-                'treatment':self.subsession.treatment}
+                'treatment':self.subsession.treatment,
+                'end_on_timer':Constants.end_on_timer}
 
 
-class Bid_Buyer_Full(Bid):
+class Bid_Buyer_MP(Bid):
     """Page for buyers in the full information treatment"""
     def is_displayed(self):
         if self.player.player_type == 'buyer' and \
-         self.subsession.treatment == 'full_information':
+         self.subsession.treatment == 'minimum_price':
             return self
 
-class Bid_Seller_Full(Bid):
+class Bid_Seller_MP(Bid):
     """Page for seller in the full information treatment"""
     def is_displayed(self):
         if self.player.player_type == 'seller' and \
-         self.subsession.treatment == 'full_information':
+         self.subsession.treatment == 'minimum_price':
             return self
 
-class Bid_Buyer_No(Bid):
+class Bid_Buyer_SB(Bid):
     """Page for buyers in the no information treatment"""
     def is_displayed(self):
         if self.player.player_type == 'buyer' and \
-         self.subsession.treatment == 'no_information':
+         self.subsession.treatment == 'sellers_bid':
             return self
 
-class Bid_Seller_No(Bid):
+class Bid_Seller_SB(Bid):
     """Page for buyers in the no information treatment"""
     def is_displayed(self):
         if self.player.player_type == 'seller' and \
-         self.subsession.treatment == 'no_information':
+         self.subsession.treatment == 'sellers_bid':
             return self
 
 class BidWaitPage(WaitPage):
@@ -130,7 +132,11 @@ class BidWaitPage(WaitPage):
         # Check to make sure that asks are above seller reservations
         for player in self.group.get_players():
             if player.player_type == "seller":
-                if player.ask_price < player.get_seller_reservation():
+                if self.subsession.treatment == 'minimum_price':
+                    if player.ask_price < player.get_seller_reservation():
+                        player.ask_price = player.get_seller_reservation()
+                else:
+                    #player.ask_price = 0
                     player.ask_price = player.get_seller_reservation()
         group_asks = self.group.get_group_asks()
         self.group.group_asks = str(group_asks)
@@ -162,7 +168,8 @@ class Results(Page):
         ask_list = literal_eval(self.group.group_asks)
         bid_list = literal_eval(self.group.group_bids)
         was_traded = literal_eval(self.group.was_traded)
-        result_zip = zip(object_list,ask_list,bid_list,was_traded)
+        was_traded_to_seller = literal_eval(self.group.was_traded_to_seller)
+        result_zip = zip(object_list,ask_list,bid_list,was_traded,was_traded_to_seller)
         return{'player_type':self.player.player_type,'result_zip':result_zip}
 
     def before_next_page(self):
@@ -180,7 +187,8 @@ class FinalResults(Page):
         payout_list = []
         for i in self.player.in_all_rounds():
             payout_list.append(i.payout)
-        return {'player_payouts':payout_list}
+        return {'player_payouts':payout_list,
+                'rounded_payout':ceil(self.player.final_us_payout*4)/4+5}
 
 
 page_sequence = [
@@ -189,10 +197,10 @@ page_sequence = [
     PreWaitPage,
     SetAsk,
     BidWaitPage,
-    Bid_Buyer_Full,
-    Bid_Seller_Full,
-    Bid_Buyer_No,
-    Bid_Seller_No,
+    Bid_Buyer_MP,
+    Bid_Seller_MP,
+    Bid_Buyer_SB,
+    Bid_Seller_SB,
     ResultsWaitPage,
     Results,
     FinalResults

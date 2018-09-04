@@ -14,27 +14,23 @@ doc = """
 Housing Auction
 """
 
-
 class Constants(BaseConstants):
     """
     treatment_list contains that possible treatments that will be run in the
-    session. Current options include no_information,partial_information,
-    and full_information.
+    session. Current options include minimum_price and sellers_bid.
     end_on_timer if true will end trading stage after 30 seconds of inactivity.
     """
     name_in_url = 'housing_auction_4'
-    players_per_group = 6
-    periods_per_treatment = 10
-    treatment_string = """['full_information']"""#"""['full_information','no_information']"""
-    treatment_list = literal_eval(treatment_string)
-    conversion_rate = 10
-    num_rounds = len(treatment_list)*periods_per_treatment
-    group_split = int(players_per_group/2)
     seller_res_min = 1
     seller_res_max = 10
     buyer_res_min = 1
     buyer_res_max = 10
     end_on_timer = 1
+    players_per_group = 6
+    periods_per_treatment = 1 ###
+    num_rounds = periods_per_treatment
+    conversion_rate = 10
+    group_split = int(players_per_group / 2)
 
 
 class Auction(Model):
@@ -53,7 +49,6 @@ class Auction(Model):
 
 class Subsession(BaseSubsession):
     treatment = models.CharField()
-
     def before_session_starts(self):
         """Initialize values at the start of the session"""
         if self.round_number == 1:
@@ -64,7 +59,7 @@ class Subsession(BaseSubsession):
     def initial_assignment(self):
         """Define assignment that takes place on the first round of Game"""
         # Assign subession the first treatment in treatment list
-        self.treatment = Constants.treatment_list[0]
+        self.treatment = self.session.config['treatment_string']
         # Set up iterator for player types
         iterator = itertools.cycle(['buyer', 'seller'])
 
@@ -78,10 +73,12 @@ class Subsession(BaseSubsession):
             group_bids = [0 for i in range(0,Constants.group_split)]
             group_asks = [0 for i in range(0,Constants.group_split)]
             was_traded = [False for i in range(0,Constants.group_split)]
+            was_traded_to_seller = [False for i in range(0, Constants.group_split)]
             # Convert to strings for database
             group.group_bids = str(group_bids)
             group.group_asks = str(group_asks)
             group.was_traded = str(was_traded)
+            group.was_traded_to_seller = str(was_traded_to_seller)
 
             # Define player level variables
             # Create index for seller object assignment
@@ -124,6 +121,7 @@ class Subsession(BaseSubsession):
             group.group_bids = group.in_round(1).group_bids
             group.group_asks = group.in_round(1).group_asks
             group.was_traded = group.in_round(1).was_traded
+            group.was_traded_to_seller = group.in_round(1).was_traded_to_seller
 
             # Define player level variables
             for player in group.get_players():
@@ -138,11 +136,11 @@ class Subsession(BaseSubsession):
 
         # Assign subsession treatment value
         if self.round_number <= Constants.periods_per_treatment:
-            self.treatment = Constants.treatment_list[0]
-        elif self.round_number > Constants.periods_per_treatment:
-            self.treatment = Constants. treatment_list[1]
-        elif self.round_number > Constants.periods_per_treatment * 2:
-            self.treatment = Constants.treatment_list[2]
+            self.treatment = self.session.config['treatment_string']
+        # elif self.round_number > Constants.periods_per_treatment:
+        #     self.treatment = self.session. treatment_list[1]
+        # elif self.round_number > Constants.periods_per_treatment * 2:
+        #     self.treatment = self.session.treatment_list[2]
 
     def reservation_assignment(self,player,player_type):
         """Assign reservation values to player according to player type
@@ -196,6 +194,7 @@ class Group(BaseGroup):
     group_bids = models.CharField()
     group_asks = models.CharField()
     was_traded = models.CharField()
+    was_traded_to_seller = models.CharField()
     time_elapsed = models.IntegerField(initial=0)
 
     def get_group_asks(self):
@@ -241,6 +240,7 @@ class Group(BaseGroup):
         # Convert strings to lists
         group_bids = literal_eval(self.group_bids)
         was_traded = literal_eval(self.was_traded)
+        was_traded_to_seller = literal_eval(self.was_traded_to_seller)
 
         for i in range(1,Constants.group_split+1):
             try:
@@ -255,20 +255,30 @@ class Group(BaseGroup):
                     was_traded[i-1] = True
                     # Set player as 'winner'
                     self.get_player_by_id(id_in_group).is_winner = True
-                    # Update player payoff
-                    self.get_player_by_id(id_in_group).set_payoff(highest_bid,
-                                                                  ask_price,i)
-                    # Check for the corresponding seller
-                    for player in self.get_players():
-                        if player.assigned_object == i:
-                            player.is_winner = True
-                            player.set_payoff(highest_bid,ask_price,i)
+
+                    if self.get_player_by_id(id_in_group).player_type == 'seller':
+                        # sold to himself
+                        was_traded_to_seller[i-1] = True
+                        self.get_player_by_id(id_in_group).traded_with_himself = True
+                        self.get_player_by_id(id_in_group).payout = 0
+                        self.get_player_by_id(id_in_group).object_traded = i
+                        self.get_player_by_id(id_in_group).winning_bid = highest_bid
+                    else:
+                        # Update player payoff
+                        self.get_player_by_id(id_in_group).set_payoff(highest_bid,
+                                                                      ask_price,i)
+                        # Check for the corresponding seller
+                        for player in self.get_players():
+                            if player.assigned_object == i:
+                                player.is_winner = True
+                                player.set_payoff(highest_bid,ask_price,i)
 
             except:
                 pass
 
             # Write was traded and group bids to database as string
             self.was_traded = str(was_traded)
+            self.was_traded_to_seller = str(was_traded_to_seller)
             self.group_bids = str(group_bids)
 
 
@@ -280,6 +290,7 @@ class Player(BasePlayer):
     min= 1,max = 800,
     widget=widgets.SliderInput)
     is_winner = models.BooleanField(initial=False)
+    traded_with_himself = models.BooleanField(initial=False)
     assigned_object = models.IntegerField(initial=-1)
     payout = models.IntegerField(initial=0)
     object_traded = models.IntegerField()
@@ -331,3 +342,4 @@ class Player(BasePlayer):
         self.payout_round = random.randint(1,Constants.num_rounds)
         self.final_payout = self.in_round(self.payout_round).payout
         self.final_us_payout = self.final_payout/Constants.conversion_rate
+        self.payoff = self.final_payout/Constants.conversion_rate

@@ -92,29 +92,36 @@ mturk_hit_settings = {
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = {
-    'real_world_currency_per_point': 0.000,
-    'participation_fee': 0.00,
+    'real_world_currency_per_point': 0.1,
+    'participation_fee': 5.00,
     'doc': "",
     'mturk_hit_settings': mturk_hit_settings,
 }
 
 
 SESSION_CONFIGS = [
-        {'name':'housing_auction_4',
-        'display_name': 'Housing Auction',
-        'num_demo_participants': 6,
-        'treatment_string':"['no_information','full_information']",
-        'doc':"""Enter treatments to be played in session. Must be entered in
-                 the form of a list []. Options are no_information, partial_information,
-                 and full_information. Treatments are played in order entered.""",
-        'periods_per_treatment':1,
-        'players_per_group':2,
-        'seller_res_min':1,
-        'seller_res_max':10,
-        'buyer_res_min':1,
-        'buyer_res_max':10,
-        'app_sequence': ['housing_auction_4']}
 
+        #MP
+        {'name':'housing_auction_MP',
+        'display_name': 'Housing Auction MP',
+        'num_demo_participants': 6,
+        # 'treatment_string':"['minimum_price','sellers_bid']",
+        'treatment_string': "minimum_price",
+        'doc':"""Enter treatments to be played in session. Must be entered in
+                 the form of a list []. Options are minimum_price, sellers_bidding. 
+                 Treatments are played in order entered.""",
+        'app_sequence': ['housing_auction_4']},
+
+        # SB
+        {'name':'housing_auction_SB',
+        'display_name': 'Housing Auction SB',
+        'num_demo_participants': 6,
+        # 'treatment_string':"['minimum_price','sellers_bid']",
+        'treatment_string': "sellers_bid",
+        'doc':"""Enter treatments to be played in session. Must be entered in
+                 the form of a list []. Options are minimum_price, sellers_bidding. 
+                 Treatments are played in order entered.""",
+        'app_sequence': ['housing_auction_4']},
 ]
 
 # ROOM Settings for lab experiments

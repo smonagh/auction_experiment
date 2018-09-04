@@ -1,40 +1,42 @@
 {% extends "housing_auction_4/Bid.html" %}
 {% load staticfiles otree %}
 
-{% block bid_buyer_no %}
+{% block bid_seller_sb %}
 <div class="">
 
-<h3>Please submit bids for the widgets that you would like to purchase</h3>
-<!-- For loop to create highest bidder entries for each object -->
-<!--<h5 style="white-space:nowrap; overflow:hidden;"> Your remaining budget to
-  spend on bids is: <div style="text-align:right; display:inline;"
-  id="budget">{{player.budget}} </div></h5>-->
-{% for i in object_list %}
-  <h5 id="highest_bid_{{forloop.counter}}" style="white-space:nowrap; display: none;">
-    You are the highest bidder for {{i}} with a bid of <div id="highest_bid_amount_{{forloop.counter}}"
+  <h3> Please set a new minimal price or wait for buyers to finish bidding </h3>
+
+ {% for i in object_list %}
+  <h5 id="highest_bid_{{forloop.counter}}"  style="white-space:nowrap; display: none;">
+    You are the highest bidder for {{i}} (your own widget) with the bid of <div id="highest_bid_amount_{{forloop.counter}}"
     style="display:inline; text-align:right;"></div>
   </h5>
 {% endfor %}
+<!-- Hidden text indicating remaining time until round ends-->
+<h5 id="TimerContainer"  style="white-space:nowrap; display: none;">
+    This round will end <span style="font-weight:bold; color:red;" id="TimerText">in about 10 second(s)</span> if no successful bids are made.
+</h5>
+<!-- Hidden text indicating invalid bid-->
+<h5 id="ErrorContainer"  style="white-space:nowrap; display: none;">
+    <span style="font-weight:bold; color:red;" id="RedError">ERROR, INVALID BID: </span><span id="ErrorText"></span>
+</h5>
 </div>
-
 <table style="width:100%" border="spacing:10px" >
     <tr>
     <th><center>Widget</center></th>
-        <th hidden><center>Minimum Price</center></th>
         <th><center>Your Value</center></th>
-        <th hidden><center>Standing Bid</center></th>
+        <th><center>Standing Bid</center></th>
+        <!--<th><center>Change Minimum Price</center></th>-->
         <th><center>Enter Bid</center></th>
     </tr>
 
     {% for object,ask,res,bid in auction_zip %}
         <tr id="row_{{forloop.counter}}">
             <td id="object_{{forloop.counter}}">{{object}}</td>
-            <td hidden id="ask_price_{{forloop.counter}}">{{ask}}</td>
-            {% if player_type == "buyer" %}
             <td id="reservation_{{forloop.counter}}">{{res}}</td>
-            {% endif %}
-            <td hidden id="current_bid_{{forloop.counter}}">{{bid}}</td>
+            <td id="current_bid_{{forloop.counter}}">{{bid}}</td>
             <td  id="enter_bid_{{forloop.counter}}">
+                {% if res > 0 %}
                 <input type="number" placeholder="Enter Bid" id="input_{{forloop.counter}}">
                 <br>
                 <!-- Input button returns the object_id, the current standing bid,
@@ -48,14 +50,19 @@
                        ask_price_{{forloop.counter}}.innerHTML,
                        reservation_{{forloop.counter}}.innerHTML)'
                        type="reset" value="Bid">
+                {% endif %}
             </td>
         </tr>
     {% endfor %}
   </table>
-
-      <!-- Button for soft close -->
-      <button id="close_button" class="btn btn-primary"
-      onclick='soft_close()' type='button' >Finished Bidding</button>
-      <p id="after_close" hidden>Please wait for other players to finish bidding </p>
+    <!-- Button for soft close -->
+{% if end_on_timer %}
+    <button id="close_button" class="btn btn-primary"
+    onclick='soft_close()' type='button' style="display:none;">Finished Bidding</button>
+{% else %}
+    <button id="close_button" class="btn btn-primary"
+    onclick='soft_close()' type='button'>Finished Bidding</button>
+{% endif %}
+    <p id="after_close" hidden>Please wait for other players to finish bidding </p>
 
 {% endblock %}

@@ -2,6 +2,8 @@
 {% load staticfiles otree%}
 
 {% block content %}
+
+
 <h1> Experiment Instructions </h1>
 
 <div class="jumbotron">
@@ -53,6 +55,7 @@ The earnings in each round equal to the money you received in exchange for
 
 <p>Note, however, that only one round will be randomly chosen at the end of the experiment to be payed in US$.</p>
 
+{% if subsession.treatment == 'minimum_price' %}
 <h2> Trading </h2>
 
 <p>Each round consists of two stages.</p>
@@ -109,6 +112,67 @@ The earnings in each round equal to the money you received in exchange for
    that only one round will be randomly chosen to be
     paid at the end of the experiment.</p>
 
+{% elif subsession.treatment == 'sellers_bid' %}
+<h2> Trading </h2>
+
+<p>In each round, the buyers will bid for the widgets. As a seller, you can also make bids, but only for your own widget.
+   The buyers with the highest bid will purchase your widget. If the highest bidder is you, you will not make
+    a transaction and your earnings for the round will be zero.
+    When buyers are bidding, you will see a table with information about
+      the widgets:</p>
+
+<div>
+  <table>
+    <tr>
+      <th><center>Widget</center> </th>
+      <th><center>Minimum Price</center></th>
+      <th><center>Value</center></th>
+      <th><center>Standing Bid</center></th>
+      <th><center>Enter Bid</center></th>
+    </tr>
+    <tr>
+      <td>Widget 1</td>
+      <td>5</td>
+      <td>7</td>
+      <td>2</td>
+      <td>
+    </tr>
+    <tr>
+      <td>Widget 2</td>
+      <td>3</td>
+      <td>1</td>
+      <td>0</td>
+      <td><input type="number" placeholder="Enter Bid">
+        <br>
+        <input class="btn btn-large btn-primary next-button" type="reset"
+        value=" Bid " disabled>
+    </tr>
+    <tr>
+      <td>Widget 3</td>
+      <td>4</td>
+      <td>9</td>
+      <td>4</td>
+      <td>
+    </tr>
+  </table>
+    <input type="hidden" name="ask_price" value="{{ player.ask_price }}" />
+
+</div>
+
+    <p>You can submit <b>integer</b> bids for your widget or wait for trading to end.
+    <p>If at any time you have the highest bid for a widget,
+       this will be noted on the top of your screen.  </p>
+
+  <p>
+    An important rule is that your bid must be higher than the currently highest bid.
+  </p>
+
+    <p> Trading ends when there is no active bidding for 50 seconds.
+  At the end of each round you will be told your earnings for that round. However, remember
+   that only one round will be randomly chosen to be
+    paid at the end of the experiment.</p>
+{% endif %}
+
 <h2> End of Experiment </h2>
 <p> At the end of the experiment you will be taken to a screen that displays
  your E$ earnings in each round, the round that was randomly chosen as the
@@ -128,11 +192,15 @@ The earnings in each round equal to the money you received in exchange for
      <li> Only one round will be chosen to be payed in US$; </li>
      <li> Bidding for the round stops after 50 seconds of inactivity; </li>
      <li> Today’s experiment will include {{Constants.num_rounds}} rounds; </li>
+       {% if subsession.treatment == 'minimum_price' %}
      <li> Your value for your widget will always be the same, but minimum prices and bids may change between rounds.</li>
+       {% elif subsession.treatment == 'sellers_bid' %}
+     <li> Your value for your widget will always be the same, but bids may change between rounds.</li>
+       {% endif %}
    </ul>
+
 <button class="btn btn-primary" type="submit">Finished Reading Instructions</button
 </div>
-
 
 {% endblock %}
 {% block styles %}

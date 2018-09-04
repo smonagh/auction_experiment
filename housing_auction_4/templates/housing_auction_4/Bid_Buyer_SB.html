@@ -1,7 +1,7 @@
 {% extends "housing_auction_4/Bid.html" %}
 {% load staticfiles otree %}
 
-{% block bid_buyer_full %}
+{% block bid_buyer_sb %}
 <div class="">
 
 <h3>Please submit bids for the widgets that you would like to purchase</h3>
@@ -17,7 +17,7 @@
 {% endfor %}
 <!-- Hidden text indicating remaining time until round ends-->
 <h5 id="TimerContainer"  style="white-space:nowrap; display: none;">
-    This round will end in about <span style="font-weight:bold; color:red;" id="TimerText">10</span> second(s) if no successful bids are made.
+    This round will end <span style="font-weight:bold; color:red;" id="TimerText">in about 10 second(s)</span> if no successful bids are made.
 </h5>
 <!-- Hidden text indicating invalid bid-->
 <h5 id="ErrorContainer"  style="white-space:nowrap; display: none;">
@@ -27,7 +27,6 @@
 <table style="width:100%" border="spacing:10px" >
     <tr>
     <th><center>Widget</center></th>
-        <th><center>Minimum Price</center></th>
         <th><center>Your Value</center></th>
         <th><center>Standing Bid</center></th>
         <th><center>Enter Bid</center></th>
@@ -36,7 +35,6 @@
     {% for object,ask,res,bid in auction_zip %}
         <tr id="row_{{forloop.counter}}">
             <td id="object_{{forloop.counter}}">{{object}}</td>
-            <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
             {% if player_type == "buyer" %}
             <td id="reservation_{{forloop.counter}}">{{res}}</td>
             {% endif %}
@@ -60,7 +58,7 @@
     {% endfor %}
   </table>
     <!-- Button for soft close -->
-{% if Constants.end_on_timer %}
+{% if end_on_timer %}
     <button id="close_button" class="btn btn-primary"
     onclick='soft_close()' type='button' style="display:none;">Finished Bidding</button>
 {% else %}

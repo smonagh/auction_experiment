@@ -65,12 +65,21 @@ def save_auction(message,group,time_left):
     Function creates a new entry to save to the auction table
     """
     message = message['vars']
+    # if message['is_ask']==0:
     auction = Auction(subsession_id = group.subsession.id,group_id=group.id_in_subsession,
-                      player_id=message['player_id'],id_in_group=message['id_in_group'],
-                      object_id=message['object_id'],player_bid=message['bid'],
-                      last_bid=message['standing_bid'],ask_price=message['ask_price'],
-                      round_number=group.subsession.round_number,
-                      time_stamp=str(datetime.now()))
+                          player_id=message['player_id'],id_in_group=message['id_in_group'],
+                          object_id=message['object_id'],player_bid=message['bid'],
+                          last_bid=message['standing_bid'],ask_price=message['ask_price'],
+                          round_number=group.subsession.round_number,
+                          time_stamp=str(datetime.now()))
+    # else:
+    #     auction = Auction(subsession_id=group.subsession.id, group_id=group.id_in_subsession,
+    #                       player_id=message['player_id'], id_in_group=message['id_in_group'],
+    #                       object_id=message['object_id'], player_bid=message['bid'],
+    #                       last_bid=message['standing_bid'], ask_price=message['bid'],
+    #                       round_number=group.subsession.round_number,
+    #                       time_stamp=str(datetime.now()))
+
     auction.save()
 
 
@@ -89,6 +98,7 @@ def update_price(message,group):
     return_dict['bidder_id'] = message['vars']['player_id']
     return_dict['budget'] = group.get_player_budget(message['vars']['id_in_group'])
     return_dict['object_id'] = object_id
+    # return_dict['is_ask'] = message['vars']['is_ask']
     return return_dict
 
 def check_highest_bidder(group,message):

@@ -3,22 +3,21 @@
 
 {% block content %}
 <h1>Auction</h1>
-
 <!-- Defines table for buyer types in full information -->
-{% if player_type == 'buyer' and treatment == 'full_information' %}
-{% block bid_buyer_full %}
+{% if player_type == 'buyer' and treatment == 'minimum_price' %}
+{% block bid_buyer_mp %}
 {% endblock %}
 <!-- Defines table for seller types in full information -->
-{% elif player_type == 'seller' and treatment == 'full_information' %}
-{% block bid_seller_full %}
+{% elif player_type == 'seller' and treatment == 'minimum_price' %}
+{% block bid_seller_mp %}
 {% endblock %}
 <!-- Defines table for buyer type in no information -->
-{% elif player_type == 'buyer' and treatment == 'no_information' %}
-{% block bid_buyer_no %}
+{% elif player_type == 'buyer' and treatment == 'sellers_bid' %}
+{% block bid_buyer_sb %}
 {% endblock %}
 <!-- Defines table for seller type in no information -->
-{% elif player_type == 'seller' and treatment == 'no_information' %}
-{% block bid_seller_no %}
+{% elif player_type == 'seller' and treatment == 'sellers_bid' %}
+{% block bid_seller_sb %}
 {% endblock %}
 {% endif %}
 
@@ -45,7 +44,11 @@ function TimeoutTimer(){
     timeout=timeout-1; //decrement timer
     if (timeout>0 && timeout<=30){
         //Only show timer when <=30 seconds remain
-        $('#TimerText').text(String(timeout));
+        if (timeout>1){
+            $('#TimerText').text('in about '+String(timeout)+ ' second(s)');
+        }else{
+            $('#TimerText').text('now');
+        }
         $('#TimerContainer').show();
     } else if (timeout>30){
         //Hide timer when >30 seconds remain
@@ -97,7 +100,11 @@ socket.onmessage = function (event) {
      if (obj.highest_bid == true){
        if (obj.bidder_id == {{player.id_in_subsession}}){
           console.log('warning message')
-          displayError('You are currently the highest bidder for a widget');
+          if ('{{player.player_type}}' == 'buyer'){
+            displayError('You are currently the highest bidder for a widget');
+          } else {
+            displayError('Your own minimum price is currently the highest for your widget');
+          }
        };
        // if player is not the highest bidder
     } else {
@@ -116,7 +123,7 @@ socket.onmessage = function (event) {
         if (!obj.hasOwnProperty('bid_status')){
             timeout=50;
             // Update text to reflect new highest bid
-            update_price(obj.bid,obj.object_id);
+            update_price(obj.bid,obj.object_id,obj.is_ask);
         }
     };
 };
@@ -128,6 +135,7 @@ console.log('disconnected from oTree');
 
 // Function to send bid data to the backend
 sendmessage = function(val,id,current_bid,ask_price,reservation){
+    if ('{{player.player_type}}' == 'buyer'){
         var my_bid = parseInt(document.getElementById(val).value);
         var current_bid = parseInt(current_bid);
         var ask_price = parseInt(ask_price);
@@ -141,6 +149,37 @@ sendmessage = function(val,id,current_bid,ask_price,reservation){
             displayError('You have entered bid of '+String(my_bid)+' which is not greater than the standing bid');
         //Return data to backend if none of the previous errors were thrown
         }else if (my_bid > current_bid){
+            var msg = {
+                identifier: 'bid',
+                vars: {
+                player_id: {{player.id_in_subsession}},
+                id_in_group: {{player.id_in_group}},
+                object_id: id,
+                bid: my_bid,
+                standing_bid: current_bid,
+                ask_price: ask_price,
+                is_ask: 0
+              }
+            };
+
+            if (socket.readyState === socket.OPEN) {
+            socket.send(JSON.stringify(msg))};
+        };
+
+    }else {
+    // Seller submits new ask
+        var my_bid = parseInt(document.getElementById(val).value);
+        var current_bid = parseInt(current_bid);
+        var ask_price = parseInt(ask_price);
+        console.log(my_bid,current_bid,ask_price,reservation)
+        //if (my_bid < ask_price){
+             // displayError('You can not lower the minimum price');
+        //Prevent players from submitting a bid that is not improving
+        //}else if (my_bid <= current_bid) {
+        if (my_bid <= current_bid) {
+            displayError('You have entered a bid of '+String(my_bid)+' which is not greater than the standing bid');
+        //Return data to backend if none of the previous errors were thrown
+        }else if (my_bid > current_bid){
 
             var msg = {
                 identifier: 'bid',
@@ -150,20 +189,26 @@ sendmessage = function(val,id,current_bid,ask_price,reservation){
                 object_id: id,
                 bid: my_bid,
                 standing_bid: current_bid,
-                ask_price: ask_price
+                ask_price: ask_price,
+                is_ask: 1
               }
             };
 
             if (socket.readyState === socket.OPEN) {
             socket.send(JSON.stringify(msg))};
         };
-      };
+    }
+};
 //Update html to reflect the new standing bid
-update_price = function(bid,id){
-    console.log(bid,id)
+update_price = function(bid,id,is_ask){
+    console.log(bid,id);
+    console.log(111);
     $('#current_bid_'+id).html(bid);
-    $('#bid_btn_'+id).prop('value');
-
+    //$('#bid_btn_'+id).prop('value');
+    // update minimum price
+    //if (is_ask==1) {
+    //$('#ask_price_'+id).html(bid)
+    //}
 };
 
 // Turn on text to indicate that player is the highest bidder.
@@ -184,7 +229,7 @@ soft_close = function(){
   if (socket.readyState === socket.OPEN) {
     socket.send(JSON.stringify(msg))
   };
-  if (1!={{ Constants.end_on_timer }}){
+  if (1!={{ end_on_timer }}){
   $('#close_button').hide();
   $('#after_close').show();
   };
