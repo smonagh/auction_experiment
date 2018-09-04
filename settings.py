@@ -146,6 +146,11 @@ ROOMS = [
         'use_secure_urls': True,
         'participant_label_file': 'participants.txt'
     },
+    {
+        'name': 'econ831',
+        'display_name': 'Econ 831 class',
+        'participant_label_file': 'econ831.txt',
+    },
 ]
 
 # anything you put after the below line will override
