@@ -125,6 +125,22 @@ class Bid_Seller_SB(Bid):
          self.subsession.treatment == 'sellers_bid':
             return self
 
+class Bid_Buyer_DA(Bid):
+    """Page for buyers in the no information treatment"""
+
+    def is_displayed(self):
+        if self.player.player_type == 'buyer' and \
+                self.subsession.treatment == 'double_auction':
+            return self
+
+class Bid_Seller_DA(Bid):
+    """Page for buyers in the no information treatment"""
+
+    def is_displayed(self):
+        if self.player.player_type == 'seller' and \
+                self.subsession.treatment == 'double_auction':
+            return self
+
 class BidWaitPage(WaitPage):
 
     def after_all_players_arrive(self):
@@ -201,6 +217,8 @@ page_sequence = [
     Bid_Seller_MP,
     Bid_Buyer_SB,
     Bid_Seller_SB,
+    Bid_Buyer_DA,
+    Bid_Seller_DA,
     ResultsWaitPage,
     Results,
     FinalResults

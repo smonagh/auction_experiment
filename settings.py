@@ -108,7 +108,7 @@ SESSION_CONFIGS = [
         # 'treatment_string':"['minimum_price','sellers_bid']",
         'treatment_string': "minimum_price",
         'doc':"""Enter treatments to be played in session. Must be entered in
-                 the form of a list []. Options are minimum_price, sellers_bidding. 
+                 the form of a list []. Options are minimum_price, sellers_bid, double_auction. 
                  Treatments are played in order entered.""",
         'app_sequence': ['housing_auction_4']},
 
@@ -119,7 +119,18 @@ SESSION_CONFIGS = [
         # 'treatment_string':"['minimum_price','sellers_bid']",
         'treatment_string': "sellers_bid",
         'doc':"""Enter treatments to be played in session. Must be entered in
-                 the form of a list []. Options are minimum_price, sellers_bidding. 
+                 the form of a list []. Options are minimum_price, sellers_bid, double_auction. 
+                 Treatments are played in order entered.""",
+        'app_sequence': ['housing_auction_4']},
+
+        #Da
+        {'name':'housing_auction_DA',
+        'display_name': 'Housing Auction DA',
+        'num_demo_participants': 6,
+        # 'treatment_string':"['minimum_price','sellers_bid']",
+        'treatment_string': "double_auction",
+        'doc':"""Enter treatments to be played in session. Must be entered in
+                 the form of a list []. Options are minimum_price, sellers_bid, double_auction. 
                  Treatments are played in order entered.""",
         'app_sequence': ['housing_auction_4']},
 ]

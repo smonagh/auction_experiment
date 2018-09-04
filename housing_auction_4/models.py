@@ -42,6 +42,7 @@ class Auction(Model):
     object_id = models.IntegerField()
     player_bid = models.IntegerField()
     last_bid = models.IntegerField()
+    last_price = models.IntegerField()
     ask_price = models.IntegerField()
     round_number = models.IntegerField()
     time_stamp = models.CharField()

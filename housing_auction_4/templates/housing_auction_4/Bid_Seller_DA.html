@@ -1,0 +1,71 @@
+{% extends "housing_auction_4/Bid.html" %}
+{% load staticfiles otree %}
+
+{% block bid_seller_da %}
+<div class="">
+
+  <h3> Please submit a new ask or wait for buyers to finish bidding </h3>
+
+ {% for i in object_list %}
+  <h5 id="highest_bid_{{forloop.counter}}"  style="white-space:nowrap; display: none;">
+    You have a bidder for {{i}} (your widget) with the bid of <div id="highest_bid_amount_{{forloop.counter}}"
+    style="display:inline; text-align:right;"></div>
+  </h5>
+{% endfor %}
+<!-- Hidden text indicating remaining time until round ends-->
+<h5 id="TimerContainer"  style="white-space:nowrap; display: none;">
+    This round will end <span style="font-weight:bold; color:red;" id="TimerText">in about 10 second(s)</span> if no successful bids are made.
+</h5>
+<!-- Hidden text indicating invalid bid-->
+<h5 id="ErrorContainer"  style="white-space:nowrap; display: none;">
+    <span style="font-weight:bold; color:red;" id="RedError">ERROR, INVALID BID: </span><span id="ErrorText"></span>
+</h5>
+</div>
+<table style="width:100%" border="spacing:10px" >
+    <tr>
+    <th><center>Widget</center></th>
+        <th><center>Your Value</center></th>
+        <th><center>Standing Ask</center></th>
+        <th><center>Standing Bid</center></th>
+        <th><center>Current Price</center></th>
+        <th><center>Enter Ask</center></th>
+    </tr>
+
+    {% for object,ask,res,bid in auction_zip %}
+        <tr id="row_{{forloop.counter}}">
+            <td id="object_{{forloop.counter}}">{{object}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res}}</td>
+            <td id="current_ask_{{forloop.counter}}">{{ask}}</td>
+            <td id="current_bid_{{forloop.counter}}">{{bid}}</td>
+            <td id="current_price_{{forloop.counter}}">{{price}}</td>
+            <td  id="enter_ask_{{forloop.counter}}">
+                {% if res > 0 %}
+                <input type="number" placeholder="Enter Ask" id="input_{{forloop.counter}}">
+                <br>
+                <!-- Input button returns the object_id, the current standing bid,
+                     the ask price for the object, and the new input bid to
+                     javascript to verify that the bid clears the previous
+                     one -->
+                <input id='bid_btn_{{forloop.counter}}'
+                       class="btn  btn-large btn-primary next-button"
+                       onclick='sendmessage("input_{{forloop.counter}}",
+                       {{forloop.counter}},current_bid_{{forloop.counter}}.innerHTML,
+                       {{forloop.counter}},current_ask_{{forloop.counter}}.innerHTML,
+                       reservation_{{forloop.counter}}.innerHTML)'
+                       type="reset" value="Ask">
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+  </table>
+    <!-- Button for soft close -->
+{% if end_on_timer %}
+    <button id="close_button" class="btn btn-primary"
+    onclick='soft_close()' type='button' style="display:none;">Finished Bidding</button>
+{% else %}
+    <button id="close_button" class="btn btn-primary"
+    onclick='soft_close()' type='button'>Finished Bidding</button>
+{% endif %}
+    <p id="after_close" hidden>Please wait for other players to finish bidding </p>
+
+{% endblock %}

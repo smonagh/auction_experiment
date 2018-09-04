@@ -55,6 +55,24 @@ def ws_message(message, group_name):
             Group(group_name).send({
                     "text": textforgroup,
                     })
+    elif jsonmessage['identifier'] == 'ask':
+        # Check to make sure bid is within the budget constraint
+        if Constants.end_on_timer:
+            for i in mygroup.get_players():
+                i.fin_bid = False
+                i.save()
+        # Send messages to players
+        save_auction(jsonmessage,mygroup,0)
+        my_dict = update_price(jsonmessage,mygroup)
+        print("[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: ask made: "+ str(my_dict))
+        mygroup.save()
+        for player in mygroup.get_players():
+            #print(player)
+            player.save()
+        textforgroup = json.dumps(my_dict)
+        Group(group_name).send({
+                "text": textforgroup,
+                })
 
 def ws_disconnect(message, group_name):
     """Websocket close function"""
@@ -66,12 +84,21 @@ def save_auction(message,group,time_left):
     """
     message = message['vars']
     # if message['is_ask']==0:
+    #if message['identifier'] == 'bid':
     auction = Auction(subsession_id = group.subsession.id,group_id=group.id_in_subsession,
                           player_id=message['player_id'],id_in_group=message['id_in_group'],
                           object_id=message['object_id'],player_bid=message['bid'],
                           last_bid=message['standing_bid'],ask_price=message['ask_price'],
                           round_number=group.subsession.round_number,
                           time_stamp=str(datetime.now()))
+    #else:
+        # ask
+     #   auction = Auction(subsession_id=group.subsession.id, group_id=group.id_in_subsession,
+      #                    player_id=message['player_id'], id_in_group=message['id_in_group'],
+       #                   object_id=message['object_id'], player_bid=message['bid'],
+        #                  last_bid=message['standing_bid'], ask_price=message['ask_price'],
+         #                 round_number=group.subsession.round_number,
+          #                time_stamp=str(datetime.now()))
     # else:
     #     auction = Auction(subsession_id=group.subsession.id, group_id=group.id_in_subsession,
     #                       player_id=message['player_id'], id_in_group=message['id_in_group'],
