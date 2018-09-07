@@ -114,8 +114,7 @@ The earnings in each round equal to the total value
 
     <p>You can submit <b>integer</b> bids for any of the widgets listed.
  If you have the highest bid for the widget when the round ends,
-   and this bid is higher than the minimum price requested by the seller for this
-    widget, then you purchase this widget at a price equal to your bid. If you did not have
+   then you purchase this widget at a price equal to your bid. If you did not have
     the highest bid for any object at the end of the round,
     then you do not buy anything and earn 0 E$.</p>
 
@@ -129,10 +128,10 @@ The earnings in each round equal to the total value
     outbids you for the same object.
   </p>
 
-  <p>There are three important rules for bidding:</p>
-
+  <p>There are four important rules for bidding:</p>
   <ol>
     <li> Your bid must be higher than the currently highest bid. </li>
+    <li> Your bid must be higher than the current minimum price. </li>
     <li> You may not submit a bid that is higher than your value for the widget. </li>
     <li> You may not have the highest bid for more than one object at a time. </li>
   </ol>
@@ -142,7 +141,7 @@ The earnings in each round equal to the total value
     that only one round will be randomly chosen to be
      paid at the end of the experiment.</p>
 
-    {% elif subsession.treatment == 'sellers_bid' %}
+    {% else %}
 
     In each round you will try to buy one widget by submitting bids to
      sellers. When bidding, you will see a table with
@@ -151,15 +150,15 @@ The earnings in each round equal to the total value
   <table>
     <tr>
       <th><center>Widget</center> </th>
-      <th><center>Minimum Price</center></th>
-      <th><center>Value</center></th>
+      <th><center>Your Value</center></th>
+      <th><center>Standing Ask</center></th>
       <th><center>Standing Bid</center></th>
       <th><center>Enter Bid</center></th>
     </tr>
     <tr>
       <td>Widget 1</td>
-      <td>5</td>
       <td>7</td>
+      <td>5</td>
       <td>2</td>
       <td><input type="number" placeholder="Enter Bid">
         <br>
@@ -168,8 +167,8 @@ The earnings in each round equal to the total value
     </tr>
     <tr>
       <td>Widget 2</td>
-      <td>3</td>
       <td>1</td>
+      <td>3</td>
       <td>0</td>
       <td><input type="number" placeholder="Enter Bid">
         <br>
@@ -178,8 +177,8 @@ The earnings in each round equal to the total value
     </tr>
     <tr>
       <td>Widget 3</td>
-      <td>4</td>
       <td>9</td>
+      <td>4</td>
       <td>4</td>
       <td><input type="number" placeholder="Enter Bid">
         <br>
@@ -190,9 +189,11 @@ The earnings in each round equal to the total value
 
 </div>
 
-    <p>You can submit <b>integer</b> bids for any of the widgets listed.
+  <p> At the same time sellers will be posting and revising asks for their widgets - the minimum price at which they would sell their widget.</p>
+
+    <p>You can submit <b>integer</b> bids for any of the widgets listed, once the seller posts his ask
  If you have the highest bid for the widget when the round ends,
-   and this bid is higher than the minimum price requested by the seller for this
+   and this bid is higher than the ask posted by the seller for this
     widget, then you purchase this widget at a price equal to your bid. If you did not have
     the highest bid for any object at the end of the round,
     then you do not buy anything and earn 0 E$.</p>
@@ -207,17 +208,13 @@ The earnings in each round equal to the total value
     outbids you for the same object.
   </p>
 
-    <p>
-        The seller of the widget can also make bids for his own widget, but not for the other widgets.
-        If the seller wins in the bidding for his own widget, he will not make a transaction and will earn 0 E$.
-    </p>
-
-  <p>There are three important rules for bidding:</p>
-
+  <p>There are four important rules for bidding:</p>
   <ol>
     <li> Your bid must be higher than the currently highest bid. </li>
+    <li> Your bid must be higher than the current minimum price. </li>
     <li> You may not submit a bid that is higher than your value for the widget. </li>
     <li> You may not have the highest bid for more than one object at a time. </li>
+      <li> Sellers can only decrease their asks</li>
   </ol>
 
  <p> Trading stage ends when there is no active bidding for 50 seconds. You will see an indicator after 20 seconds of inactivity.
@@ -236,7 +233,23 @@ The earnings in each round equal to the total value
       your belongings up since the experiment ends once you have received your
        payment.</p>
 
-  <button class="btn btn-primary" type="submit">Finished Reading Instructions</button
+    <h2> Important points to remember </h2>
+   <ul>
+     <li> You can not lose money by trading (you are prevented from bidding too high); </li>
+     <li> If you do not buy, you earn 0 E$; </li>
+     <li> Each buyer may only buy one widget per round;</li>
+     <li> Both buyers and sellers may have different values of the same widget;</li>
+     <li> Only one round will be chosen to be payed in US$; </li>
+     <li> Bidding for the round stops after 50 seconds of inactivity; </li>
+     <li> Today’s experiment will include {{Constants.num_rounds}} rounds; </li>
+       {% if subsession.treatment == 'minimum_price' %}
+     <li> Your value for your widget will always be the same, but minimum prices and bids may change between rounds.</li>
+       {% else %}
+     <li> Your value for your widget will always be the same, but bids and asks may change between rounds.</li>
+       {% endif %}
+   </ul>
+
+  <button class="btn btn-primary" type="submit">Finished Reading Instructions</button>
   </div>
 
 {% endblock %}

@@ -153,7 +153,7 @@ class BidWaitPage(WaitPage):
                         player.ask_price = player.get_seller_reservation()
                 else:
                     #player.ask_price = 0
-                    player.ask_price = player.get_seller_reservation()
+                    player.ask_price = 0
         group_asks = self.group.get_group_asks()
         self.group.group_asks = str(group_asks)
 

@@ -8,6 +8,7 @@
 <table style="width:100%" border="spacing:10px" >
 <tr>
 <th>Widget</th>
+<th><center>Your Value</center></th>
 <th>Minimum Price</th>
 <th>Standing Bid</th>
 </tr>
@@ -15,10 +16,8 @@
 {% for object,ask,res,bid in auction_zip %}
     <tr id="row_{{forloop.counter}}">
         <td id="object_{{forloop.counter}}">{{object}}</td>
-        <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
-        {% if player_type == "buyer" %}
         <td id="reservation_{{forloop.counter}}">{{res}}</td>
-        {% endif %}
+        <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
         <td id="current_bid_{{forloop.counter}}">{{bid}}</td>
     </tr>
 {% endfor %}

@@ -30,7 +30,6 @@
         <th><center>Your Value</center></th>
         <th><center>Standing Ask</center></th>
         <th><center>Standing Bid</center></th>
-        <th><center>Current Price</center></th>
         <th><center>Enter Bid</center></th>
     </tr>
 
@@ -38,9 +37,12 @@
         <tr id="row_{{forloop.counter}}">
             <td id="object_{{forloop.counter}}">{{object}}</td>
             <td id="reservation_{{forloop.counter}}">{{res}}</td>
+            {% if ask > 0 %}
             <td id="current_ask_{{forloop.counter}}">{{ask}}</td>
+            {% else %}
+            <td id="current_ask_{{forloop.counter}}">-</td>
+            {% endif %}
             <td id="current_bid_{{forloop.counter}}">{{bid}}</td>
-            <td id="current_price_{{forloop.counter}}">{{price}}</td>
             <td  id="enter_bid_{{forloop.counter}}">
                 <input type="number" placeholder="Enter Bid" id="input_{{forloop.counter}}">
                 <br>

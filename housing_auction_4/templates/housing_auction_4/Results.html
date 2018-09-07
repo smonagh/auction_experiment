@@ -38,6 +38,8 @@
     <th><center>Widget</center></th>
         {% if subsession.treatment == 'minimum_price' %}
         <th><center>Minimum Price</center></th>
+        {% else %}
+        <th><center>Standing Ask</center></th>
         {% endif %}
         <th><center>Highest Bid</center></th>
         <th><center>Was Widget Traded?</center></th>
@@ -48,6 +50,10 @@
             <td id="object_{{forloop.counter}}">{{object}}</td>
             {% if subsession.treatment == 'minimum_price' %}
             <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
+            {% elif ask > 0 %}
+            <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
+            {% else %}
+            <td id="ask_price_{{forloop.counter}}">-</td>
             {% endif %}
             <td id="highest_bid_{{forloop.counter}}">{{bid}}</td>
             {% if object_traded %}

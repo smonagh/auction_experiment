@@ -80,6 +80,7 @@ class Subsession(BaseSubsession):
             group.group_asks = str(group_asks)
             group.was_traded = str(was_traded)
             group.was_traded_to_seller = str(was_traded_to_seller)
+            group.bidding_log = 'First round started \n'
 
             # Define player level variables
             # Create index for seller object assignment
@@ -123,6 +124,7 @@ class Subsession(BaseSubsession):
             group.group_asks = group.in_round(1).group_asks
             group.was_traded = group.in_round(1).was_traded
             group.was_traded_to_seller = group.in_round(1).was_traded_to_seller
+            group.bidding_log = 'Round ' + str(self.round_number) + ' started.\n'
 
             # Define player level variables
             for player in group.get_players():
@@ -197,6 +199,7 @@ class Group(BaseGroup):
     was_traded = models.CharField()
     was_traded_to_seller = models.CharField()
     time_elapsed = models.IntegerField(initial=0)
+    bidding_log = models.LongStringField()
 
     def get_group_asks(self):
         """Function returns a list of group ask prices"""

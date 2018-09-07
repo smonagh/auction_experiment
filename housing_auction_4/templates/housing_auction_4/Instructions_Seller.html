@@ -76,8 +76,8 @@ The earnings in each round equal to the money you received in exchange for
 
 <p>Then, in the trading stage, the buyers will bid for the widgets. As a seller, you will not
   actively participate in this stage.
-   The buyers with the highest bid will purchase your widget, as long as that bid
-    exceeds the minimum price that you posted in the first stage. When buyers are
+   The buyers with the highest bid will purchase your widget. Buyers are only allowed to make bids that
+    exceed the minimum price that you posted in the first stage. When buyers are
      bidding, you will see a table with information about
       the widgets:</p>
 
@@ -85,21 +85,25 @@ The earnings in each round equal to the money you received in exchange for
   <table>
     <tr>
       <th><center>Widget</center> </th>
+      <th><center>Your Value</center></th>
       <th><center>Minimum Price</center></th>
       <th><center>Standing Bid</center></th>
     </tr>
     <tr>
       <td>Widget 1</td>
+      <td>7</td>
       <td>5</td>
       <td>2</td>
     </tr>
     <tr>
       <td>Widget 2</td>
+      <td>1</td>
       <td>3</td>
       <td>0</td>
     </tr>
     <tr>
       <td>Widget 3</td>
+      <td>9</td>
       <td>4</td>
       <td>4</td>
     </tr>
@@ -112,45 +116,46 @@ The earnings in each round equal to the money you received in exchange for
    that only one round will be randomly chosen to be
     paid at the end of the experiment.</p>
 
-{% elif subsession.treatment == 'sellers_bid' %}
+{% else %}
 <h2> Trading </h2>
 
-<p>In each round, the buyers will bid for the widgets. As a seller, you can also make bids, but only for your own widget.
-   The buyers with the highest bid will purchase your widget. If the highest bidder is you, you will not make
+<p>In each round, the buyers and sellers will try to trade widgets. Buyers will post bids, while sellers will post asks - minimum price at which they agree to sell.
+    As a seller you can post (and revise) the ask for your own (and only your own) widget.
+   The buyers with the highest bid will purchase your widget as long as that bid exceeds your ask. If there is no bid that exceeds your ask, you will not make
     a transaction and your earnings for the round will be zero.
-    When buyers are bidding, you will see a table with information about
+    While the trading continues, you will see a table with information about
       the widgets:</p>
 
 <div>
   <table>
     <tr>
       <th><center>Widget</center> </th>
-      <th><center>Minimum Price</center></th>
-      <th><center>Value</center></th>
+      <th><center>Your Value</center></th>
+      <th><center>Standing Ask</center></th>
       <th><center>Standing Bid</center></th>
       <th><center>Enter Bid</center></th>
     </tr>
     <tr>
       <td>Widget 1</td>
-      <td>5</td>
       <td>7</td>
+      <td>5</td>
       <td>2</td>
       <td>
     </tr>
     <tr>
       <td>Widget 2</td>
-      <td>3</td>
       <td>1</td>
+      <td>3</td>
       <td>0</td>
-      <td><input type="number" placeholder="Enter Bid">
+      <td><input type="number" placeholder="Enter Ask">
         <br>
         <input class="btn btn-large btn-primary next-button" type="reset"
-        value=" Bid " disabled>
+        value=" Ask " disabled>
     </tr>
     <tr>
       <td>Widget 3</td>
-      <td>4</td>
       <td>9</td>
+      <td>4</td>
       <td>4</td>
       <td>
     </tr>
@@ -159,13 +164,12 @@ The earnings in each round equal to the money you received in exchange for
 
 </div>
 
-    <p>You can submit <b>integer</b> bids for your widget or wait for trading to end.
-    <p>If at any time you have the highest bid for a widget,
-       this will be noted on the top of your screen.  </p>
-
-  <p>
-    An important rule is that your bid must be higher than the currently highest bid.
-  </p>
+    <p>At any point you can submit <b>integer</b> ask for your widget or wait for trading to end.
+   <p>There are two important rules for setting an ask:</p>
+  <ol>
+    <li> If you submit a new ask, it has to be lower than before. </li>
+    <li> You may not submit an ask that is lower than your value for the widget. </li>
+  </ol>
 
     <p> Trading ends when there is no active bidding for 50 seconds.
   At the end of each round you will be told your earnings for that round. However, remember
@@ -194,12 +198,12 @@ The earnings in each round equal to the money you received in exchange for
      <li> Today’s experiment will include {{Constants.num_rounds}} rounds; </li>
        {% if subsession.treatment == 'minimum_price' %}
      <li> Your value for your widget will always be the same, but minimum prices and bids may change between rounds.</li>
-       {% elif subsession.treatment == 'sellers_bid' %}
-     <li> Your value for your widget will always be the same, but bids may change between rounds.</li>
+       {% else %}
+     <li> Your value for your widget will always be the same, but bids and asks may change between rounds.</li>
        {% endif %}
    </ul>
 
-<button class="btn btn-primary" type="submit">Finished Reading Instructions</button
+<button class="btn btn-primary" type="submit">Finished Reading Instructions</button>
 </div>
 
 {% endblock %}

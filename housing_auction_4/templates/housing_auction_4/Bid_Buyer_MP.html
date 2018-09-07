@@ -37,9 +37,7 @@
         <tr id="row_{{forloop.counter}}">
             <td id="object_{{forloop.counter}}">{{object}}</td>
             <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
-            {% if player_type == "buyer" %}
             <td id="reservation_{{forloop.counter}}">{{res}}</td>
-            {% endif %}
             <td id="current_bid_{{forloop.counter}}">{{bid}}</td>
             <td  id="enter_bid_{{forloop.counter}}">
                 <input type="number" placeholder="Enter Bid" id="input_{{forloop.counter}}">

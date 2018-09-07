@@ -47,6 +47,7 @@ def ws_message(message, group_name):
             save_auction(jsonmessage,mygroup,0)
             my_dict = update_price(jsonmessage,mygroup)
             print("[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: bid made: "+ str(my_dict))
+            mygroup.bidding_log = mygroup.bidding_log +  "[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: bid made: "+ str(my_dict)
             mygroup.save()
             for player in mygroup.get_players():
                 #print(player)
@@ -65,6 +66,7 @@ def ws_message(message, group_name):
         save_auction(jsonmessage,mygroup,0)
         my_dict = update_price(jsonmessage,mygroup)
         print("[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: ask made: "+ str(my_dict))
+        mygroup.bidding_log = mygroup.bidding_log + "[auction][" + str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: ask made: " + str(my_dict)
         mygroup.save()
         for player in mygroup.get_players():
             #print(player)
@@ -112,19 +114,34 @@ def save_auction(message,group,time_left):
 
 def update_price(message,group):
     """Update group bid entry in database"""
-    # Get object id from message
-    object_id = message['vars']['object_id']
-    bids_list = literal_eval(group.group_bids)
-    # Change value in bids list to reflect new highest bid
-    bids_list[object_id - 1] = message['vars']['bid']
-    # Update value in database
-    group.group_bids = str(bids_list)
-    return_dict = {}
-    return_dict['highest_bid'] = 'False'
-    return_dict['bid'] = bids_list[object_id - 1]
-    return_dict['bidder_id'] = message['vars']['player_id']
-    return_dict['budget'] = group.get_player_budget(message['vars']['id_in_group'])
-    return_dict['object_id'] = object_id
+    if message['identifier'] == 'bid':
+        # Get object id from message
+        object_id = message['vars']['object_id']
+        bids_list = literal_eval(group.group_bids)
+        # Change value in bids list to reflect new highest bid
+        bids_list[object_id - 1] = message['vars']['bid']
+        # Update value in database
+        group.group_bids = str(bids_list)
+        return_dict = {}
+        return_dict['highest_bid'] = 'False'
+        return_dict['bid'] = bids_list[object_id - 1]
+        return_dict['bidder_id'] = message['vars']['player_id']
+        return_dict['budget'] = group.get_player_budget(message['vars']['id_in_group'])
+        return_dict['object_id'] = object_id
+    else:
+        # Get object id from message
+        object_id = message['vars']['object_id']
+        asks_list = literal_eval(group.group_asks)
+        # Change value in asks list to reflect new highest ask
+        asks_list[object_id - 1] = message['vars']['ask_price']
+        # Update value in database
+        group.group_asks = str(asks_list)
+        return_dict = {}
+        return_dict['highest_bid'] = 'False'
+        return_dict['ask_price'] = asks_list[object_id - 1]
+        return_dict['bidder_id'] = message['vars']['player_id']
+        return_dict['budget'] = group.get_player_budget(message['vars']['id_in_group'])
+        return_dict['object_id'] = object_id
     # return_dict['is_ask'] = message['vars']['is_ask']
     return return_dict
 

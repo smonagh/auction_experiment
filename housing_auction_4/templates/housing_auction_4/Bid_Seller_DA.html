@@ -6,12 +6,6 @@
 
   <h3> Please submit a new ask or wait for buyers to finish bidding </h3>
 
- {% for i in object_list %}
-  <h5 id="highest_bid_{{forloop.counter}}"  style="white-space:nowrap; display: none;">
-    You have a bidder for {{i}} (your widget) with the bid of <div id="highest_bid_amount_{{forloop.counter}}"
-    style="display:inline; text-align:right;"></div>
-  </h5>
-{% endfor %}
 <!-- Hidden text indicating remaining time until round ends-->
 <h5 id="TimerContainer"  style="white-space:nowrap; display: none;">
     This round will end <span style="font-weight:bold; color:red;" id="TimerText">in about 10 second(s)</span> if no successful bids are made.
@@ -27,7 +21,6 @@
         <th><center>Your Value</center></th>
         <th><center>Standing Ask</center></th>
         <th><center>Standing Bid</center></th>
-        <th><center>Current Price</center></th>
         <th><center>Enter Ask</center></th>
     </tr>
 
@@ -35,9 +28,12 @@
         <tr id="row_{{forloop.counter}}">
             <td id="object_{{forloop.counter}}">{{object}}</td>
             <td id="reservation_{{forloop.counter}}">{{res}}</td>
+            {% if ask > 0 %}
             <td id="current_ask_{{forloop.counter}}">{{ask}}</td>
+            {% else %}
+            <td id="current_ask_{{forloop.counter}}">-</td>
+            {% endif %}
             <td id="current_bid_{{forloop.counter}}">{{bid}}</td>
-            <td id="current_price_{{forloop.counter}}">{{price}}</td>
             <td  id="enter_ask_{{forloop.counter}}">
                 {% if res > 0 %}
                 <input type="number" placeholder="Enter Ask" id="input_{{forloop.counter}}">
@@ -50,7 +46,7 @@
                        class="btn  btn-large btn-primary next-button"
                        onclick='sendmessage("input_{{forloop.counter}}",
                        {{forloop.counter}},current_bid_{{forloop.counter}}.innerHTML,
-                       {{forloop.counter}},current_ask_{{forloop.counter}}.innerHTML,
+                       current_ask_{{forloop.counter}}.innerHTML,
                        reservation_{{forloop.counter}}.innerHTML)'
                        type="reset" value="Ask">
                 {% endif %}
