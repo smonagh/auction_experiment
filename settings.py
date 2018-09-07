@@ -151,6 +151,11 @@ ROOMS = [
         'display_name': 'Econ 831 class',
         'participant_label_file': 'econ831.txt',
     },
+    {
+        'name': 'testfest',
+        'display_name': 'Test Fest Rm 5025',
+        'participant_label_file': 'numbers.txt',
+    },
 ]
 
 # anything you put after the below line will override
