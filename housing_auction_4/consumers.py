@@ -30,7 +30,10 @@ def ws_message(message, group_name):
         highest_bidder = check_highest_bidder(mygroup,jsonmessage)
 
         # Check that bid is above ask (important for DA treatment concurrency checks)
-        bid_above_ask = check_bid_above_ask(mygroup,jsonmessage)
+        if mygroup.subsession.treatment == 'double_auction':
+            bid_above_ask = check_bid_above_ask(mygroup,jsonmessage)
+        else:
+            bid_above_ask = True
         if bid_above_ask:
             # If he is highest bidder send message to throw alert window
             if highest_bidder:
