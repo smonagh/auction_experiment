@@ -28,34 +28,38 @@ def ws_message(message, group_name):
     elif jsonmessage['identifier'] == 'bid':
         # Check to make sure bid is within the budget constraint
         highest_bidder = check_highest_bidder(mygroup,jsonmessage)
-        # If he is highest bidder send message to throw alert window
-        if highest_bidder:
-            my_dict = {'highest_bid':True,
-            'bidder_id':jsonmessage['vars']['player_id'],
-            'bid_status':'not done',
-            }
-            textforgroup = json.dumps(my_dict)
-            Group(group_name).send({
-                "text": textforgroup,
-            })
-        else:  # If not, send message to update information on players screen
-            if Constants.end_on_timer:
-                for i in mygroup.get_players():
-                    i.fin_bid = False
-                    i.save()
-            # Send messages to players
-            save_auction(jsonmessage,mygroup,0)
-            my_dict = update_price(jsonmessage,mygroup)
-            print("[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: bid made: "+ str(my_dict))
-            mygroup.bidding_log = mygroup.bidding_log +  "[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: bid made: "+ str(my_dict)
-            mygroup.save()
-            for player in mygroup.get_players():
-                #print(player)
-                player.save()
-            textforgroup = json.dumps(my_dict)
-            Group(group_name).send({
+
+        # Check that bid is above ask (important for DA treatment concurrency checks)
+        bid_above_ask = check_bid_above_ask(mygroup,jsonmessage)
+        if bid_above_ask:
+            # If he is highest bidder send message to throw alert window
+            if highest_bidder:
+                my_dict = {'highest_bid':True,
+                'bidder_id':jsonmessage['vars']['player_id'],
+                'bid_status':'not done',
+                }
+                textforgroup = json.dumps(my_dict)
+                Group(group_name).send({
                     "text": textforgroup,
-                    })
+                })
+            else:  # If not, send message to update information on players screen
+                if Constants.end_on_timer:
+                    for i in mygroup.get_players():
+                        i.fin_bid = False
+                        i.save()
+                # Send messages to players
+                save_auction(jsonmessage,mygroup,0)
+                my_dict = update_price(jsonmessage,mygroup)
+                print("[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: bid made: "+ str(my_dict))
+                mygroup.bidding_log = mygroup.bidding_log +  "[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: bid made: "+ str(my_dict)
+                mygroup.save()
+                for player in mygroup.get_players():
+                    #print(player)
+                    player.save()
+                textforgroup = json.dumps(my_dict)
+                Group(group_name).send({
+                        "text": textforgroup,
+                        })
     elif jsonmessage['identifier'] == 'ask':
         # Check to make sure bid is within the budget constraint
         if Constants.end_on_timer:
@@ -144,6 +148,23 @@ def update_price(message,group):
         return_dict['object_id'] = object_id
     # return_dict['is_ask'] = message['vars']['is_ask']
     return return_dict
+
+def check_bid_above_ask(group,message):
+    object_id = message['vars']['object_id']
+    check = False
+
+    # Connect to auction base and find the current max bids for objects
+    cursor = connection.cursor()
+    cursor.execute("""SELECT ask_price FROM
+                        housing_auction_4_auction WHERE round_number = {} AND
+                        group_id = {} AND subsession_id = {} AND object_id = {}
+                          ;""".format(group.round_number, group.id_in_subsession,
+                                      group.subsession_id,object_id))
+    objects_returned = cursor.fetchall()
+    if objects_returned[0][0]>0:
+        check = True
+
+    return check
 
 def check_highest_bidder(group,message):
     """

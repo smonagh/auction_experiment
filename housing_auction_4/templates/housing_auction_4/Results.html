@@ -48,7 +48,7 @@
 
 {% for object,ask,bid,reservation,object_traded,object_traded_to_seller in result_zip %}
         <tr id="row_{{forloop.counter}}">
-            {% if player_type == "buyer" %}
+            {% if player_type == "seller" %}
                 {% if  reservation > 0 %}
                     <td id="object_{{forloop.counter}}">Your Widget: {{object}}</td>
                     <td id="object_{{forloop.counter}}">{{reservation}}</td>

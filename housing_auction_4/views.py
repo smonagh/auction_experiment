@@ -179,7 +179,7 @@ class ResultsWaitPage(WaitPage):
 class Results(Page):
     """Results shown after each period"""
     def vars_for_template(self):
-        object_list = ['Object {}'.format(i) for i in range(1,
+        object_list = ['Widget {}'.format(i) for i in range(1,
                                                     Constants.group_split + 1)]
         ask_list = literal_eval(self.group.group_asks)
         bid_list = literal_eval(self.group.group_bids)
