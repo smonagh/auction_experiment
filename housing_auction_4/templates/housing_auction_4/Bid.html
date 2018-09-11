@@ -166,12 +166,12 @@ sendmessage = function(val,id,current_bid,ask_price,reservation){
              displayError('You can not enter a bid that is greater than your reservation value of '+String(reservation)+' for the widget');
         //Prevent players from submitting a bid that is not improving
         }else if (ask_price == 0){
-             displayError('There is no ask posted by the seller of this widget yet');
+             displayError('There is no minimum price posted by the seller of this widget yet');
         }else if (my_bid < ask_price){
              displayError('You can not enter a bid that is lower than the minimum price of '+String(ask_price)+' for the widget');
         //Prevent players from submitting a bid that is not improving
         }else if (my_bid <= current_bid) {
-            displayError('You have entered bid of '+String(my_bid)+' which is not greater than the standing bid');
+            displayError('You have entered bid of '+String(my_bid)+' which is not greater than the outstanding bid');
         //Return data to backend if none of the previous errors were thrown
         }else if (my_bid > current_bid){
             var msg = {
@@ -199,7 +199,7 @@ sendmessage = function(val,id,current_bid,ask_price,reservation){
             //Prevent players from submitting a bid that is not improving
             //}else if (my_bid <= current_bid) {
             if (my_bid <= current_bid) {
-                displayError('You have entered a bid of '+String(my_bid)+' which is not greater than the standing bid');
+                displayError('You have entered a bid of '+String(my_bid)+' which is not greater than the outstanding bid');
             //Return data to backend if none of the previous errors were thrown
             }else if (my_bid > current_bid){
 
@@ -222,10 +222,10 @@ sendmessage = function(val,id,current_bid,ask_price,reservation){
         } else {
             // double auction
             if (my_bid > ask_price && ask_price >0){
-                  displayError('You can not raise the ask');
+                  displayError('You can not raise the minimum price');
             //Prevent players from submitting a bid that is not improving
             } else if (my_bid < reservation) {
-                displayError('You have entered an ask of '+String(my_bid)+' which is lower than your reservation');
+                displayError('You have entered a minimum price of '+String(my_bid)+' which is lower than your reservation');
             //Return data to backend if none of the previous errors were thrown
             }else if (my_bid>0){
                 var msg = {

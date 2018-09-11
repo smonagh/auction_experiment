@@ -35,19 +35,31 @@
 
 <table style="width:100%" border="spacing:10px" >
     <tr>
-    <th><center>Widget</center></th>
+        <th><center>Widget</center></th>
+        <th><center>Your value</center></th>
         {% if subsession.treatment == 'minimum_price' %}
         <th><center>Minimum Price</center></th>
         {% else %}
-        <th><center>Standing Ask</center></th>
+        <th><center>Minimum Price</center></th>
         {% endif %}
         <th><center>Highest Bid</center></th>
         <th><center>Was Widget Traded?</center></th>
     </tr>
 
-{% for object,ask,bid,object_traded,object_traded_to_seller in result_zip %}
+{% for object,ask,bid,reservation,object_traded,object_traded_to_seller in result_zip %}
         <tr id="row_{{forloop.counter}}">
-            <td id="object_{{forloop.counter}}">{{object}}</td>
+            {% if player_type == "buyer" %}
+                {% if  reservation > 0 %}
+                    <td id="object_{{forloop.counter}}">Your Widget: {{object}}</td>
+                    <td id="object_{{forloop.counter}}">{{reservation}}</td>
+                {% else %}
+                    <td id="object_{{forloop.counter}}">{{object}}</td>
+                    <td id="object_{{forloop.counter}}">{{reservation}}</td>
+                {% endif %}
+            {% else %}
+                    <td id="object_{{forloop.counter}}">{{object}}</td>
+                    <td id="object_{{forloop.counter}}">{{reservation}}</td>
+            {% endif %}
             {% if subsession.treatment == 'minimum_price' %}
             <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
             {% elif ask > 0 %}

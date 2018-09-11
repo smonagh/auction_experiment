@@ -185,7 +185,8 @@ class Results(Page):
         bid_list = literal_eval(self.group.group_bids)
         was_traded = literal_eval(self.group.was_traded)
         was_traded_to_seller = literal_eval(self.group.was_traded_to_seller)
-        result_zip = zip(object_list,ask_list,bid_list,was_traded,was_traded_to_seller)
+        res_list = literal_eval(self.player.player_reservations)
+        result_zip = zip(object_list,ask_list,bid_list,res_list,was_traded,was_traded_to_seller)
         return{'player_type':self.player.player_type,'result_zip':result_zip}
 
     def before_next_page(self):

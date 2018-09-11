@@ -291,8 +291,7 @@ class Player(BasePlayer):
     Player class to record unique data associated with each player
     """
     ask_price = models.IntegerField(initial=Constants.seller_res_min,
-    min= 1,max = 800,
-    widget=widgets.SliderInput)
+    min= 1,max = 800, widget=widgets.SliderInput)
     is_winner = models.BooleanField(initial=False)
     traded_with_himself = models.BooleanField(initial=False)
     assigned_object = models.IntegerField(initial=-1)

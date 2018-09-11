@@ -11,7 +11,7 @@
  The instructions explain how you can make decisions and earn more money,
   so please read carefully. Talking with other participants or use of cell
    phones is <b>not</b> permitted during the course of this experiment.
-    If you have questions at any point, raise your hand and an experimenter will
+    If you have questions at any point, raise your hand and an experimenter
      will come to assist you.</p>
 
 <h2> Experimental Points </h2>
@@ -30,14 +30,14 @@
 
 <p>In this experiment you are a <b>seller</b>.
 
-<p>There will be multiple buyers and other sellers in your group. The group will
+<p>There will be 3 buyers and 2 other sellers in your group. The group will
  remain together and the roles will remain the same during the entire experiment.</p>
 
 <h2> Your widget </h2>
 
 <p>You will be assigned one widget in each round of the experiment and given the opportunity to
  sell it to a buyer for E$. Today’s experiment will include {{Constants.num_rounds}} identical rounds.
-  The widget assigned to you has a value to you and to other participants.</p>
+  The widget assigned to you has a value to you and to other participants. Each seller has only one widget. </p>
 <p>
  The value for the widget may not be the same for different buyers. Likewise, each seller has a different
     value for their own widget. The values will remain constant across rounds throughout the experiment.</p>
@@ -53,7 +53,7 @@ The earnings in each round equal to the money you received in exchange for
  your earn 4 E$ for that round. If you do not sell the widget,
   your earnings for the round will be 0 E$.</p>
 
-<p>Note, however, that only one round will be randomly chosen at the end of the experiment to be payed in US$.</p>
+<p>Note, however, that only one round will be randomly chosen at the end of the experiment to be paid in US$.</p>
 
 {% if subsession.treatment == 'minimum_price' %}
 <h2> Trading </h2>
@@ -65,7 +65,7 @@ The earnings in each round equal to the money you received in exchange for
   1 and 800 on a slider.  When setting your desired price, you will
    see the following slider,</p>
 
-{% formfield player.ask_price with label="Please submit the minimum price " %}
+{% formfield player.ask_price with label="Please submit the minimum price (click on the slider and use the keyboard arrow keys to adjust precisely) " %}
 
 <p>Once you have set the minimum price that you like, click on the
  <b>Next</b> button to submit. Note that the minimum price that you set
@@ -87,7 +87,7 @@ The earnings in each round equal to the money you received in exchange for
       <th><center>Widget</center> </th>
       <th><center>Your Value</center></th>
       <th><center>Minimum Price</center></th>
-      <th><center>Standing Bid</center></th>
+      <th><center>Outstanding Bid</center></th>
     </tr>
     <tr>
       <td>Widget 1</td>
@@ -119,8 +119,8 @@ The earnings in each round equal to the money you received in exchange for
 {% else %}
 <h2> Trading </h2>
 
-<p>In each round, the buyers and sellers will try to trade widgets. Buyers will post bids, while sellers will post asks - minimum price at which they agree to sell.
-    As a seller you can post (and revise) the ask for your own (and only your own) widget.
+<p>In each round, the buyers and sellers will try to trade widgets. Buyers will post bids, while each seller will post and revise the minimum price at which they agree to sell.
+    As a seller you can post (and revise) the minimum price for your own (and only your own) widget.
    The buyers with the highest bid will purchase your widget as long as that bid exceeds your ask. If there is no bid that exceeds your ask, you will not make
     a transaction and your earnings for the round will be zero.
     While the trading continues, you will see a table with information about
@@ -131,9 +131,9 @@ The earnings in each round equal to the money you received in exchange for
     <tr>
       <th><center>Widget</center> </th>
       <th><center>Your Value</center></th>
-      <th><center>Standing Ask</center></th>
-      <th><center>Standing Bid</center></th>
-      <th><center>Enter Bid</center></th>
+      <th><center>Current Minimum Price</center></th>
+      <th><center>Outstanding Bid</center></th>
+      <th><center>Enter Minimum Price</center></th>
     </tr>
     <tr>
       <td>Widget 1</td>
@@ -147,10 +147,10 @@ The earnings in each round equal to the money you received in exchange for
       <td>1</td>
       <td>3</td>
       <td>0</td>
-      <td><input type="number" placeholder="Enter Ask">
+      <td><input type="number" placeholder="Enter Minimum Price">
         <br>
         <input class="btn btn-large btn-primary next-button" type="reset"
-        value=" Ask " disabled>
+        value=" Submit " disabled>
     </tr>
     <tr>
       <td>Widget 3</td>
@@ -164,7 +164,7 @@ The earnings in each round equal to the money you received in exchange for
 
 </div>
 
-    <p>At any point you can submit <b>integer</b> ask for your widget or wait for trading to end.
+    <p>At any point you can submit an <b>integer</b> ask for your widget or wait for trading to end.
    <p>There are two important rules for setting an ask:</p>
   <ol>
     <li> If you submit a new ask, it has to be lower than before. </li>
@@ -193,7 +193,7 @@ The earnings in each round equal to the money you received in exchange for
      <li> You will only have one widget to trade per round;</li>
      <li> Each buyer may only buy one widget per round;</li>
      <li> Both buyers and sellers may have different values of the same widget;</li>
-     <li> Only one round will be chosen to be payed in US$; </li>
+     <li> Only one round will be chosen to be paid in US$; </li>
      <li> Bidding for the round stops after 50 seconds of inactivity; </li>
      <li> Today’s experiment will include {{Constants.num_rounds}} rounds; </li>
        {% if subsession.treatment == 'minimum_price' %}

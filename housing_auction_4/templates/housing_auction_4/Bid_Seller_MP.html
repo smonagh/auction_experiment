@@ -10,13 +10,18 @@
 <th>Widget</th>
 <th><center>Your Value</center></th>
 <th>Minimum Price</th>
-<th>Standing Bid</th>
+<th>Outstanding Bid</th>
 </tr>
 
 {% for object,ask,res,bid in auction_zip %}
     <tr id="row_{{forloop.counter}}">
-        <td id="object_{{forloop.counter}}">{{object}}</td>
+        {% if res > 0 %}
+        <td id="object_{{forloop.counter}}">Your widget: {{object}}</td>
         <td id="reservation_{{forloop.counter}}">{{res}}</td>
+        {% else %}
+        <td id="object_{{forloop.counter}}">{{object}}</td>
+        <td id="reservation_{{forloop.counter}}">-</td>
+        {% endif %}
         <td id="ask_price_{{forloop.counter}}">{{ask}}</td>
         <td id="current_bid_{{forloop.counter}}">{{bid}}</td>
     </tr>
