@@ -27,9 +27,9 @@ class Constants(BaseConstants):
     buyer_res_max = 10
     end_on_timer = 1
     players_per_group = 6
-    periods_per_treatment = 4 ###
+    periods_per_treatment = 20 ###
     num_rounds = periods_per_treatment
-    conversion_rate = 10
+    conversion_rate = 3
     group_split = int(players_per_group / 2)
 
 
