@@ -7,6 +7,7 @@ import numpy as np
 from ast import literal_eval
 import itertools
 import random
+from math import ceil
 
 author = 'Steven Monaghan'
 
@@ -27,7 +28,7 @@ class Constants(BaseConstants):
     buyer_res_max = 10
     end_on_timer = 1
     players_per_group = 6
-    periods_per_treatment = 20 ###
+    periods_per_treatment = 1 ###
     num_rounds = periods_per_treatment
     conversion_rate = 3
     group_split = int(players_per_group / 2)
@@ -345,4 +346,4 @@ class Player(BasePlayer):
         self.payout_round = random.randint(1,Constants.num_rounds)
         self.final_payout = self.in_round(self.payout_round).payout
         self.final_us_payout = self.final_payout/Constants.conversion_rate
-        self.payoff = self.final_payout/Constants.conversion_rate
+        self.payoff = (ceil(self.final_us_payout*4)/4)*100
