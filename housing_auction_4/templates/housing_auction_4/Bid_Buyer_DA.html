@@ -36,7 +36,7 @@
 
     {% for seller_name,object,ask,res,bid in auction_zip %}
         <tr id="row_{{forloop.counter}}">
-            <td id="seller_name_{{forloop.counter}}">{{object}}</td>
+            <td id="seller_name_{{forloop.counter}}">{{seller_name}}</td>
             <td id="object_{{forloop.counter}}">{{object}}</td>
             <td id="reservation_{{forloop.counter}}">{{res}}</td>
             {% if ask > 0 %}

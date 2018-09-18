@@ -24,10 +24,10 @@
         <th><center>Enter Minimum Price</center></th>
     </tr>
 
-    {% for object,ask,res,bid in auction_zip %}
+    {% for seller_name,object,ask,res,bid in auction_zip %}
         <tr id="row_{{forloop.counter}}">
             {% if res > 0 %}
-            <td id="object_{{forloop.counter}}">Your widget: {{object}}</td>
+            <td id="object_{{forloop.counter}}">(Your) {{object}}</td>
             <td id="reservation_{{forloop.counter}}">{{res}}</td>
             {% else %}
             <td id="object_{{forloop.counter}}">{{object}}</td>
