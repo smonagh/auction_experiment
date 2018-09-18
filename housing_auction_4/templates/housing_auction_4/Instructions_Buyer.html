@@ -8,7 +8,7 @@
  The instructions explain how you can make decisions and earn more money,
   so please read carefully. Talking with other participants or use of cell
    phones is <b>not</b> permitted during the course of this experiment.
-    If you have questions at any point, raise your hand and an experimenter
+    If you have questions at any point, please, raise your hand and an experimenter
      will come to assist you.</p>
 
 <h2> Experimental Points </h2>
@@ -23,36 +23,22 @@
 <p>You will be paired randomly with a group of other participants.
   Your identity in this group will remain anonymous, and likewise,
    the identities of all other group members will remain
-    anonymous as well. </p>
+    anonymous. </p>
 
 <p>In this experiment you are a <b>buyer</b>.
 
-<p>There will be 3 sellers and 2 other buyers in your group. The group will
+<p>Your group will consist of 3 sellers and 3 buyers. You are one of the three buyers. Your group will
  remain together and the roles will remain the same during the entire experiment.</p>
 
 <h2> Widgets </h2>
 
-<p>You will have the opportunity to buy one widget from a seller in each round.
-  Today’s experiment will include {{Constants.num_rounds}} identical rounds.</p>
+<p>In each round you will have the opportunity to buy one widget from a seller.
+  Today’s experiment will have {{Constants.num_rounds}} identical rounds.</p>
 
   <p> Each widget has a value to you. Each seller has one widget for sale.
-    The same widget may have a different value for its seller and different buyers.
-   Each buyer has different values for the widgets. Likewise, each seller has a different
-      value for their own widget. The values will remain constant across rounds throughout the experiment.</p>
-
-<h2> Earnings </h2>
-The earnings in each round equal to the total value
-     of the widget you bought minus your total payment (bid) for buying that
-      widget:</p>
-
-<p style="text-align:center;"> <b>Earnings = Widget's Value - Bid</b> </p>
-
-<p> For instance, if your value for a widget was 7 E$ and you bought
-   the widget with bid of 3 E$, then your earnings for that round will be 4 E$.
-   If you do not buy the widget, your earnings for the round will be 0 E$.
-</p>
-
-<p>Note, however, that only one round will be randomly chosen at the end of the experiment to be paid in US$.</p>
+    Each buyer has different values for the widgets. Likewise, each seller has a different
+      value for their own widget. Every buyer and seller will only see their own values for the widgets.
+      The values of widgets for buyers and sellers will remain the same across rounds throughout this experiment.</p>
 
 <h2> Trading </h2>
 
@@ -72,38 +58,42 @@ The earnings in each round equal to the total value
 <div>
   <table>
     <tr>
+      <th><center>Seller</center> </th>
       <th><center>Widget</center> </th>
       <th><center>Minimum Price</center></th>
-      <th><center>Value</center></th>
+      <th><center>Your Value</center></th>
       <th><center>Outstanding Bid</center></th>
-      <th><center>Enter Bid</center></th>
+      <th><center>Enter Your Bid</center></th>
     </tr>
     <tr>
+      <td>Seller 1</td>
       <td>Widget 1</td>
       <td>5</td>
       <td>7</td>
       <td>2</td>
-      <td><input type="number" placeholder="Enter Bid">
+      <td><input type="number" placeholder="Enter Your Bid">
         <br>
         <input class="btn btn-large btn-primary next-button" type="reset"
         value=" Bid " disabled>
     </tr>
     <tr>
+      <td>Seller 2</td>
       <td>Widget 2</td>
       <td>3</td>
       <td>1</td>
       <td>0</td>
-      <td><input type="number" placeholder="Enter Bid">
+      <td><input type="number" placeholder="Enter Your Bid">
         <br>
         <input class="btn btn-large btn-primary next-button" type="reset"
         value=" Bid " disabled>
     </tr>
     <tr>
+      <td>Seller 3</td>
       <td>Widget 3</td>
       <td>4</td>
       <td>9</td>
       <td>4</td>
-      <td><input type="number" placeholder="Enter Bid">
+      <td><input type="number" placeholder="Enter Your Bid">
         <br>
         <input class="btn btn-large btn-primary next-button" type="reset"
         value=" Bid " disabled>
@@ -112,11 +102,11 @@ The earnings in each round equal to the total value
 
 </div>
 
-    <p>You can submit <b>integer</b> bids for any of the widgets listed as long as your bid is at or above the minimum price.
+    <p>You can submit <b>whole number (integer)</b> bids for any of the widgets listed as long as your bid is at or above the minimum price.
  If you have the highest bid for the widget when the round ends,
    then you purchase this widget at a price equal to your bid. If you did not have
     the highest bid for any object at the end of the round,
-    then you do not buy anything and earn 0 E$.</p>
+    then you do not buy any windget and earn 0 E$.</p>
 
     <p>If at any time you have the highest bid for a widget,
        this will be noted on the top of your screen.  </p>
@@ -131,14 +121,13 @@ The earnings in each round equal to the total value
   <p>There are four important rules for bidding:</p>
   <ol>
     <li> Your bid must be higher than the currently highest bid; </li>
-    <li> Your bid must be higher than the current minimum price; </li>
+    <li> Your bid must be higher than the minimum price; </li>
     <li> You may not submit a bid that is higher than your value for the widget; </li>
     <li> You may not have the highest bid for more than one object at a time. </li>
   </ol>
 
- <p> Trading stage ends when there is no active bidding for 50 seconds. You will see an indicator after 20 seconds of inactivity.
-   At the end of each round you will be told your earnings for that round. However, remember
-    that only one round will be randomly chosen to be
+ <p> The second stage ends when there is no bidding activity for 50 seconds. You will see an indicator after 20 seconds of no bidding activity.
+   At the end of each round you will be told your earnings for that round. Only one round will be randomly chosen to be
      paid at the end of the experiment.</p>
 
     {% else %}
@@ -149,38 +138,42 @@ The earnings in each round equal to the total value
 <div>
   <table>
     <tr>
+        <th><center>Seller</center> </th>
       <th><center>Widget</center> </th>
       <th><center>Your Value</center></th>
       <th><center>Current Minimum Price</center></th>
       <th><center>Outstanding Bid</center></th>
-      <th><center>Enter Bid</center></th>
+      <th><center>Enter Your Bid</center></th>
     </tr>
     <tr>
+        <td>Seller 1</td>
       <td>Widget 1</td>
       <td>7</td>
       <td>5</td>
       <td>2</td>
-      <td><input type="number" placeholder="Enter Bid">
+      <td><input type="number" placeholder="Enter Your Bid">
         <br>
         <input class="btn btn-large btn-primary next-button" type="reset"
         value=" Bid " disabled>
     </tr>
     <tr>
+        <td>Seller 2</td>
       <td>Widget 2</td>
       <td>1</td>
       <td>3</td>
       <td>0</td>
-      <td><input type="number" placeholder="Enter Bid">
+      <td><input type="number" placeholder="Enter Your Bid">
         <br>
         <input class="btn btn-large btn-primary next-button" type="reset"
         value=" Bid " disabled>
     </tr>
     <tr>
+      <td>Seller 3</td>
       <td>Widget 3</td>
       <td>9</td>
       <td>4</td>
       <td>4</td>
-      <td><input type="number" placeholder="Enter Bid">
+      <td><input type="number" placeholder="Enter Your Bid">
         <br>
         <input class="btn btn-large btn-primary next-button" type="reset"
         value=" Bid " disabled>
@@ -191,13 +184,13 @@ The earnings in each round equal to the total value
 
   <p> At the same time sellers will be posting and revising the minimum price for their widgets - the minimum price at which they would sell their widget.</p>
 
-    <p>You can submit <b>integer</b> bids for any of the widgets listed, once the seller of that widget posts the minimum price. Your bid has to be at or above the minimum price.</p>
+    <p>You can submit <b>whole number (integer)</b> bids for any of the widgets listed, once the seller of that widget posts the minimum price. Your bid has to be at or above the minimum price.</p>
 
         <p>If you have the highest bid for the widget when the round ends,
    and this bid is higher than the minimum price posted by the seller for this
     widget, then you purchase this widget at a price equal to your bid. If you did not have
     the highest bid for any object at the end of the round,
-    then you do not buy anything and earn 0 E$.</p>
+    then you do not buy any widget and earn 0 E$.</p>
 
     <p>If at any time you have the highest bid for a widget,
        this will be noted on the top of your screen.  </p>
@@ -218,36 +211,50 @@ The earnings in each round equal to the total value
       <li> Sellers can only decrease their minimum prices.</li>
   </ol>
 
- <p> Trading stage ends when there is no active bidding for 50 seconds. You will see an indicator after 20 seconds of inactivity.
-   At the end of each round you will be told your earnings for that round. However, remember
-    that only one round will be randomly chosen to be
+ <p> Trading ends when there are no new bids or minimum prices for 50 seconds. You will see an indicator after 20 seconds of no bidding activity.
+   At the end of each round you will be told your earnings for that round. Only one round will be randomly chosen to be
      paid at the end of the experiment.</p>
 
     {% endif %}
+
+    <h2> Earnings </h2>
+The earnings in each round equal the total value
+     of the widget you bought minus your total payment (bid) for buying that
+      widget:</p>
+
+<p style="text-align:center;"> <b>Earnings = Widget's Value - Bid</b> </p>
+
+<p> For instance, if your value for a widget is 7 E$ and you bought
+   the widget with bid of 3 E$, then your earnings for that round will be 4 E$.
+   If you do not buy the widget, your earnings for the round will be 0 E$.
+</p>
+
+<p>Remember that only one round out of {{Constants.num_rounds}} will be randomly chosen at the end of the experiment, and you will be paid the amount earned in that round in US$.</p>
 
  <h2> End of Experiment </h2>
  <p> At the end of the experiment you will be taken to a screen that displays
   your E$ earnings in each round, the round that was randomly chosen as the
    payoff round, and the earnings from that round converted into US$. Please
     wait in your seat once you reach this screen. An experimenter will call
-     you in one at a time to be paid privately. When called, please take all
-      your belongings up since the experiment ends once you have received your
+     you one at a time to be paid privately. When called, please take all
+      belongings up since the experiment ends once you have received your
        payment.</p>
 
     <h2> Important points to remember </h2>
    <ul>
-     <li> You can not lose money by trading (you are prevented from bidding too high); </li>
-     <li> If you do not buy, you earn 0 E$; </li>
+     <li> You can not lose money by trading (the bidding system prevents you from bidding too high); </li>
+     <li> If you do not buy a widget, you earn 0 E$; </li>
      <li> Each buyer may only buy one widget per round;</li>
-     <li> Both buyers and sellers may have different values of the same widget;</li>
+     <li> Both buyers and sellers may have different values for the same widget;</li>
      <li> Only one round will be chosen to be paid in US$; </li>
-     <li> Bidding for the round stops after 50 seconds of inactivity; </li>
-     <li> Today’s experiment will include {{Constants.num_rounds}} rounds; </li>
        {% if subsession.treatment == 'minimum_price' %}
-     <li> Your value for your widget will always be the same, but minimum prices and bids may change between rounds.</li>
+     <li> Bidding for the round stops after 50 seconds with no bids submitted; </li>
        {% else %}
-     <li> Your value for your widget will always be the same, but bids and minimum prices may change between rounds.</li>
+       <li> Bidding for the round stops after 50 seconds with no new bids or minimum prices submitted; </li>
        {% endif %}
+     <li> Today’s experiment will include {{Constants.num_rounds}} rounds; </li>
+     <li> Your value for your widget will always be the same, but the minimum prices that sellers submit and the bids that buyers submit may change between rounds.</li>
+
    </ul>
 
   <button class="btn btn-primary" type="submit">Finished Reading Instructions</button>

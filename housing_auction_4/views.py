@@ -87,8 +87,10 @@ class Bid(Page):
         bid_list = literal_eval(self.group.group_bids)
         ask_list = literal_eval(self.group.group_asks)
         res_list = literal_eval(self.player.player_reservations)
+        seller_name = ['Seller {}'.format(i) for i in range(1,
+                                                    Constants.group_split + 1)]
         # Create a zip of all four lists
-        auction_zip = zip(object_list,ask_list,res_list,bid_list)
+        auction_zip = zip(seller_name,object_list,ask_list,res_list,bid_list)
         return {'player_type':self.player.player_type,
                 'auction_zip':auction_zip,
                 'object_list':object_list,

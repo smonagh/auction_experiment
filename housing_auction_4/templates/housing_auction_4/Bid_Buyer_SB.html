@@ -29,7 +29,7 @@
     <th><center>Widget</center></th>
         <th><center>Your Value</center></th>
         <th><center>Outstanding Bid</center></th>
-        <th><center>Enter Bid</center></th>
+        <th><center>Enter Your Bid</center></th>
     </tr>
 
     {% for object,ask,res,bid in auction_zip %}
@@ -40,7 +40,7 @@
             {% endif %}
             <td id="current_bid_{{forloop.counter}}">{{bid}}</td>
             <td  id="enter_bid_{{forloop.counter}}">
-                <input type="number" placeholder="Enter Bid" id="input_{{forloop.counter}}">
+                <input type="number" placeholder="Enter Your Bid" id="input_{{forloop.counter}}">
                 <br>
                 <!-- Input button returns the object_id, the current standing bid,
                      the ask price for the object, and the new input bid to

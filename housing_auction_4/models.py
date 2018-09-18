@@ -30,7 +30,7 @@ class Constants(BaseConstants):
     players_per_group = 6
     periods_per_treatment = 1 ###
     num_rounds = periods_per_treatment
-    conversion_rate = 3
+    conversion_rate = 5
     group_split = int(players_per_group / 2)
 
 

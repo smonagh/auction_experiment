@@ -50,7 +50,7 @@
         <tr id="row_{{forloop.counter}}">
             {% if player_type == "seller" %}
                 {% if  reservation > 0 %}
-                    <td id="object_{{forloop.counter}}">Your Widget: {{object}}</td>
+                    <td id="object_{{forloop.counter}}">(Your) {{object}}</td>
                     <td id="object_{{forloop.counter}}">{{reservation}}</td>
                 {% else %}
                     <td id="object_{{forloop.counter}}">{{object}}</td>
