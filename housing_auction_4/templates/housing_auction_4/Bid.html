@@ -46,19 +46,19 @@ function displayError(err){
 
 //Timeout function. Alert stops the counting, therefore errors are inline instead of alerts.
 var timeoutHandle = setInterval(TimeoutTimer, 1000);
-var timeout=50;
+var timeout={{timeout_duration}};
 function TimeoutTimer(){
     timeout=timeout-1; //decrement timer
-    if (timeout>0 && timeout<=30){
-        //Only show timer when <=30 seconds remain
+    if (timeout>0 && timeout<=({{timeout_duration}}-20)){
+        //Only show timer when <=({{timeout_duration}}-20) seconds remain
         if (timeout>1){
             $('#TimerText').text('in about '+String(timeout)+ ' second(s)');
         }else{
             $('#TimerText').text('now');
         }
         $('#TimerContainer').show();
-    } else if (timeout>30){
-        //Hide timer when >30 seconds remain
+    } else if (timeout>({{timeout_duration}}-20)){
+        //Hide timer when >{{timeout_duration}}-20 seconds remain
         $('#TimerContainer').hide();
     } else if (timeout>-100){
         //Send message that timeout has ended.
@@ -131,7 +131,7 @@ socket.onmessage = function (event) {
 
         // Reset timeout if this was a valid bid
         if (!obj.hasOwnProperty('bid_status')){
-            timeout=50;
+            timeout=({{timeout_duration}});
             // Update text to reflect new highest bid
             if (obj.hasOwnProperty('ask_price')){
                 is_ask=1;

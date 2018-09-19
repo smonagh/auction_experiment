@@ -19,7 +19,7 @@ class Instructions_Seller(Page):
     # run.
     def vars_for_template(self):
         return {'treatment_string':self.session.config['treatment_string'],
-                'player_type':self.player.player_type}
+                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration']}
 
     form_model = models.Player
     form_fields = ['ask_price']
@@ -37,7 +37,7 @@ class Instructions_Buyer(Page):
     # run.
     def vars_for_template(self):
         return {'treatment_string':self.subsession.treatment,
-                'player_type':self.player.player_type}
+                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration']}
 
 class PreWaitPage(WaitPage):
 
@@ -96,7 +96,8 @@ class Bid(Page):
                 'object_list':object_list,
                 'time_left':self.group.time_elapsed,
                 'treatment':self.subsession.treatment,
-                'end_on_timer':Constants.end_on_timer}
+                'end_on_timer':Constants.end_on_timer,
+                'timeout_duration': self.session.config['timeout_duration']}
 
 
 class Bid_Buyer_MP(Bid):

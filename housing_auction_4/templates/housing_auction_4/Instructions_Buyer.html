@@ -126,7 +126,7 @@
     <li> You may not have the highest bid for more than one object at a time. </li>
   </ol>
 
- <p> The second stage ends when there is no bidding activity for 50 seconds. You will see an indicator after 20 seconds of no bidding activity.
+ <p> The second stage ends when there is no bidding activity for {{timeout_duration}} seconds. You will see an indicator after 20 seconds of no bidding activity.
    At the end of each round you will be told your earnings for that round. Only one round will be randomly chosen to be
      paid at the end of the experiment.</p>
 
@@ -211,7 +211,7 @@
       <li> Sellers can only decrease their minimum prices.</li>
   </ol>
 
- <p> Trading ends when there are no new bids or minimum prices for 50 seconds. You will see an indicator after 20 seconds of no bidding activity.
+ <p> Trading ends when there are no new bids or minimum prices for {{timeout_duration}} seconds. You will see an indicator after 20 seconds of no bidding activity.
    At the end of each round you will be told your earnings for that round. Only one round will be randomly chosen to be
      paid at the end of the experiment.</p>
 
@@ -248,9 +248,9 @@ The earnings in each round equal the total value
      <li> Both buyers and sellers may have different values for the same widget;</li>
      <li> Only one round will be chosen to be paid in US$; </li>
        {% if subsession.treatment == 'minimum_price' %}
-     <li> Bidding for the round stops after 50 seconds with no bids submitted; </li>
+     <li> Bidding for the round stops after {{timeout_duration}} seconds with no bids submitted; </li>
        {% else %}
-       <li> Bidding for the round stops after 50 seconds with no new bids or minimum prices submitted; </li>
+       <li> Bidding for the round stops after {{timeout_duration}} seconds with no new bids or minimum prices submitted; </li>
        {% endif %}
      <li> Today’s experiment will include {{Constants.num_rounds}} rounds; </li>
      <li> Your value for your widget will always be the same, but the minimum prices that sellers submit and the bids that buyers submit may change between rounds.</li>
