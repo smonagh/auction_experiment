@@ -10,3 +10,5 @@ _static_root
 _bots*s
 __temp*
 settings.py
+*.dump
+latest.dump.1
