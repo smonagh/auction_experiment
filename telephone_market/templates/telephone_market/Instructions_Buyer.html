@@ -42,7 +42,7 @@
 
 <h2> Trading </h2>
 
-    In each round you will try to buy one widget by negotiating a trade with the
+    <p>In each round you will try to buy one widget by negotiating a trade with the
      sellers. At the same time sellers will be negotiating with you and the other buyers.</p>
 
     <p>You will see a table with
@@ -315,13 +315,13 @@ table tr:hover td {
 .otree-bid__msg_my .otree-chat__body {
    display: inline-block;
     color: #808000;
-    width: 150px;
+    width: 70%;
     font-weight: bold;
 }
 .otree-bid__msg_other .otree-chat__body {
     display: inline-block;
     color: #008080;
-    width: 150px;
+    width: 70%;
     font-weight: bold;
 }
 .otree-bid__msg_my .otree-chat__nickname {
@@ -332,6 +332,26 @@ table tr:hover td {
 .otree-bid__msg_other .otree-chat__nickname {
     display: inline-block;
     width: 150px;
+    font-weight: bold;
+}
+.msg-error .otree-chat__nickname {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+    color: red;
+}
+.msg-error .otree-chat__body {
+    display: inline-block;
+    width: 70%;
+    font-weight: bold;
+    color: black;
+}
+.current_offer {
+    color: green;
+    font-weight: bold;
+}
+.highest_bid {
+    color: green;
     font-weight: bold;
 }
 </style>
