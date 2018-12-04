@@ -1,0 +1,407 @@
+{% block myсhat %}
+<script>
+var ts = new Date().getTime();
+var time_started = {{time_started}};
+if ((ts/1000-time_started)>5){
+    if (time_started>0){
+        $('.gamebody').show();
+        $("#TimerContainer").hide();
+    }
+}
+
+
+var participantID = "{{participant_id}}";
+if (participantID == 1){
+    var bid = {{player_offers}};
+    var ask = {{offers_to_player}};
+} else {
+    var ask = {{player_offers}};
+    var bid = {{offers_to_player}};
+}
+var res = {{player_res}};
+
+$(function () {
+    $(".page-header").hide();
+
+    //Displaying errors in a hidden span on the page (substitute for alert).
+    var timeout_handle;
+    function displayError(err){
+        $('#ErrorText').text(err);
+        $('#ErrorContainer').show();
+        clearTimeout(timeout_handle);
+        timeout_handle = setTimeout(function(){$('#ErrorContainer').hide()},5000);
+    }
+
+    // helper function to escape HTML
+    var entityMap = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+      '/': '&#x2F;',
+      '`': '&#x60;',
+      '=': '&#x3D;'
+    };
+    function escapeHtml (string) {
+      return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+      });
+    }
+    var channel = "{{channel}}";
+    var object_id = {{box_id}};
+    var box_id = {{box_id}};
+    var socketPath = "/telephone_market/chat/{{channel}}";
+
+    var nickname_i_see_for_myself = "{{nickname}} (Me)";
+    var $chatWidget = $('#mychat_' + channel);
+    var $messageInput = $chatWidget.find('.chatbox');
+    var $bidInput = $chatWidget.find('.bidbox');
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    var ws_path = ws_scheme + '://' + window.location.host + socketPath;
+
+    var socket = new WebSocket(ws_path); //Reconnecting?
+
+    var $msgdiv = $chatWidget.find('.otree-chat__messages');
+    // Handle incoming messages
+
+    updatebuttons();
+
+    socket.onmessage = function (message) {
+        console.log('receieve');
+        console.log(message);
+        var messages = JSON.parse(message.data);
+        var messagesHTML = '';
+        //for (var i = 0; i < messages.length; i++) {
+            var chatMessage = messages;
+
+            var nickname = chatMessage.nickname;
+            {% comment %}
+            Show my own nickname, so I know how it will look to
+            others who read it.
+            {% endcomment %}
+            // need to use ID instead of code, for security
+
+            if (chatMessage.identifier == "bid"){
+
+                if (chatMessage.participant_id === participantID) {
+                    msg_class='otree-bid__msg_my';
+                    if (participantID==1) {
+                        bid[object_id-1] = chatMessage.bidvalue;
+                    } else {
+                        ask[object_id-1] = chatMessage.bidvalue;
+                    }
+                } else {
+                    msg_class='otree-bid__msg_other';
+                    if (participantID==2) {
+                        bid[object_id-1] = chatMessage.bidvalue;
+                    } else {
+                        ask[object_id-1] = chatMessage.bidvalue;
+                    }
+                }
+                if (chatMessage.bidvalue == 0) {
+                    ask[object_id-1]=0;
+                    bid[object_id-1]=0;
+                }
+                messagesHTML += "<div class=" +msg_class +">" +
+                            "<span class='otree-chat__nickname'> [Offer] "  + "</span>" +
+                            "<span class='otree-chat__body'>" + escapeHtml(chatMessage.body) + "</span>" +
+                            "</div>";
+            } else {
+                msg_class='otree-chat__msg_other';
+                if (chatMessage.participant_id === participantID) {
+                    nickname = nickname_i_see_for_myself;
+                    msg_class='otree-chat__msg_my';
+                }
+                messagesHTML += "<div class=" +msg_class +">" +
+                            "<span class='otree-chat__nickname'>" + escapeHtml(nickname) + "</span>" +
+                            "<span class='otree-chat__body'>" + escapeHtml(chatMessage.body) + "</span>" +
+                            "</div>";
+            }
+        //}
+        $msgdiv.append(messagesHTML);
+        $msgdiv.scrollTop($msgdiv.prop("scrollHeight"));
+        updatebuttons();
+    };
+    socket.onopen = function () {
+        console.log("Connected to chat socket");
+        console.log(ws_path);
+        // clear message history so we can re-populate
+        $msgdiv.empty();
+    };
+    // Handle any errors that occur.
+    socket.onerror = function (error) {
+              console.log('WebSocket Error: ');
+              console.log(error);
+    };
+    // Log socket close
+    socket.onclose = function (event) {
+    console.log('disconnected from oTree');
+    };
+    function sendMessage(is_bid,bidval) {
+        if (is_bid==0){
+            var body = $messageInput.val();
+            if (!body) {
+                return;
+            }
+            var data = {
+                'body': $messageInput.val(),
+                'identifier': 'msg',
+                'nickname': "{{nickname}}",
+                'participant_id': participantID,
+                'player_id': "{{player_id}}",
+                'group_id': {{group_id}},
+                'object_id': {{box_id}}
+
+            };
+            if (socket.readyState === 1) {
+            console.log(data);
+            socket.send(JSON.stringify(data));
+            };
+            $messageInput.val('');
+        } else {
+            if (bidval<0) {
+                displayError("All offers must be positive")
+                $bidInput.val('');
+                return;
+            } else if (isNaN(bidval) || bidval===""){
+                displayError("Offer must be a number")
+                $bidInput.val('');
+                return;
+            } else {
+                if (participantID == 1) {
+
+                    if (bidval>0 && (bid[1] >0 || bid[2] >0 || bid[3] >0)) {
+                        displayError("Cancel previous offer first")
+                        $bidInput.val('');
+                        return;
+                    } else if (res[box_id-1]<bidval && bidval>0) {
+                        displayError("This offer is higher than your value for the widget")
+                        $bidInput.val('');
+                        return;
+                    }
+                } else {
+
+                    if (bidval>0 && (ask[1] >0 || ask[2] >0 || ask[3] >0)) {
+                        displayError("Cancel previous offer first")
+                        $bidInput.val('');
+                        return;
+                    } else if (res[{{my_id}}]>bidval && bidval>0) {
+                        displayError("This offer is lower than your value for your widget")
+                        $bidInput.val('');
+                        return;
+                    }
+                }
+            }
+
+            var body = bidval;
+            if (body === "") {
+                return;
+            }
+            var data = {
+                'body': parseInt(bidval),
+                'identifier': 'bid',
+                'nickname': "{{nickname}}",
+                'participant_id': participantID,
+                'player_id': "{{player_id}}",
+                'bidvalue': parseInt(bidval),
+                'group_id': {{group_id}},
+                'object_id': {{box_id}},
+                'my_id': {{my_id}}
+            };
+            if (socket.readyState === 1) {
+            console.log(data);
+            socket.send(JSON.stringify(data));
+            };
+            $bidInput.val('');
+        }
+    }
+    $chatWidget.find('.chat_btn').click(function(e) {
+        sendMessage("","");
+    });
+    $('#bid_btn_' + box_id).click(function(e) {
+        sendMessage(1,$bidInput.val());
+    });
+    // pressing "enter" in the message box should submit a message,
+    // NOT the page's form
+    $messageInput.on('keypress', function (e) {
+        if (e.which == 13) {
+
+            e.preventDefault();
+            sendMessage("",0);
+        }
+    });
+    $bidInput.on('keypress', function (e) {
+        if (e.which == 13) {
+
+            e.preventDefault();
+            sendMessage(1,$bidInput.val());
+        }
+    });
+    $('#bid_accept_'+object_id).click(function(e) {
+        if (participantID==1){
+            sendMessage(1,ask[object_id-1]);
+        } else {
+            sendMessage(1,bid[object_id-1]);
+        }
+    });
+    $('#bid_decline_'+object_id).click(function(e) {
+        sendMessage(1,0);
+    });
+
+    function updatebuttons() {
+
+        oid=box_id-1;
+        if (participantID==1){
+            $('#highest_bid_'+ box_id).hide();
+            if (ask[oid]==bid[oid] && bid[oid]>0) {
+                $('#bid_standing_offer_'+box_id).html('Both agreed to trade at ' +bid[oid]);
+                $('#highest_bid_amount_'+ box_id).html(bid[oid]);
+                $('#highest_bid_'+ box_id).show();
+            } else if (bid[oid]>0) {
+                $('#bid_standing_offer_'+box_id).html('You offered ' +bid[oid]);
+            } else if (ask[oid]>0) {
+                $('#bid_standing_offer_'+box_id).html('You were offered ' +ask[oid]);
+            } else {
+                $('#bid_standing_offer_'+box_id).html('');
+            }
+        } else {
+            $('#highest_bid_'+ box_id).hide();
+            if (ask[oid]==bid[oid] && bid[oid]>0) {
+                $('#bid_standing_offer_'+box_id).html('Both agreed to trade at ' +bid[oid]);
+                $('#highest_bid_amount_'+ box_id).html(bid[oid]);
+                $('#highest_bid_'+ box_id).show();
+
+            } else if (ask[oid]>0) {
+                $('#bid_standing_offer_'+box_id).html('You offered ' +ask[oid]);
+            } else if (bid[oid]>0) {
+                $('#bid_standing_offer_'+box_id).html('You were offered ' +bid[oid]);
+            } else {
+                $('#bid_standing_offer_'+box_id).html('');
+            }
+        }
+
+        if (participantID==1){
+            if (bid[0]>0 || bid[1]>0 || bid[2]>0){
+                $('.btn_decline').hide();
+                $('.btn_accept').hide();
+                $('.bidbox').hide();
+                $('.bid_btn').hide();
+
+                for (i = 0; i < 3; i++) {
+                    if (bid[i]>0) {
+                        if (ask[i]==bid[i]) {
+                            $('#bid_decline_'+(i+1)).attr('value', 'Cancel trade');
+                        } else {
+                            $('#bid_decline_'+(i+1)).attr('value', 'Cancel offer');
+                        }
+                        $('#bid_decline_'+(i+1)).show();
+                    }
+                }
+            } else {
+                for (i = 0; i < 3; i++) {
+                    if (ask[i]>0) {
+                        $('#bidbox_'+(i+1)).hide();
+                        $('#bid_btn_'+(i+1)).hide();
+                        $('#bid_decline_'+(i+1)).attr('value', 'Decline');
+                        $('#bid_decline_'+(i+1)).show();
+                        $('#bid_accept_'+(i+1)).show();
+                    } else {
+                        $('#bidbox_'+(i+1)).show();
+                        $('#bid_btn_'+(i+1)).show();
+                        $('#bid_decline_'+(i+1)).hide();
+                        $('#bid_accept_'+(i+1)).hide();
+                    }
+                }
+            }
+        } else {
+            if (ask[0]>0 || ask[1]>0 || ask[2]>0){
+                $('.btn_decline').hide();
+                $('.btn_accept').hide();
+                $('.bidbox').hide();
+                $('.bid_btn').hide();
+
+                for (i = 0; i < 3; i++) {
+                    if (ask[i]>0) {
+                        if (ask[i]==bid[i]) {
+                            $('#bid_decline_'+(i+1)).attr('value', 'Cancel trade');
+                        } else {
+                            $('#bid_decline_'+(i+1)).attr('value', 'Cancel offer');
+                        }
+                        $('#bid_decline_'+(i+1)).show();
+                    }
+                }
+            } else {
+                for (i = 0; i < 3; i++) {
+                    if (bid[i]>0) {
+                        $('#bidbox_'+(i+1)).hide();
+                        $('#bid_btn_'+(i+1)).hide();
+                        $('#bid_decline_'+(i+1)).attr('value', 'Decline');
+                        $('#bid_decline_'+(i+1)).show();
+                        $('#bid_accept_'+(i+1)).show();
+                    } else {
+                        $('#bidbox_'+(i+1)).show();
+                        $('#bid_btn_'+(i+1)).show();
+                        $('#bid_decline_'+(i+1)).hide();
+                        $('#bid_accept_'+(i+1)).hide();
+                    }
+                }
+            }
+        }
+    }
+
+    timeout_handle = setTimeout(function(){$("#TimerContainer").html("<div style='color:green'>Trading Started</div>"); $('.gamebody').show(); setTimeout(function(){$("#TimerContainer").hide();},5000); },5000);
+
+});
+</script>
+
+<!-- chat -->
+<style>
+.otree-chat {
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 30px 0 0 0;
+}
+.otree-chat__messages {
+    height: 150px;
+    overflow: auto;
+    background: #eee;
+    margin: 2px 0 5px 0;
+}
+
+.otree-chat__msg_my .otree-chat__nickname {
+    display: inline-block;
+    color: #808000;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-chat__msg_other .otree-chat__nickname {
+    display: inline-block;
+    color: #008080;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_my .otree-chat__body {
+   display: inline-block;
+    color: #808000;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_other .otree-chat__body {
+    display: inline-block;
+    color: #008080;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_my .otree-chat__nickname {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_other .otree-chat__nickname {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+}
+</style>
+{% endblock %}

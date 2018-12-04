@@ -12,3 +12,9 @@ __temp*
 settings.py
 *.dump
 latest.dump.1
+telephone_market/_builtin/__init__.py
+telephone_market/_builtin/__init__.py
+telephone_market/migrations/__init__.py
+telephone_market/migrations/__init__.py
+telephone_market/_builtin/__init__.py
+latest.dump.2

@@ -5,7 +5,8 @@ import dj_database_url
 
 import otree.settings
 
-CHANNEL_ROUTING = 'housing_auction_4.routing.channel_routing'
+#CHANNEL_ROUTING = 'housing_auction_4.routing.channel_routing'
+CHANNEL_ROUTING = 'telephone_market.routing.channel_routing'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # the environment variable OTREE_PRODUCTION controls whether Django runs in
@@ -14,6 +15,8 @@ if environ.get('OTREE_PRODUCTION') not in {None, '', '0'}:
     DEBUG = False
 else:
     DEBUG = True
+
+
 
 ADMIN_USERNAME = 'ICES'
 
@@ -100,6 +103,15 @@ SESSION_CONFIG_DEFAULTS = {
 
 
 SESSION_CONFIGS = [
+        #Pit telephone market
+        {'name': 'telephone_market',
+         'display_name': 'Pit telephone market',
+         'num_demo_participants': 6,
+         # 'treatment_string':"['minimum_price','sellers_bid']",
+         'treatment_string': "telephone_pit",
+         'doc': """Telephone pit trading market""",
+         'timeout_duration': 50,
+         'app_sequence': ['telephone_market']},
 
         #MP
         {'name':'housing_auction_MP',

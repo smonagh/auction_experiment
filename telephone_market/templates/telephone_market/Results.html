@@ -1,0 +1,189 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    Auction Results
+{% endblock %}
+
+{% block content %}
+<div>
+{% if player.is_winner %}
+    {% if player_type == "buyer" %}
+        <p>You valued Widget {{player.object_traded}}
+            at {{player.object_reservation}} E$ and bought it for a price
+             of {{player.winning_bid}} E$</p>
+    {% elif player_type == "seller" %}
+        {% if player.traded_with_himself %}
+            <p>You bought your own Widget, {{player.object_traded}}
+                at {{player.winning_bid}} E$, so you did not make a transaction in this round.</p>
+        {% else %}
+            <p>You valued Widget {{player.object_traded}}
+                        at {{player.object_reservation}} E$ and sold it for a price of
+                         {{player.winning_bid}} E$</p>
+        {% endif %}
+    {% endif %}
+
+{% else %}
+    <p>You did not make a transaction in this round.</p>
+
+{% endif %}
+    <p>Your earnings in this round are {{player.payout}}E$</p>
+<!-- Show table with outcomes -->
+<p>Recorded below are the minimum prices, highest bids, and transactions for
+   this round.</p>
+
+
+<!--<table style="width:100%" border="spacing:10px" >-->
+    <!--<tr>-->
+        <!--<th><center>Widget</center></th>-->
+        <!--<th><center>Your value</center></th>-->
+        <!--{% if subsession.treatment == 'minimum_price' %}-->
+        <!--<th><center>Minimum Price</center></th>-->
+        <!--{% else %}-->
+        <!--<th><center>Minimum Price</center></th>-->
+        <!--{% endif %}-->
+        <!--<th><center>Highest Bid</center></th>-->
+        <!--<th><center>Was Widget Traded?</center></th>-->
+    <!--</tr>-->
+
+<!--{% for object,ask,bid,reservation,object_traded,object_traded_to_seller in result_zip %}-->
+        <!--<tr id="row_{{forloop.counter}}">-->
+            <!--{% if player_type == "seller" %}-->
+                <!--{% if  reservation > 0 %}-->
+                    <!--<td id="object_{{forloop.counter}}">(Your) {{object}}</td>-->
+                    <!--<td id="object_{{forloop.counter}}">{{reservation}}</td>-->
+                <!--{% else %}-->
+                    <!--<td id="object_{{forloop.counter}}">{{object}}</td>-->
+                    <!--<td id="object_{{forloop.counter}}">{{reservation}}</td>-->
+                <!--{% endif %}-->
+            <!--{% else %}-->
+                    <!--<td id="object_{{forloop.counter}}">{{object}}</td>-->
+                    <!--<td id="object_{{forloop.counter}}">{{reservation}}</td>-->
+            <!--{% endif %}-->
+            <!--{% if subsession.treatment == 'minimum_price' %}-->
+            <!--<td id="ask_price_{{forloop.counter}}">{{ask}}</td>-->
+            <!--{% elif ask > 0 %}-->
+            <!--<td id="ask_price_{{forloop.counter}}">{{ask}}</td>-->
+            <!--{% else %}-->
+            <!--<td id="ask_price_{{forloop.counter}}">-</td>-->
+            <!--{% endif %}-->
+            <!--<td id="highest_bid_{{forloop.counter}}">{{bid}}</td>-->
+            <!--{% if object_traded %}-->
+                <!--{% if object_traded_to_seller %}-->
+                    <!--<td id="object_traded_{{forloop.counter}}">No (seller bought their own widget)</td>-->
+                <!--{% else %}-->
+                    <!--<td id="object_traded_{{forloop.counter}}">Yes</td>-->
+                <!--{% endif %}-->
+            <!--{% else %}-->
+                <!--<td id="object_traded_{{forloop.counter}}">No</td>-->
+            <!--{% endif %}-->
+        <!--</tr>-->
+<!--{% endfor %}-->
+<!--</table>-->
+{% next_button %}
+</div>
+
+
+<style>
+    table a:link {
+	color: #666;
+	font-weight: bold;
+	text-decoration:none;
+}
+table a:visited {
+	color: #999999;
+	font-weight:bold;
+	text-decoration:none;
+}
+table a:active,
+table a:hover {
+	color: #bd5a35;
+	text-decoration:underline;
+}
+table {
+	font-family:Arial, Helvetica, sans-serif;
+	color:#666;
+	font-size:16px;
+	text-shadow: 1px 1px 0px #fff;
+	background:#eaebec;
+	margin:10px;
+	border:#ccc 1px solid;
+
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+
+	-moz-box-shadow: 0 1px 2px #d1d1d1;
+	-webkit-box-shadow: 0 1px 2px #d1d1d1;
+	box-shadow: 0 1px 2px #d1d1d1;
+}
+table th {
+	padding:15px 19px 15px 19px;
+	border-top:1px solid #fafafa;
+	border-bottom:1px solid #e0e0e0;
+
+	background: #ededed;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+	background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
+}
+table th:first-child {
+	text-align: left;
+	padding-left:20px;
+}
+table tr:first-child th:first-child {
+	-moz-border-radius-topleft:3px;
+	-webkit-border-top-left-radius:3px;
+	border-top-left-radius:3px;
+}
+table tr:first-child th:last-child {
+	-moz-border-radius-topright:3px;
+	-webkit-border-top-right-radius:3px;
+	border-top-right-radius:3px;
+}
+table tr {
+	text-align: center;
+	padding-left:210px;
+}
+table td:first-child {
+	text-align: left;
+	padding-left:20px;
+	border-left: 0;
+}
+table td {
+	padding:6px;
+	border-top: 1px solid #ffffff;
+	border-bottom:1px solid #e0e0e0;
+	border-left: 1px solid #e0e0e0;
+
+	background: #fafafa;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
+}
+table tr.even td {
+	background: #f6f6f6;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
+	background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
+}
+table tr:last-child td {
+	border-bottom:0;
+}
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft:3px;
+	-webkit-border-bottom-left-radius:3px;
+	border-bottom-left-radius:3px;
+}
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright:3px;
+	-webkit-border-bottom-right-radius:3px;
+	border-bottom-right-radius:3px;
+}
+table tr:hover td {
+	background: #f2f2f2;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
+}
+.btn{
+
+}
+</style>
+{% endblock %}

@@ -1,0 +1,338 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree%}
+
+{% block content %}
+<h1> Experiment Instructions </h1>
+<div class="jumbotron">
+<p>Thank you for participating! You have earned 5 US$ for showing up on time.
+ The instructions explain how you can make decisions and earn more money,
+  so please read carefully. Talking with other participants or use of cell
+   phones is <b>not</b> permitted during the course of this experiment.
+    If you have questions at any point, please, raise your hand and an experimenter
+     will come to assist you.</p>
+
+<h2> Experimental Points </h2>
+
+<p> During the experiment you have the opportunity to earn experimental dollars (E$).
+ At the end of the experiment, your earnings will be converted at ratio
+  {{Constants.conversion_rate}} E$ to 1 US$ and paid out to you in US$ in addition
+   to the show up fee. </p>
+
+<h2> Overview </h2>
+
+<p>You will be paired randomly with a group of other participants.
+  Your identity in this group will remain anonymous, and likewise,
+   the identities of all other group members will remain
+    anonymous. </p>
+
+<p>In this experiment you are a <b>buyer</b>.
+
+    <p>Your group will consist of 3 sellers and 3 buyers. You are one of the three buyers. Your group will
+     remain together and the roles will remain the same during the entire experiment.</p>
+
+<h2> Widgets </h2>
+
+<p>In each round you will have the opportunity to buy one widget from a seller.
+  Today’s experiment will have {{Constants.num_rounds}} identical rounds.</p>
+
+  <p> Each widget has a value to you. Each seller has one widget for sale.
+    Each buyer has different values for the widgets. Likewise, each seller has a different
+      value for their own widget. Every buyer and seller will only see their own values for the widgets.
+      The values of widgets for buyers and sellers will remain the same across rounds throughout this experiment.</p>
+
+<h2> Trading </h2>
+
+    In each round you will try to buy one widget by negotiating a trade with the
+     sellers. At the same time sellers will be negotiating with you and the other buyers.</p>
+
+    <p>You will see a table with
+      information about the widgets - the seller of the widget and its value to you.</p>
+    <div>
+      <table>
+        <tr>
+            <th><center>Seller</center> </th>
+          <th><center>Widget</center> </th>
+          <th><center>Your Value</center></th>
+        </tr>
+        <tr>
+            <td>Seller 1</td>
+          <td>Widget 1</td>
+          <td>7</td>
+        </tr>
+        <tr>
+            <td>Seller 2</td>
+          <td>Widget 2</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>Seller 3</td>
+          <td>Widget 3</td>
+          <td>9</td>
+      </table>
+    </div>
+
+    <p>You will also see a chatbox for each seller and two boxes to enter a message or an offer to the seller:</p>
+
+    <div class='my-chat' id='mychat_1'>
+        <div class='otree-chat__messages'>
+            <div class="otree-chat__msg_my">
+                            <span class='otree-chat__nickname'> Buyer 1 </span>
+                            <span class='otree-chat__body'> Example message </span>
+            </div>
+            <div class="otree-chat__msg_other">
+                            <span class='otree-chat__nickname'> Seller 1 </span>
+                            <span class='otree-chat__body'> Example message </span>
+            </div>
+        </div>
+        <input type="text" placeholder="Enter Your Message" class="chatbox" size="40">
+        <input type="reset" class="chat_btn btn  btn-large btn-primary next-button" value="Send Message" style="pointer-events:none;">
+        <input type="number" placeholder="Enter Your Offer" class="bidbox" id="bidbox_1">
+        <!-- Input button returns the widget_id, the current standing bid,
+             the ask price for the widget, and the new input bid to
+             javascript to verify that the bid clears the previous
+             one -->
+        <input id='bid_btn_1'
+               class="bid_btn btn  btn-large btn-primary next-button"
+               type="reset" value="Send Offer" style="pointer-events:none;">
+    </div>
+    <script>
+        $('.bidbox').on('keypress', function (e) {
+            if (e.which == 13) {
+                e.preventDefault();
+            }
+        });
+        $('.chatbox').on('keypress', function (e) {
+            if (e.which == 13) {
+                e.preventDefault();
+            }
+        });
+    </script>
+
+    <p></p>
+
+    <p>You can submit text messages and offers to any of the three sellers. Messages can contain any text. Offers must be <b>whole numbers (integer)</b>.</p>
+
+    <p>Buyers' offers have to be at or below the value of the widget to the buyer.
+    Sellers' offers have to be at or above the value of the widget to the seller.
+    Similarly, a buyer can not accept an offer that is above his value, and the seller can not accept an offer that is below his value.
+        This ensures that neither party can lose money.</p>
+
+    <p>Once one side sends an offer, the counterpart can agree or decline. It is also possible to back out of a trade or your own offer at any moment during the round.
+
+        If the other party accepts the trade, <b>the purchase will not happen instantaneously</b>. Both you and the seller can still change your mind and negotiate another deal until the round ends.
+
+        <p>If you and one of the sellers have a standing trade when the round ends,
+   then you purchase the widget from the seller at a price equal to the agreed price. If you did not have
+    the trade at the end of the round,
+    then you do not buy any widget and earn 0 E$. If at any time you have a standing trade,
+       this will be indicated at the top of your screen.  </p>
+
+  <p>
+    You are restricted to purchasing one widget per round.
+    This means that once you have a standing offer or a trade you will not
+    be permitted to  make an offer for another widget until you cancel your current offer/trade.
+  </p>
+
+ <p> Trading ends after {{timeout_duration}} seconds (A warning message will appear 60 seconds before the end of round).
+   At the end of each round you will be told your earnings for that round. Only one round will be randomly chosen to be
+     paid at the end of the experiment.</p>
+
+
+    <h2> Earnings </h2>
+The earnings in each round equal the total value
+     of the widget you bought minus your total payment (bid) for buying that
+      widget:</p>
+
+<p style="text-align:center;"> <b>Earnings = Widget's Value - Bid</b> </p>
+
+<p> For instance, if your value for a widget is 7 E$ and you bought
+   the widget with bid of 3 E$, then your earnings for that round will be 4 E$.
+   If you do not buy the widget, your earnings for the round will be 0 E$.
+</p>
+
+<p>Remember that only one round out of {{Constants.num_rounds}} will be randomly chosen at the end of the experiment, and you will be paid the amount earned in that round in US$.</p>
+
+ <h2> End of Experiment </h2>
+ <p> At the end of the experiment you will be taken to a screen that displays
+  your E$ earnings in each round, the round that was randomly chosen as the
+   payoff round, and the earnings from that round converted into US$. Please
+    wait in your seat once you reach this screen. An experimenter will call
+     you one at a time to be paid privately. When called, please take all
+      belongings up since the experiment ends once you have received your
+       payment.</p>
+
+    <h2> Important points to remember </h2>
+   <ul>
+     <li> You can not lose money by trading (the bidding system prevents you from bidding too high); </li>
+     <li> If you do not buy a widget, you earn 0 E$; </li>
+       <li> Each seller has one widget to trade per round;</li>
+     <li> Each buyer may only buy one widget per round;</li>
+     <li> Both buyers and sellers may have different values for the same widget;</li>
+       <li> Both buyers and sellers are free to change their minds during the round; </li>
+     <li> Only one round will be chosen to be paid in US$; </li>
+     <li> Bidding for the round stops after {{timeout_duration}} seconds; </li>
+     <li> Today’s experiment will include {{Constants.num_rounds}} rounds; </li>
+     <li> Values for the widgets will always be the same, but the trading may result in different prices each round.</li>
+
+   </ul>
+
+  <button class="btn btn-primary" type="submit">Finished Reading Instructions</button>
+  </div>
+
+{% endblock %}
+{% block styles %}
+<style>
+.jumbotron p{
+  padding-bottom:1em;
+}
+table a:link {
+	color: #666;
+	font-weight: bold;
+	text-decoration:none;
+}
+table a:visited {
+	color: #999999;
+	font-weight:bold;
+	text-decoration:none;
+}
+table a:active,
+table a:hover {
+	color: #bd5a35;
+	text-decoration:underline;
+}
+table {
+	font-family:Arial, Helvetica, sans-serif;
+	color:#666;
+	font-size:16px;
+	text-shadow: 1px 1px 0px #fff;
+	background:#eaebec;
+	margin:10px;
+	border:#ccc 1px solid;
+	width:100%;
+
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+
+	-moz-box-shadow: 0 1px 2px #d1d1d1;
+	-webkit-box-shadow: 0 1px 2px #d1d1d1;
+	box-shadow: 0 1px 2px #d1d1d1;
+}
+table th {
+	padding:15px 19px 15px 19px;
+	border-top:1px solid #fafafa;
+	border-bottom:1px solid #e0e0e0;
+
+	background: #ededed;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+	background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
+}
+table th:first-child {
+	text-align: left;
+	padding-left:20px;
+}
+table tr:first-child th:first-child {
+	-moz-border-radius-topleft:3px;
+	-webkit-border-top-left-radius:3px;
+	border-top-left-radius:3px;
+}
+table tr:first-child th:last-child {
+	-moz-border-radius-topright:3px;
+	-webkit-border-top-right-radius:3px;
+	border-top-right-radius:3px;
+}
+table tr {
+	text-align: center;
+	padding-left:210px;
+}
+table td:first-child {
+	text-align: left;
+	padding-left:20px;
+	border-left: 0;
+}
+table td {
+	padding:6px;
+	border-top: 1px solid #ffffff;
+	border-bottom:1px solid #e0e0e0;
+	border-left: 1px solid #e0e0e0;
+
+	background: #fafafa;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
+}
+table tr.even td {
+	background: #f6f6f6;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
+	background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
+}
+table tr:last-child td {
+	border-bottom:0;
+}
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft:3px;
+	-webkit-border-bottom-left-radius:3px;
+	border-bottom-left-radius:3px;
+}
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright:3px;
+	-webkit-border-bottom-right-radius:3px;
+	border-bottom-right-radius:3px;
+}
+table tr:hover td {
+	background: #f2f2f2;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
+}
+.btn{
+
+}
+</style>
+<style>
+.otree-chat {
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 30px 0 0 0;
+}
+.otree-chat__messages {
+    height: 150px;
+    overflow: auto;
+    background: #eee;
+    margin: 2px 0 5px 0;
+}
+
+.otree-chat__msg_my .otree-chat__nickname {
+    display: inline-block;
+    color: #808000;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-chat__msg_other .otree-chat__nickname {
+    display: inline-block;
+    color: #008080;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_my .otree-chat__body {
+   display: inline-block;
+    color: #808000;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_other .otree-chat__body {
+    display: inline-block;
+    color: #008080;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_my .otree-chat__nickname {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_other .otree-chat__nickname {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
