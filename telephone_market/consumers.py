@@ -40,7 +40,7 @@ def ws_message(message, group_name):
             opponent = mygroup.get_player_by_id(jsonmessage['object_id'] * 2 - 1)
 
         #save_auction(jsonmessage, mygroup, myplayer)
-        if (jsonmessage['body'] > 0):
+        if (jsonmessage['bidvalue'] > 0):
             bids_list = literal_eval(myplayer.player_offers)
             if any(x > 0 for x in bids_list):
                 # return
@@ -58,8 +58,11 @@ def ws_message(message, group_name):
         bids_list[jsonmessage['my_id']] = bidvalue
         opponent.offers_to_player = str(bids_list)
 
-        if (jsonmessage['body'] > 0):
-            jsonmessage['body'] = jsonmessage['nickname'] + " offers " + str(jsonmessage['body'])
+        if (jsonmessage['bidvalue'] > 0):
+            if (jsonmessage['body'] == " accepted"):
+                jsonmessage['body'] = jsonmessage['nickname'] + " accepted " + str(jsonmessage['bidvalue'])
+            else:
+                jsonmessage['body'] = jsonmessage['nickname'] + " offers " + str(jsonmessage['bidvalue'])
 
         else:
             jsonmessage['body'] = jsonmessage['nickname'] + " declined"
