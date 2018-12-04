@@ -122,7 +122,7 @@ SESSION_CONFIGS = [
         'doc':"""Enter treatments to be played in session. Must be entered in
                  the form of a list []. Options are minimum_price, sellers_bid, double_auction. 
                  Treatments are played in order entered.""",
-         'timeout_duration': 50,
+         'timeout_duration': 60*4,
         'app_sequence': ['housing_auction_4']},
 
         # SB
