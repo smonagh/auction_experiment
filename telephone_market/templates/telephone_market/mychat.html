@@ -268,23 +268,23 @@ $(function () {
                 $('#highest_bid_amount_'+ box_id).html(bid[oid]);
                 $('#highest_bid_'+ box_id).show();
             } else if (bid[oid]>0) {
-                $('#bid_standing_offer_'+box_id).html('You offered ' +bid[oid]);
+                $('#bid_standing_offer_'+box_id).html('You&nbsp;offered&nbsp;' +bid[oid]);
             } else if (ask[oid]>0) {
-                $('#bid_standing_offer_'+box_id).html('You were offered ' +ask[oid]);
+                $('#bid_standing_offer_'+box_id).html('You&nbsp;were&nbsp;offered&nbsp;' +ask[oid]);
             } else {
                 $('#bid_standing_offer_'+box_id).html('');
             }
         } else {
             $('#highest_bid_'+ box_id).hide();
             if (ask[oid]==bid[oid] && bid[oid]>0) {
-                $('#bid_standing_offer_'+box_id).html('Both agreed to trade at ' +bid[oid]);
+                $('#bid_standing_offer_'+box_id).html('Both&nbsp;agreed&nbsp;to&nbsp;trade&nbsp;at&nbsp;' +bid[oid]);
                 $('#highest_bid_amount_'+ box_id).html(bid[oid]);
                 $('#highest_bid_'+ box_id).show();
 
             } else if (ask[oid]>0) {
-                $('#bid_standing_offer_'+box_id).html('You offered ' +ask[oid]);
+                $('#bid_standing_offer_'+box_id).html('You&nbsp;offered&nbsp;' +ask[oid]);
             } else if (bid[oid]>0) {
-                $('#bid_standing_offer_'+box_id).html('You were offered ' +bid[oid]);
+                $('#bid_standing_offer_'+box_id).html('You&nbsp;were&nbsp;offered&nbsp;' +bid[oid]);
             } else {
                 $('#bid_standing_offer_'+box_id).html('');
             }
