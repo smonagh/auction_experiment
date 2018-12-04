@@ -110,7 +110,7 @@ SESSION_CONFIGS = [
          # 'treatment_string':"['minimum_price','sellers_bid']",
          'treatment_string': "telephone_pit",
          'doc': """Telephone pit trading market""",
-         'timeout_duration': 50,
+         'timeout_duration': 60*4,
          'app_sequence': ['telephone_market']},
 
         #MP
@@ -122,7 +122,7 @@ SESSION_CONFIGS = [
         'doc':"""Enter treatments to be played in session. Must be entered in
                  the form of a list []. Options are minimum_price, sellers_bid, double_auction. 
                  Treatments are played in order entered.""",
-         'timeout_duration': 60*4,
+         'timeout_duration': 50,
         'app_sequence': ['housing_auction_4']},
 
         # SB
