@@ -50,9 +50,19 @@ def ws_message(message, group_name):
 
         bidvalue = jsonmessage['bidvalue']
 
+        last_offer_by_player=0
+        last_offer_to_player=0
+
         bids_list = literal_eval(myplayer.player_offers)
+        #print(bids_list)
+        if (bids_list[jsonmessage['object_id'] - 1]>0):
+            last_offer_by_player=bids_list[jsonmessage['object_id'] - 1]
         bids_list[jsonmessage['object_id'] - 1] = bidvalue
         myplayer.player_offers=str(bids_list)
+
+        bids_list = literal_eval(opponent.player_offers)
+        if (bids_list[jsonmessage['my_id']]>0):
+            last_offer_to_player=bids_list[jsonmessage['my_id']]
 
         bids_list = literal_eval(opponent.offers_to_player)
         bids_list[jsonmessage['my_id']] = bidvalue
@@ -65,9 +75,13 @@ def ws_message(message, group_name):
                 jsonmessage['body'] = jsonmessage['nickname'] + " offers " + str(jsonmessage['bidvalue'])
 
         else:
-            jsonmessage['body'] = jsonmessage['nickname'] + " declined"
-
             bids_list = literal_eval(opponent.player_offers)
+            if (last_offer_by_player > 0):
+                jsonmessage['body'] = jsonmessage['nickname'] + " cancelled " + str(last_offer_by_player)
+            else:
+                jsonmessage['body'] = jsonmessage['nickname'] + " declined " + str(last_offer_to_player)
+
+
             bids_list[jsonmessage['my_id']] = 0
             opponent.player_offers = str(bids_list)
 
@@ -76,6 +90,7 @@ def ws_message(message, group_name):
             myplayer.offers_to_player = str(bids_list)
 
 
+        #decline on error should cancel other offers for other opponents too.
 
         textforgroup = json.dumps(jsonmessage)
         myplayer.bidding_log = myplayer.bidding_log + "[auction][" + str(

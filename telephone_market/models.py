@@ -28,7 +28,7 @@ class Constants(BaseConstants):
     buyer_res_max = 10
     end_on_timer = 1
     players_per_group = 6
-    periods_per_treatment = 4 ###
+    periods_per_treatment = 15 ###
     num_rounds = periods_per_treatment
     conversion_rate = 5
     group_split = int(players_per_group / 2)
@@ -257,24 +257,27 @@ class Group(BaseGroup):
         #was_traded = literal_eval(self.was_traded)
         #was_traded_to_seller = literal_eval(self.was_traded_to_seller)
 
-        for i in range(1,6):
-            try:
+        for i in range(1,7):
+            #try:
                 player = self.get_player_by_id(i)
                 for j in range(0, Constants.group_split):
                     offers_from = literal_eval(player.player_offers)
                     offers_to = literal_eval(player.offers_to_player)
-                    print(offers_from)
-                    print(offers_to)
                     if (offers_to[j]>0):
                         if (offers_to[j]==offers_from[j]):
                             player.is_winner = True
+                            if player.player_type == "seller":
+                                was_traded = literal_eval(self.was_traded)
+                                was_traded[int(i/2)-1] = 1
+                                self.was_traded = str(was_traded)
+
                             if (player.player_type == "buyer"):
                                 player.set_payoff(offers_to[j],offers_from[j],j+1)
                             else:
                                 player.set_payoff(offers_to[j],offers_from[j],player.seller_id+1)
             #                                                       ask_price,i)
-            except:
-                pass
+            #except:
+            #    pass
                 #player_id,id_in_group,highest_bid,ask_price = \
                 #consumers.return_auction_info(i,round_number,
                 #subsession_id,group_id)

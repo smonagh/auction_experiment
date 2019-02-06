@@ -32,18 +32,18 @@
 
 <h2> Widgets </h2>
 
-<p>In each round you will have the opportunity to buy one widget from a seller.
-  Today’s experiment will have {{Constants.num_rounds}} identical rounds.</p>
+    <p>Today’s experiment will have {{Constants.num_rounds}} identical rounds. Each seller will be endowed with one widget in each round of the experiment.
+    In each round you will have the opportunity to buy one widget from one of the three sellers for E$. </p>
 
-  <p> Each widget has a value to you. Each seller has one widget for sale.
-    Each buyer has different values for the widgets. Likewise, each seller has a different
+  <p> Each seller has only one widget for sale.
+    Each buyer has different values for the widgets sold. Likewise, each seller has a different
       value for their own widget. Every buyer and seller will only see their own values for the widgets.
       The values of widgets for buyers and sellers will remain the same across rounds throughout this experiment.</p>
 
 <h2> Trading </h2>
 
     <p>In each round you will try to buy one widget by negotiating a trade with the
-     sellers. At the same time sellers will be negotiating with you and the other buyers.</p>
+     sellers. At the same time, sellers will be negotiating with you and the other buyers.</p>
 
     <p>You will see a table with
       information about the widgets - the seller of the widget and its value to you.</p>
@@ -57,44 +57,51 @@
         <tr>
             <td>Seller 1</td>
           <td>Widget 1</td>
-          <td>7</td>
+          <td>300</td>
         </tr>
         <tr>
             <td>Seller 2</td>
           <td>Widget 2</td>
-          <td>1</td>
+          <td>290</td>
         </tr>
         <tr>
           <td>Seller 3</td>
           <td>Widget 3</td>
-          <td>9</td>
+          <td>280</td>
       </table>
     </div>
 
-    <p>You will also see a chatbox for each seller and two boxes to enter a message or an offer to the seller:</p>
+    <p>You will also see three chatboxes (one for each seller) and two fields below each chatbox to enter a message or an offer to the seller:</p>
 
-    <div class='my-chat' id='mychat_1'>
-        <div class='otree-chat__messages'>
-            <div class="otree-chat__msg_my">
-                            <span class='otree-chat__nickname'> Buyer 1 </span>
-                            <span class='otree-chat__body'> Example message </span>
+    {% for config in player.chat_configs %}
+        <h5>{{ config.label }}</h5>
+        <div class='my-chat' id='mychat_{{config.channel}}'>
+            <div class='otree-chat__messages' style="width:45%">
+                <div class="otree-chat__msg_my">
+                                <span class='otree-chat__nickname'> {{player.chat_nickname}} </span>
+                                <span class='otree-chat__body'> Example message from you </span>
+                </div>
+                <div class="otree-chat__msg_other">
+                                <svpan class='otree-chat__nickname'> Seller {{forloop.counter}} </svpan>
+                                <span class='otree-chat__body'> Example message from Seller {{forloop.counter}}</span>
+                </div>
             </div>
-            <div class="otree-chat__msg_other">
-                            <span class='otree-chat__nickname'> Seller 1 </span>
-                            <span class='otree-chat__body'> Example message </span>
-            </div>
+            <input type="text" placeholder="Enter Your Message" class="chatbox" style="width:45%">
+            <input type="reset" class="chat_btn btn  btn-large btn-primary next-button" value="Send Message" style="pointer-events:none;">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="number" placeholder="Enter Your Offer" class="bidbox" id="bidbox_{{forloop.counter}}">
+            <!-- Input button returns the object_id, the current standing bid,
+                 the ask price for the object, and the new input bid to
+                 javascript to verify that the bid clears the previous
+                 one -->
+            <input id='bid_btn_{{forloop.counter}}'
+                   class="bid_btn btn  btn-large btn-primary next-button"
+                   type="reset" value="Send Offer" style="pointer-events:none;">
         </div>
-        <input type="text" placeholder="Enter Your Message" class="chatbox" style="width:45%">
-        <input type="reset" class="chat_btn btn  btn-large btn-primary next-button" value="Send Message" style="pointer-events:none;">
-        <input type="number" placeholder="Enter Your Offer" class="bidbox" id="bidbox_1">
-        <!-- Input button returns the widget_id, the current standing bid,
-             the ask price for the widget, and the new input bid to
-             javascript to verify that the bid clears the previous
-             one -->
-        <input id='bid_btn_1'
-               class="bid_btn btn  btn-large btn-primary next-button"
-               type="reset" value="Send Offer" style="pointer-events:none;">
-    </div>
+    <!-- mychat -->
+        {% include "telephone_market/mychat.html" with nickname=player.chat_nickname channel=config.channel participant_id=1 my_id=player.buyer_id box_id=forloop.counter%}
+    <!-- /mychat -->
+    {% endfor %}
     <script>
         $('.bidbox').on('keypress', function (e) {
             if (e.which == 13) {
@@ -110,7 +117,9 @@
 
     <p></p>
 
-    <p>You can submit text messages and offers to any of the three sellers. Messages can contain any text. Offers must be <b>whole numbers (integer)</b>.</p>
+    <p>You can submit text messages or offers to trade at a particular price to any of the three sellers. Messages can contain any text. Offers must be <b>whole numbers (integers)</b> and are submitted through the separate "Send Offer" box. Remember to make and accept offers through the offer box, because verbal agreements through messages will not be registered by the trading mechanism. </p>
+
+    <p>All communication is private. For example, messages and offers in the chatbox "Chat with Seller 2" will only be seen by you and seller 2.</p>
 
     <p>Buyers' offers have to be at or below the value of the widget to the buyer.
     Sellers' offers have to be at or above the value of the widget to the seller.
@@ -121,7 +130,7 @@
 
         If the other party accepts the trade, <b>the purchase will not happen instantaneously</b>. Both you and the seller can still change your mind and negotiate another deal until the round ends.
 
-        <p>If you and one of the sellers have a standing trade when the round ends,
+        <p>If you and one of the sellers have a standing accepted trade when the round ends,
    then you purchase the widget from the seller at a price equal to the agreed price. If you did not have
     the trade at the end of the round,
     then you do not buy any widget and earn 0 E$. If at any time you have a standing trade,
@@ -130,23 +139,23 @@
   <p>
     You are restricted to purchasing one widget per round.
     This means that once you have a standing offer or a trade you will not
-    be permitted to  make an offer for another widget until you cancel your current offer/trade.
+    be permitted to make an offer for another widget until you cancel your current offer/trade by clicking the "Cancel offer/trade" button.
   </p>
 
- <p> Trading ends after {{timeout_duration}} seconds (A warning message will appear 60 seconds before the end of round).
-   At the end of each round you will be told your earnings for that round. Only one round will be randomly chosen to be
+    <p> Trading ends after 4 minutes. You will see a timer with the remaining time.</p>
+   <p>At the end of each round you will be told your earnings for that round and prices for all traded widgets. Only one round will be randomly chosen to be
      paid at the end of the experiment.</p>
 
 
     <h2> Earnings </h2>
-The earnings in each round equal the total value
-     of the widget you bought minus your total payment (bid) for buying that
+The earnings in each round equal the value
+     of the widget you bought minus your payment (agreed price) for buying that
       widget:</p>
 
-<p style="text-align:center;"> <b>Earnings = Widget's Value - Bid</b> </p>
+<p style="text-align:center;"> <b>Earnings = Widget's Value - Price</b> </p>
 
-<p> For instance, if your value for a widget is 7 E$ and you bought
-   the widget with bid of 3 E$, then your earnings for that round will be 4 E$.
+<p> For instance, if your value for a widget is 300 E$ and you bought
+   the widget at a price of 200 E$, then your earnings for that round will be 100 E$.
    If you do not buy the widget, your earnings for the round will be 0 E$.
 </p>
 
@@ -163,14 +172,14 @@ The earnings in each round equal the total value
 
     <h2> Important points to remember </h2>
    <ul>
-     <li> You can not lose money by trading (the bidding system prevents you from bidding too high); </li>
+     <li> You can not lose money by trading (the trading system prevents you from making or accepting an offer that is too high); </li>
      <li> If you do not buy a widget, you earn 0 E$; </li>
        <li> Each seller has one widget to trade per round;</li>
      <li> Each buyer may only buy one widget per round;</li>
      <li> Both buyers and sellers may have different values for the same widget;</li>
        <li> Both buyers and sellers are free to change their minds during the round; </li>
      <li> Only one round will be chosen to be paid in US$; </li>
-     <li> Bidding for the round stops after {{timeout_duration}} seconds; </li>
+     <li> Trading for the round stops after 4 minutes; </li>
      <li> Today’s experiment will include {{Constants.num_rounds}} rounds; </li>
      <li> Values for the widgets will always be the same, but the trading may result in different prices each round.</li>
 

@@ -13,14 +13,10 @@
             at {{player.object_reservation}} E$ and bought it for a price
              of {{player.winning_bid}} E$</p>
     {% elif player_type == "seller" %}
-        {% if player.traded_with_himself %}
-            <p>You bought your own Widget, {{player.object_traded}}
-                at {{player.winning_bid}} E$, so you did not make a transaction in this round.</p>
-        {% else %}
             <p>You valued Widget {{player.object_traded}}
-                        at {{player.object_reservation}} E$ and sold it for a price of
-                         {{player.winning_bid}} E$</p>
-        {% endif %}
+                at {{player.object_reservation}} E$ and sold it for a price of
+                 {{player.winning_bid}} E$</p>
+
     {% endif %}
 
 {% else %}
@@ -29,57 +25,41 @@
 {% endif %}
     <p>Your earnings in this round are {{player.payout}}E$</p>
 <!-- Show table with outcomes -->
-<p>Recorded below are the minimum prices, highest bids, and transactions for
+<p>Recorded below are all transactions for
    this round.</p>
 
 
-<!--<table style="width:100%" border="spacing:10px" >-->
-    <!--<tr>-->
-        <!--<th><center>Widget</center></th>-->
-        <!--<th><center>Your value</center></th>-->
-        <!--{% if subsession.treatment == 'minimum_price' %}-->
-        <!--<th><center>Minimum Price</center></th>-->
-        <!--{% else %}-->
-        <!--<th><center>Minimum Price</center></th>-->
-        <!--{% endif %}-->
-        <!--<th><center>Highest Bid</center></th>-->
-        <!--<th><center>Was Widget Traded?</center></th>-->
-    <!--</tr>-->
+<table style="width:100%" border="spacing:10px" >
+    <tr>
+        <th><center>Widget</center></th>
+        <th><center>Your value</center></th>
+        <th><center>Price (or highest standing offer)</center></th>
+        <th><center>Was Widget Traded?</center></th>
+    </tr>
 
-<!--{% for object,ask,bid,reservation,object_traded,object_traded_to_seller in result_zip %}-->
-        <!--<tr id="row_{{forloop.counter}}">-->
-            <!--{% if player_type == "seller" %}-->
-                <!--{% if  reservation > 0 %}-->
-                    <!--<td id="object_{{forloop.counter}}">(Your) {{object}}</td>-->
-                    <!--<td id="object_{{forloop.counter}}">{{reservation}}</td>-->
-                <!--{% else %}-->
-                    <!--<td id="object_{{forloop.counter}}">{{object}}</td>-->
-                    <!--<td id="object_{{forloop.counter}}">{{reservation}}</td>-->
-                <!--{% endif %}-->
-            <!--{% else %}-->
-                    <!--<td id="object_{{forloop.counter}}">{{object}}</td>-->
-                    <!--<td id="object_{{forloop.counter}}">{{reservation}}</td>-->
-            <!--{% endif %}-->
-            <!--{% if subsession.treatment == 'minimum_price' %}-->
-            <!--<td id="ask_price_{{forloop.counter}}">{{ask}}</td>-->
-            <!--{% elif ask > 0 %}-->
-            <!--<td id="ask_price_{{forloop.counter}}">{{ask}}</td>-->
-            <!--{% else %}-->
-            <!--<td id="ask_price_{{forloop.counter}}">-</td>-->
-            <!--{% endif %}-->
-            <!--<td id="highest_bid_{{forloop.counter}}">{{bid}}</td>-->
-            <!--{% if object_traded %}-->
-                <!--{% if object_traded_to_seller %}-->
-                    <!--<td id="object_traded_{{forloop.counter}}">No (seller bought their own widget)</td>-->
-                <!--{% else %}-->
-                    <!--<td id="object_traded_{{forloop.counter}}">Yes</td>-->
-                <!--{% endif %}-->
-            <!--{% else %}-->
-                <!--<td id="object_traded_{{forloop.counter}}">No</td>-->
-            <!--{% endif %}-->
-        <!--</tr>-->
-<!--{% endfor %}-->
-<!--</table>-->
+{% for object,bid,reservation,object_traded in result_zip %}
+        <tr id="row_{{forloop.counter}}">
+            {% if player_type == "seller" %}
+                {% if  reservation > 0 %}
+                    <td id="object_{{forloop.counter}}">(Your) {{object}}</td>
+                    <td id="res_{{forloop.counter}}">{{reservation}}</td>
+                {% else %}
+                    <td id="object_{{forloop.counter}}">{{object}}</td>
+                    <td id="res_{{forloop.counter}}">{{reservation}}</td>
+                {% endif %}
+            {% else %}
+                    <td id="object_{{forloop.counter}}">{{object}}</td>
+                    <td id="res_{{forloop.counter}}">{{reservation}}</td>
+            {% endif %}
+            <td id="highest_bid_{{forloop.counter}}">{{bid}}</td>
+            {% if object_traded %}
+                <td id="object_traded_{{forloop.counter}}">Yes</td>
+            {% else %}
+                <td id="object_traded_{{forloop.counter}}">No</td>
+            {% endif %}
+        </tr>
+{% endfor %}
+</table>
 {% next_button %}
 </div>
 

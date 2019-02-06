@@ -21,7 +21,19 @@ class Instructions_Seller(Page):
     # run.
     def vars_for_template(self):
         return {'treatment_string':self.session.config['treatment_string'],
-                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration']}
+                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration'],
+                'time_started': self.group.tstmp,
+                'player_offers': self.player.player_offers,
+                'offers_to_player': self.player.offers_to_player,
+                'player_res': [0, 0, 0],
+                'player_id': self.player.id,
+                'id_in_group': self.player.id_in_group,
+                'group_id': self.group.id,
+                'time_left': self.group.time_elapsed,
+                'treatment': self.subsession.treatment,
+                'end_on_timer': Constants.end_on_timer,
+                'seller_id': self.player.seller_id,
+                }
 
 class Instructions_Buyer(Page):
     """
@@ -37,7 +49,19 @@ class Instructions_Buyer(Page):
     # run.
     def vars_for_template(self):
         return {'treatment_string':self.subsession.treatment,
-                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration']}
+                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration'],
+                'time_started': self.group.tstmp,
+                'player_offers': self.player.player_offers,
+                'offers_to_player': self.player.offers_to_player,
+                'player_res': [0,0,0],
+                'player_id': self.player.id,
+                'id_in_group': self.player.id_in_group,
+                'group_id': self.group.id,
+                'time_left': self.group.time_elapsed,
+                'treatment': self.subsession.treatment,
+                'end_on_timer': Constants.end_on_timer,
+                'seller_id': self.player.seller_id,
+                }
 
 class PreWaitPage(WaitPage):
 
@@ -171,13 +195,25 @@ class Results(Page):
     def vars_for_template(self):
         object_list = ['Widget {}'.format(i) for i in range(1,
                                                     Constants.group_split + 1)]
-        ask_list = literal_eval(self.group.group_asks)
-        bid_list = literal_eval(self.group.group_bids)
+        bid_list=[0,0,0]
+
+        for i in [2,4,6]: #sellers
+            player = self.group.get_player_by_id(i)
+            if player.is_winner:
+                bid_list[int(i/2)-1]=player.winning_bid
+            else:
+                offers_to = max(literal_eval(player.offers_to_player))
+                bid_list[int(i/2)-1] = offers_to
+
+
+
+
         was_traded = literal_eval(self.group.was_traded)
-        was_traded_to_seller = literal_eval(self.group.was_traded_to_seller)
         res_list = literal_eval(self.player.player_reservations)
-        result_zip = zip(object_list,ask_list,bid_list,res_list,was_traded,was_traded_to_seller)
+        result_zip = zip(object_list,bid_list,res_list,was_traded)
         return{'player_type':self.player.player_type,'result_zip':result_zip}
+
+
 
     def before_next_page(self):
         # if last round calculate final payoffs
