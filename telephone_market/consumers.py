@@ -25,7 +25,7 @@ def ws_message(message, group_name):
     if (jsonmessage['identifier'] == "msg"):
         textforgroup = json.dumps(jsonmessage)
         myplayer.bidding_log = myplayer.bidding_log + "[auction][" + str(
-        datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: bid made: " + str(textforgroup)
+        datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: msg made: " + str(textforgroup)
         myplayer.save()
         Group(group_name).send({
             "text": textforgroup,
