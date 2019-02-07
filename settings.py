@@ -110,7 +110,7 @@ SESSION_CONFIGS = [
          # 'treatment_string':"['minimum_price','sellers_bid']",
          'treatment_string': "telephone_pit",
          'doc': """Telephone pit trading market""",
-         'timeout_duration': 60*4, #60*4
+         'timeout_duration': 20*4, #60*4
          'app_sequence': ['telephone_market']},
 
         #MP

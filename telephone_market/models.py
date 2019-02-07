@@ -28,7 +28,7 @@ class Constants(BaseConstants):
     buyer_res_max = 10
     end_on_timer = 1
     players_per_group = 6
-    periods_per_treatment = 15 ###
+    periods_per_treatment = 3 ###
     num_rounds = periods_per_treatment
     conversion_rate = 5
     group_split = int(players_per_group / 2)
@@ -360,11 +360,19 @@ class Player(BasePlayer):
                 else:
                     b_chat_id = other.id_in_group
                     s_chat_id = self.id_in_group
+                if other.chat_nickname() == 'Seller 1':
+                    chatlabel = 'Chat with {} (sells widget 1)'.format(other.chat_nickname())
+                elif other.chat_nickname() == 'Seller 2':
+                    chatlabel = 'Chat with {} (sells widget 2)'.format(other.chat_nickname())
+                elif other.chat_nickname() == 'Seller 3':
+                    chatlabel = 'Chat with {} (sells widget 3)'.format(other.chat_nickname())
+                else:
+                    chatlabel = 'Chat with {}'.format(other.chat_nickname())
                 configs.append({
                     # make a name for the channel that is the same for all
                     # channel members. That's why we order it (lower, higher)
                     'channel': '{}-{}-{}'.format(self.group.id, b_chat_id, s_chat_id),
-                    'label': 'Chat with {}'.format(other.chat_nickname())
+                    'label': chatlabel
                 })
         return configs
 
