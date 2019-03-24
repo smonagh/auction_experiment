@@ -44,30 +44,6 @@ function displayError(err){
     setTimeout(function(){$('#ErrorContainer').hide()},5000);
 }
 
-//Timeout function. Alert stops the counting, therefore errors are inline instead of alerts.
-var timeoutHandle = setInterval(TimeoutTimer, 1000);
-var timeout={{timeout_duration}};
-function TimeoutTimer(){
-    timeout=timeout-1; //decrement timer
-    if (timeout>0 && timeout<=({{timeout_duration}}-20)){
-        //Only show timer when <=({{timeout_duration}}-20) seconds remain
-        if (timeout>1){
-            $('#TimerText').text('in about '+String(timeout)+ ' second(s)');
-        }else{
-            $('#TimerText').text('now');
-        }
-        $('#TimerContainer').show();
-    } else if (timeout>({{timeout_duration}}-20)){
-        //Hide timer when >{{timeout_duration}}-20 seconds remain
-        $('#TimerContainer').hide();
-    } else if (timeout>-100){
-        //Send message that timeout has ended.
-        timeout=-100
-        console.log('closing for timeout');
-        soft_close();
-    }
-}
-
 //Prevent enter key from submitting the page_submit
 //Not optimal but should stop all relevant use cases.
 for (i=0;i<10;i++){
@@ -97,11 +73,6 @@ socket.onopen = function () {
 socket.onmessage = function (event) {
      var obj = jQuery.parseJSON(event.data);
      console.log(obj);
-     // Check to see if all players are done
-     if (obj.bid_status == 'done'){
-       // If they are then submit page
-       $('#page_submit').click();
-     };
 
      // Check to make sure player is not highest bidder
      if (obj.highest_bid == true){
@@ -131,7 +102,34 @@ socket.onmessage = function (event) {
 
         // Reset timeout if this was a valid bid
         if (!obj.hasOwnProperty('bid_status')){
-            timeout=({{timeout_duration}});
+            // timeout=({{timeout_duration}});
+            var currentDate = new Date();
+            var ts = new Date().getTime();
+            var time_started = new Date(obj.bid_tstmp);
+            var remainingTimeoutSeconds =  (time_started.valueOf()-ts/1000+{{timeout_duration}});
+            var milliseconds = Math.floor(remainingTimeoutSeconds * 1000);
+            $('.otree-timer__time-left').countdown(currentDate.valueOf() + milliseconds)
+                    .on('update.countdown', function (event) {
+                        // %-N is "Total count of minutes till the end, non-padded"
+                        // %S is seconds left
+                        var format = '%-N:%S';
+                        $(this).html(event.strftime(format));
+                        if (event.offset.totalSeconds > 20) {
+                            $('.otree-timer').hide();
+                        } else {
+                            $('.otree-timer').show();
+                        }
+                    })
+                    .on('finish.countdown', function (event) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: 'timeout_happened',
+                            value: '1'
+                        }).appendTo('form');
+                        console.log("bid submitting");
+                        //$('#form').submit();
+                    });
+
             // Update text to reflect new highest bid
             if (obj.hasOwnProperty('ask_price')){
                 is_ask=1;
@@ -267,25 +265,40 @@ update_price = function(bid,id,is_ask){
 update_highest_bid = function(object_id,bid){
   $('#highest_bid_'+object_id).show();
 };
+</script>
+<!--
+resync timer
+-->
+<script>
+setTimeout(
+    function () {
 
-// Javascript function to implement soft close
-
-soft_close = function(){
-  var msg = {
-    identifier:'close',
-    vars:{
-      player_id:{{player.id_in_subsession}},
-      id_in_group: {{player.id_in_group}}
-    }
-  };
-  if (socket.readyState === socket.OPEN) {
-    socket.send(JSON.stringify(msg))
-  };
-  if (1!={{ end_on_timer }}){
-  $('#close_button').hide();
-  $('#after_close').show();
-  };
-};
+        var currentDate = new Date();
+        var ts = new Date().getTime();
+        var time_started = {{time_started}};
+        var remainingTimeoutSeconds =  (time_started-ts/1000+{{timeout_duration}});
+        var milliseconds = Math.floor(remainingTimeoutSeconds * 1000);
+        $('.otree-timer__time-left').countdown(currentDate.valueOf() + milliseconds)
+            .on('update.countdown', function (event) {
+                // %-N is "Total count of minutes till the end, non-padded"
+                // %S is seconds left
+                if (event.offset.totalSeconds > 20) {
+                    $('.otree-timer').hide();
+                } else {
+                    $('.otree-timer').show();
+                }
+                var format = '%-N:%S';
+                $(this).html(event.strftime(format));
+            })
+            .on('finish.countdown', function (event) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'timeout_happened',
+                    value: '1'
+                }).appendTo('form');
+                $('#form').submit();
+            });
+    }, 1000);
 </script>
 {% endblock %}
 
@@ -391,5 +404,13 @@ table tr:hover td {
 .btn{
 
 }
+.otree-timer {
+<!--    display: none;-->
+}
+</style>
+<style>
+    .otree-timer {
+        display: none;
+    }
 </style>
 {% endblock %}

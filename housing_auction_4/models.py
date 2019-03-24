@@ -28,7 +28,7 @@ class Constants(BaseConstants):
     buyer_res_max = 10
     end_on_timer = 1
     players_per_group = 6
-    periods_per_treatment = 20 ###
+    periods_per_treatment = 15 ###
     num_rounds = periods_per_treatment
     conversion_rate = 5
     group_split = int(players_per_group / 2)
@@ -201,6 +201,7 @@ class Group(BaseGroup):
     was_traded_to_seller = models.CharField()
     time_elapsed = models.IntegerField(initial=0)
     bidding_log = models.LongStringField()
+    tstmp = models.FloatField()
 
     def get_group_asks(self):
         """Function returns a list of group ask prices"""

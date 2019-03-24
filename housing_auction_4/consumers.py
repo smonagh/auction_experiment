@@ -18,14 +18,8 @@ def ws_message(message, group_name):
     jsonmessage = json.loads(message.content['text'])
     mygroup = OtreeGroup.objects.get(id=group_id)
     # Check to see if soft close
-    if jsonmessage['identifier'] == 'close':
-        bid_status = soft_close(mygroup,jsonmessage)
-        my_dict = {'bid_status':bid_status}
-        textforgroup = json.dumps(my_dict)
-        Group(group_name).send({
-            "text": textforgroup,
-        })
-    elif jsonmessage['identifier'] == 'bid':
+    if jsonmessage['identifier'] == 'bid':
+        print(jsonmessage)
         # Check to make sure bid is within the budget constraint
         highest_bidder = check_highest_bidder(mygroup,jsonmessage)
 
@@ -39,7 +33,7 @@ def ws_message(message, group_name):
             if highest_bidder:
                 my_dict = {'highest_bid':True,
                 'bidder_id':jsonmessage['vars']['player_id'],
-                'bid_status':'not done',
+                'bid_status':'not done'
                 }
                 textforgroup = json.dumps(my_dict)
                 Group(group_name).send({
@@ -52,6 +46,8 @@ def ws_message(message, group_name):
                         i.save()
                 # Send messages to players
                 save_auction(jsonmessage,mygroup,0)
+                mygroup.tstmp = time.time()
+                mygroup.save()
                 my_dict = update_price(jsonmessage,mygroup)
                 print("[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: bid made: "+ str(my_dict))
                 mygroup.bidding_log = mygroup.bidding_log +  "[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: bid made: "+ str(my_dict)
@@ -71,6 +67,8 @@ def ws_message(message, group_name):
                 i.save()
         # Send messages to players
         save_auction(jsonmessage,mygroup,0)
+        mygroup.tstmp = time.time()
+        mygroup.save()
         my_dict = update_price(jsonmessage,mygroup)
         print("[auction]["+str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))+"]: ask made: "+ str(my_dict))
         mygroup.bidding_log = mygroup.bidding_log + "[auction][" + str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: ask made: " + str(my_dict)
@@ -135,6 +133,7 @@ def update_price(message,group):
         return_dict['bidder_id'] = message['vars']['player_id']
         return_dict['budget'] = group.get_player_budget(message['vars']['id_in_group'])
         return_dict['object_id'] = object_id
+        return_dict['bid_tstmp'] = group.tstmp
     else:
         # Get object id from message
         object_id = message['vars']['object_id']
@@ -149,6 +148,7 @@ def update_price(message,group):
         return_dict['bidder_id'] = message['vars']['player_id']
         return_dict['budget'] = group.get_player_budget(message['vars']['id_in_group'])
         return_dict['object_id'] = object_id
+        return_dict['bid_tstmp'] = group.tstmp
     # return_dict['is_ask'] = message['vars']['is_ask']
     return return_dict
 

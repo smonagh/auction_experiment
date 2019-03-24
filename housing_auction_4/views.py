@@ -5,6 +5,7 @@ from .models import Constants, Auction
 from datetime import datetime
 from ast import literal_eval
 from math import ceil
+import time
 
 class Instructions_Seller(Page):
     """
@@ -13,13 +14,15 @@ class Instructions_Seller(Page):
     # Only display in the first round
     def is_displayed(self):
         if self.subsession.round_number == 1 and self.player.player_type == 'seller':
-            return self
+            return True
+        return False
 
     # Adjust what instructions are being display according to treatments being
     # run.
     def vars_for_template(self):
         return {'treatment_string':self.session.config['treatment_string'],
-                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration']}
+                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration'],
+                'time_started': self.group.tstmp}
 
     form_model = models.Player
     form_fields = ['ask_price']
@@ -31,13 +34,15 @@ class Instructions_Buyer(Page):
     # Only display in the first round
     def is_displayed(self):
         if self.subsession.round_number == 1 and self.player.player_type == 'buyer':
-            return self
+            return True
+        return False
 
     # Adjust what instructions are being display according to treatments being
     # run.
     def vars_for_template(self):
         return {'treatment_string':self.subsession.treatment,
-                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration']}
+                'player_type':self.player.player_type,'timeout_duration':self.session.config['timeout_duration'],
+                'time_started': self.group.tstmp}
 
 class PreWaitPage(WaitPage):
 
@@ -51,7 +56,8 @@ class SetAsk(Page):
 
     def is_displayed(self):
         if self.player.player_type == 'seller' and self.subsession.treatment == 'minimum_price':
-            return self
+            return True
+        return False
 
     def vars_for_template(self):
         # Return seller reservation value for assigned object
@@ -65,6 +71,12 @@ class Bid(Page):
     """
     Page where buyers can submit their bids for objects.
     """
+    timer_text = 'If no successful bids are made, this round will end in '
+
+    def get_timeout_seconds(self):
+        return 60*60 # one hour
+        #print(self.group.tstmp + self.session.config['timeout_duration'] - time.time())
+        #return self.group.tstmp + self.session.config['timeout_duration'] - time.time()
 
     def vars_for_template(self):
         # Create record in database for start time
@@ -97,7 +109,8 @@ class Bid(Page):
                 'time_left':self.group.time_elapsed,
                 'treatment':self.subsession.treatment,
                 'end_on_timer':Constants.end_on_timer,
-                'timeout_duration': self.session.config['timeout_duration']}
+                'timeout_duration': self.session.config['timeout_duration'],
+                'time_started': self.group.tstmp}
 
 
 class Bid_Buyer_MP(Bid):
@@ -105,28 +118,32 @@ class Bid_Buyer_MP(Bid):
     def is_displayed(self):
         if self.player.player_type == 'buyer' and \
          self.subsession.treatment == 'minimum_price':
-            return self
+            return True
+        return False
 
 class Bid_Seller_MP(Bid):
     """Page for seller in the full information treatment"""
     def is_displayed(self):
         if self.player.player_type == 'seller' and \
          self.subsession.treatment == 'minimum_price':
-            return self
+            return True
+        return False
 
 class Bid_Buyer_SB(Bid):
     """Page for buyers in the no information treatment"""
     def is_displayed(self):
         if self.player.player_type == 'buyer' and \
          self.subsession.treatment == 'sellers_bid':
-            return self
+            return True
+        return False
 
 class Bid_Seller_SB(Bid):
     """Page for buyers in the no information treatment"""
     def is_displayed(self):
         if self.player.player_type == 'seller' and \
          self.subsession.treatment == 'sellers_bid':
-            return self
+            return True
+        return False
 
 class Bid_Buyer_DA(Bid):
     """Page for buyers in the no information treatment"""
@@ -134,7 +151,8 @@ class Bid_Buyer_DA(Bid):
     def is_displayed(self):
         if self.player.player_type == 'buyer' and \
                 self.subsession.treatment == 'double_auction':
-            return self
+            return True
+        return False
 
 class Bid_Seller_DA(Bid):
     """Page for buyers in the no information treatment"""
@@ -142,11 +160,13 @@ class Bid_Seller_DA(Bid):
     def is_displayed(self):
         if self.player.player_type == 'seller' and \
                 self.subsession.treatment == 'double_auction':
-            return self
+            return True
+        return False
 
 class BidWaitPage(WaitPage):
 
     def after_all_players_arrive(self):
+        self.group.tstmp = time.time()
         """Set group ask variable to be used in next template"""
         # Check to make sure that asks are above seller reservations
         for player in self.group.get_players():
@@ -202,7 +222,8 @@ class FinalResults(Page):
     def is_displayed(self):
         # If the last round of the game then return page
         if self.subsession.round_number == Constants.num_rounds:
-            return self
+            return True
+        return False
     def vars_for_template(self):
         payout_list = []
         for i in self.player.in_all_rounds():
