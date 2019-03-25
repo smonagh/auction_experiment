@@ -130,6 +130,36 @@ socket.onmessage = function (event) {
                         //$('#form').submit();
                     });
 
+                    // once more:
+                    resync_time=setTimeout(function() {
+                    var currentDate = new Date();
+                    var ts = new Date().getTime();
+                    var time_started = new Date(obj.bid_tstmp);
+                    var remainingTimeoutSeconds =  (time_started.valueOf()-ts/1000+{{timeout_duration}});
+                    var milliseconds = Math.floor(remainingTimeoutSeconds * 1000);
+                    $('.otree-timer__time-left').countdown(currentDate.valueOf() + milliseconds)
+                    .on('update.countdown', function (event) {
+                        // %-N is "Total count of minutes till the end, non-padded"
+                        // %S is seconds left
+                        var format = '%-N:%S';
+                        $(this).html(event.strftime(format));
+                        if (event.offset.totalSeconds > 20) {
+                            $('.otree-timer').hide();
+                        } else {
+                            $('.otree-timer').show();
+                        }
+                    })
+                    .on('finish.countdown', function (event) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: 'timeout_happened',
+                            value: '1'
+                        }).appendTo('form');
+                        console.log("bid submitting");
+                        //$('#form').submit();
+                    });
+                    },30000)
+
             // Update text to reflect new highest bid
             if (obj.hasOwnProperty('ask_price')){
                 is_ask=1;
