@@ -17,6 +17,6 @@ housing_auction_routing = [route("websocket.connect",
                 ws_disconnect,  path=r"^/chat/(?P<group_name>[a-zA-Z0-9_/-]+)$"),]
 
 channel_routing += [
-#include(housing_auction_routing, path=r"^/housing_auction_4"),
-include(housing_auction_routing, path=r"^/telephone_market"),
+include(housing_auction_routing, path=r"^/housing_auction_4"),
+#include(housing_auction_routing, path=r"^/telephone_market"),
 ]

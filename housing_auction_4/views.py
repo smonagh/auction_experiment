@@ -112,6 +112,9 @@ class Bid(Page):
                 'timeout_duration': self.session.config['timeout_duration'],
                 'time_started': self.group.tstmp}
 
+    def before_next_page(self):
+        self.group.fin_bid = True
+
 
 class Bid_Buyer_MP(Bid):
     """Page for buyers in the full information treatment"""

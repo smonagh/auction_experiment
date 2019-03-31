@@ -5,8 +5,8 @@ import dj_database_url
 
 import otree.settings
 
-#CHANNEL_ROUTING = 'housing_auction_4.routing.channel_routing'
-CHANNEL_ROUTING = 'telephone_market.routing.channel_routing'
+CHANNEL_ROUTING = 'housing_auction_4.routing.channel_routing'
+#CHANNEL_ROUTING = 'telephone_market.routing.channel_routing'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # the environment variable OTREE_PRODUCTION controls whether Django runs in

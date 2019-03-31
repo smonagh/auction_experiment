@@ -17,6 +17,10 @@ def ws_message(message, group_name):
     group_id = group_name[5:]
     jsonmessage = json.loads(message.content['text'])
     mygroup = OtreeGroup.objects.get(id=group_id)
+
+    if mygroup.fin_bid:
+        return
+
     # Check to see if soft close
     if jsonmessage['identifier'] == 'bid':
         print(jsonmessage)
@@ -40,10 +44,10 @@ def ws_message(message, group_name):
                     "text": textforgroup,
                 })
             else:  # If not, send message to update information on players screen
-                if Constants.end_on_timer:
-                    for i in mygroup.get_players():
-                        i.fin_bid = False
-                        i.save()
+                #if Constants.end_on_timer:
+                    #for i in mygroup.get_players():
+                        #i.fin_bid = False
+                        #i.save()
                 # Send messages to players
                 save_auction(jsonmessage,mygroup,0)
                 mygroup.tstmp = time.time()
@@ -61,10 +65,10 @@ def ws_message(message, group_name):
                         })
     elif jsonmessage['identifier'] == 'ask':
         # Check to make sure bid is within the budget constraint
-        if Constants.end_on_timer:
-            for i in mygroup.get_players():
-                i.fin_bid = False
-                i.save()
+        #if Constants.end_on_timer:
+            #for i in mygroup.get_players():
+                #i.fin_bid = False
+                #i.save()
         # Send messages to players
         save_auction(jsonmessage,mygroup,0)
         mygroup.tstmp = time.time()

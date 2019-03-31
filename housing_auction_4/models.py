@@ -82,6 +82,7 @@ class Subsession(BaseSubsession):
             group.was_traded = str(was_traded)
             group.was_traded_to_seller = str(was_traded_to_seller)
             group.bidding_log = 'First round started \n'
+            group.fin_bid = False
 
             # Define player level variables
             # Create index for seller object assignment
@@ -96,7 +97,7 @@ class Subsession(BaseSubsession):
                 player.player_type)
                 player.player_reservations = str(my_dict)
                 # Assign intial variable for "finished bidding"
-                player.fin_bid = False
+                #player.fin_bid = False
                 # If player is a seller assign him an object and give id
                 if player.player_type == 'seller':
                     #This is for random assignment of seller objects
@@ -126,6 +127,7 @@ class Subsession(BaseSubsession):
             group.was_traded = group.in_round(1).was_traded
             group.was_traded_to_seller = group.in_round(1).was_traded_to_seller
             group.bidding_log = 'Round ' + str(self.round_number) + ' started.\n'
+            group.fin_bid = False
 
             # Define player level variables
             for player in group.get_players():
@@ -135,7 +137,7 @@ class Subsession(BaseSubsession):
                 player.player_type = player.in_round(1).player_type
                 player.buyer_id = player.in_round(1).buyer_id
                 player.seller_id = player.in_round(1).seller_id
-                player.fin_bid = False;
+                #player.fin_bid = False;
 
 
         # Assign subsession treatment value
@@ -202,6 +204,7 @@ class Group(BaseGroup):
     time_elapsed = models.IntegerField(initial=0)
     bidding_log = models.LongStringField()
     tstmp = models.FloatField()
+    fin_bid = models.BooleanField(initial=False)
 
     def get_group_asks(self):
         """Function returns a list of group ask prices"""
@@ -311,7 +314,6 @@ class Player(BasePlayer):
     payout_round = models.IntegerField()
     endowment = models.IntegerField(initial=10)
     budget = models.IntegerField()
-    fin_bid = models.BooleanField(initial=False)
 
 
     def get_seller_reservation(self):
