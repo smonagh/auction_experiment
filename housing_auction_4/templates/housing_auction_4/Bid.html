@@ -55,6 +55,36 @@ for (i=0;i<10;i++){
   });
 };
 
+resync = function(bidtstmp) {
+    var currentDate = new Date();
+    var ts = new Date().getTime();
+    var time_started = new Date(bidtstmp);
+    var remainingTimeoutSeconds =  (time_started.valueOf()-ts/1000+{{timeout_duration}});
+    var milliseconds = Math.floor(remainingTimeoutSeconds * 1000);
+    console.log( milliseconds);
+    $('.otree-timer__time-left').countdown(currentDate.valueOf() + milliseconds)
+    .on('update.countdown', function (event) {
+        // %-N is "Total count of minutes till the end, non-padded"
+        // %S is seconds left
+        var format = '%-N:%S';
+        $(this).html(event.strftime(format));
+        if (event.offset.totalSeconds > 20) {
+            $('.otree-timer').hide();
+        } else {
+            $('.otree-timer').show();
+        }
+    })
+    .on('finish.countdown', function (event) {
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'timeout_happened',
+            value: '1'
+        }).appendTo('form');
+        console.log("bid submitting");
+        //$('#form').submit();
+    });
+}
+
 //set up sockets
 var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
 var socket = new WebSocket(ws_scheme +
@@ -108,6 +138,7 @@ socket.onmessage = function (event) {
             var time_started = new Date(obj.bid_tstmp);
             var remainingTimeoutSeconds =  (time_started.valueOf()-ts/1000+{{timeout_duration}});
             var milliseconds = Math.floor(remainingTimeoutSeconds * 1000);
+            console.log(milliseconds);
             $('.otree-timer__time-left').countdown(currentDate.valueOf() + milliseconds)
                     .on('update.countdown', function (event) {
                         // %-N is "Total count of minutes till the end, non-padded"
@@ -131,34 +162,10 @@ socket.onmessage = function (event) {
                     });
 
                     // once more:
-                    resync_time=setTimeout(function() {
-                    var currentDate = new Date();
-                    var ts = new Date().getTime();
-                    var time_started = new Date(obj.bid_tstmp);
-                    var remainingTimeoutSeconds =  (time_started.valueOf()-ts/1000+{{timeout_duration}});
-                    var milliseconds = Math.floor(remainingTimeoutSeconds * 1000);
-                    $('.otree-timer__time-left').countdown(currentDate.valueOf() + milliseconds)
-                    .on('update.countdown', function (event) {
-                        // %-N is "Total count of minutes till the end, non-padded"
-                        // %S is seconds left
-                        var format = '%-N:%S';
-                        $(this).html(event.strftime(format));
-                        if (event.offset.totalSeconds > 20) {
-                            $('.otree-timer').hide();
-                        } else {
-                            $('.otree-timer').show();
-                        }
-                    })
-                    .on('finish.countdown', function (event) {
-                        $('<input>').attr({
-                            type: 'hidden',
-                            name: 'timeout_happened',
-                            value: '1'
-                        }).appendTo('form');
-                        console.log("bid submitting");
-                        //$('#form').submit();
-                    });
-                    },30000)
+                    if(typeof timer_gear !== "undefined"){
+                        clearTimeout(resync_time);
+                    }
+                    resync_time=setTimeout(resync,30000,obj.bid_tstmp);
 
             // Update text to reflect new highest bid
             if (obj.hasOwnProperty('ask_price')){
@@ -308,6 +315,7 @@ setTimeout(
         var time_started = {{time_started}};
         var remainingTimeoutSeconds =  (time_started-ts/1000+{{timeout_duration}});
         var milliseconds = Math.floor(remainingTimeoutSeconds * 1000);
+        console.log(milliseconds);
         $('.otree-timer__time-left').countdown(currentDate.valueOf() + milliseconds)
             .on('update.countdown', function (event) {
                 // %-N is "Total count of minutes till the end, non-padded"
