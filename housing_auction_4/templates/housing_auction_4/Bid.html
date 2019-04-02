@@ -164,7 +164,7 @@ socket.onmessage = function (event) {
                     });
 
                     // once more:
-                    if(typeof timer_gear !== "undefined"){
+                    if(typeof resync_time !== "undefined"){
                         clearTimeout(resync_time);
                     }
                     resync_time=setTimeout(resync,30000,obj.bid_tstmp);
