@@ -167,7 +167,7 @@ socket.onmessage = function (event) {
                     if(typeof resync_time !== "undefined"){
                         clearTimeout(resync_time);
                     }
-                    resync_time=setTimeout(resync,30000,obj.bid_tstmp);
+                    resync_time=setTimeout(resync,25000,obj.bid_tstmp);
 
             // Update text to reflect new highest bid
             if (obj.hasOwnProperty('ask_price')){
