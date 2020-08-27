@@ -1,5 +1,8 @@
-from channels import Group
-from channels.sessions import channel_session
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
+
+#from channels import Group
+#from channels.sessions import channel_session
 from django.db import connection
 from .models import Player as OtreePlayer
 from .models import Group as OtreeGroup
@@ -9,105 +12,145 @@ import json
 import time
 from ast import literal_eval
 
-def ws_connect(message, group_name):
-    """Websocket connection function"""
-    print("chat connecting")
-    Group(group_name).add(message.reply_channel)
 
-def ws_message(message, group_name):
-    """Websocket message function"""
+class ChatConsumer(WebsocketConsumer):
 
+    def connect(self):
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = 'chat_%s' % self.room_name
+        print(self.room_group_name)
+        # Join room group
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name,
+            self.channel_name
+        )
 
-    #group_id = group_name[5:]
-    jsonmessage = json.loads(message.content['text'])
-    myplayer = OtreePlayer.objects.get(id=jsonmessage['player_id'])
-    mygroup = OtreeGroup.objects.get(id=jsonmessage['group_id'])
-    if (jsonmessage['identifier'] == "msg"):
-        textforgroup = json.dumps(jsonmessage)
-        myplayer.bidding_log = myplayer.bidding_log + "[auction][" + str(
-        datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: msg made: " + str(textforgroup)
-        myplayer.save()
-        Group(group_name).send({
-            "text": textforgroup,
-        })
-    else:
+        self.accept()
 
+    def disconnect(self, close_code):
+        # Leave room group
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name
+        )
 
+    # Receive message from WebSocket
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
 
-        if (myplayer.player_type == "buyer"):
-            opponent = mygroup.get_player_by_id(jsonmessage['object_id'] * 2)
+        # group_id = group_name[5:]
+        print(text_data_json)
+        print(2)
+        jsonmessage = text_data_json#['message']
+        #jsonmessage = json.loads(message.content['text'])
+        myplayer = OtreePlayer.objects.get(id=jsonmessage['player_id'])
+        mygroup = OtreeGroup.objects.get(id=jsonmessage['group_id'])
+        if (jsonmessage['identifier'] == "msg"):
+            textforgroup = json.dumps(jsonmessage)
+
+            myplayer.bidding_log = myplayer.bidding_log + "[auction][" + str(
+                datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: msg made: " + str(textforgroup)
+            myplayer.save()
+            print(1)
+            print(textforgroup)
+            # Send message to room group
+            print(self.room_group_name)
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "text": textforgroup,
+                }
+            )
         else:
-            opponent = mygroup.get_player_by_id(jsonmessage['object_id'] * 2 - 1)
 
-        #save_auction(jsonmessage, mygroup, myplayer)
-        if (jsonmessage['bidvalue'] > 0):
+            if (myplayer.player_type == "buyer"):
+                opponent = mygroup.get_player_by_id(jsonmessage['object_id'] * 2)
+            else:
+                opponent = mygroup.get_player_by_id(jsonmessage['object_id'] * 2 - 1)
+
+            # save_auction(jsonmessage, mygroup, myplayer)
+            if (jsonmessage['bidvalue'] > 0):
+                bids_list = literal_eval(myplayer.player_offers)
+                if any(x > 0 for x in bids_list):
+                    # return
+                    # an error will be interpreted as decline
+                    jsonmessage['body'] = 0
+                    jsonmessage['bidvalue'] = 0
+
+            bidvalue = jsonmessage['bidvalue']
+
+            last_offer_by_player = 0
+            last_offer_to_player = 0
+
             bids_list = literal_eval(myplayer.player_offers)
-            if any(x > 0 for x in bids_list):
-                # return
-                # an error will be interpreted as decline
-                jsonmessage['body'] = 0
-                jsonmessage['bidvalue'] = 0
+            # print(bids_list)
+            if (bids_list[jsonmessage['object_id'] - 1] > 0):
+                last_offer_by_player = bids_list[jsonmessage['object_id'] - 1]
+            bids_list[jsonmessage['object_id'] - 1] = bidvalue
+            myplayer.player_offers = str(bids_list)
 
-        bidvalue = jsonmessage['bidvalue']
-
-        last_offer_by_player=0
-        last_offer_to_player=0
-
-        bids_list = literal_eval(myplayer.player_offers)
-        #print(bids_list)
-        if (bids_list[jsonmessage['object_id'] - 1]>0):
-            last_offer_by_player=bids_list[jsonmessage['object_id'] - 1]
-        bids_list[jsonmessage['object_id'] - 1] = bidvalue
-        myplayer.player_offers=str(bids_list)
-
-        bids_list = literal_eval(opponent.player_offers)
-        if (bids_list[jsonmessage['my_id']]>0):
-            last_offer_to_player=bids_list[jsonmessage['my_id']]
-
-        bids_list = literal_eval(opponent.offers_to_player)
-        bids_list[jsonmessage['my_id']] = bidvalue
-        opponent.offers_to_player = str(bids_list)
-
-        if (jsonmessage['bidvalue'] > 0):
-            if (jsonmessage['body'] == " accepted"):
-                jsonmessage['body'] = jsonmessage['nickname'] + " accepted " + str(jsonmessage['bidvalue'])
-            else:
-                jsonmessage['body'] = jsonmessage['nickname'] + " offers " + str(jsonmessage['bidvalue'])
-
-        else:
             bids_list = literal_eval(opponent.player_offers)
-            if (last_offer_by_player > 0):
-                jsonmessage['body'] = jsonmessage['nickname'] + " cancelled " + str(last_offer_by_player)
+            if (bids_list[jsonmessage['my_id']] > 0):
+                last_offer_to_player = bids_list[jsonmessage['my_id']]
+
+            bids_list = literal_eval(opponent.offers_to_player)
+            bids_list[jsonmessage['my_id']] = bidvalue
+            opponent.offers_to_player = str(bids_list)
+
+            if (jsonmessage['bidvalue'] > 0):
+                if (jsonmessage['body'] == " accepted"):
+                    jsonmessage['body'] = jsonmessage['nickname'] + " accepted " + str(jsonmessage['bidvalue'])
+                else:
+                    jsonmessage['body'] = jsonmessage['nickname'] + " offers " + str(jsonmessage['bidvalue'])
+
             else:
-                jsonmessage['body'] = jsonmessage['nickname'] + " declined " + str(last_offer_to_player)
+                bids_list = literal_eval(opponent.player_offers)
+                if (last_offer_by_player > 0):
+                    jsonmessage['body'] = jsonmessage['nickname'] + " cancelled " + str(last_offer_by_player)
+                else:
+                    jsonmessage['body'] = jsonmessage['nickname'] + " declined " + str(last_offer_to_player)
 
+                bids_list[jsonmessage['my_id']] = 0
+                opponent.player_offers = str(bids_list)
 
-            bids_list[jsonmessage['my_id']] = 0
-            opponent.player_offers = str(bids_list)
+                bids_list = literal_eval(myplayer.offers_to_player)
+                bids_list[jsonmessage['object_id'] - 1] = 0
+                myplayer.offers_to_player = str(bids_list)
 
-            bids_list = literal_eval(myplayer.offers_to_player)
-            bids_list[jsonmessage['object_id'] - 1] = 0
-            myplayer.offers_to_player = str(bids_list)
+            # decline on error should cancel other offers for other opponents too.
 
+            textforgroup = json.dumps(jsonmessage)
+            myplayer.bidding_log = myplayer.bidding_log + "[auction][" + str(
+                datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: bid made: " + str(textforgroup)
+            opponent.bidding_log = opponent.bidding_log + "[auction][" + str(
+                datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: bid made: " + str(textforgroup)
 
-        #decline on error should cancel other offers for other opponents too.
+            myplayer.save()
+            opponent.save()
 
-        textforgroup = json.dumps(jsonmessage)
-        myplayer.bidding_log = myplayer.bidding_log + "[auction][" + str(
-        datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: bid made: " + str(textforgroup)
-        opponent.bidding_log = opponent.bidding_log + "[auction][" + str(
-        datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')) + "]: bid made: " + str(textforgroup)
+            # Send message to room group
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat.message",
+                    "text": textforgroup,
+                }
+            )
+    def chat_message(self, event):
+        textforgroup = json.loads(event['text'])
+        #print(3)
+        #print(textforgroup)
+        # Send message to WebSocket
+        print(event)
+        self.send(text_data=event['text'])
+        print(3)
+        print(event['text'])
+        #json.dumps({
+            #'text': textforgroup#,
+            #'eid': event['eid']
+        #}))
 
-        myplayer.save()
-        opponent.save()
-
-        Group(group_name).send({
-            "text": textforgroup,
-        })
-
-def ws_disconnect(message, group_name):
-    """Websocket close function"""
-    Group(group_name).discard(message.reply_channel)
 
 def save_auction(message,group,player):
     """
@@ -256,3 +299,4 @@ def return_auction_info(object_id,round_number,subsession_id,group_id):
     ask_price = cur_max[4]
     cursor.close()
     return player_id,id_in_group, highest_bid, ask_price
+

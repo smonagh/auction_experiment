@@ -26,19 +26,24 @@
 </div>
 
 <table style="width:100%" border="spacing:10px" >
-    <tr>
-        <th><center>Seller</center></th>
-        <th><center>Widget</center></th>
-        <th><center>Your Value</center></th>
-    </tr>
 
-    {% for seller_name,object,ask,res in auction_zip %}
+    {% if complete_info %}
+    <tr>
+            <th><center>Seller</center></th>
+            <th><center>Widget</center></th>
+            <th><center>Buyer 1's Value{% if id_in_group == 1 %} (You) {% endif %}</center></th>
+            <th><center>Buyer 2's Value{% if id_in_group == 3 %} (You) {% endif %}</center></th>
+            <th><center>Buyer 3's Value{% if id_in_group == 5 %} (You) {% endif %}</center></th>
+            <th><center>Seller's Value</center></th>
+        </tr>
+    {% for seller_name,object,ask,res_b1,res_b2,res_b3,res_s,res in auction_zip %}
         <tr id="row_{{forloop.counter}}">
             <td id="seller_name_{{forloop.counter}}">{{seller_name}}</td>
             <td id="object_{{forloop.counter}}">{{object}}</td>
-            <td id="reservation_{{forloop.counter}}">{{res}}</td>
-
-
+            <td id="reservation_{{forloop.counter}}">{{res_b1}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_b2}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_b3}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_s}}</td>
                        <!--onclick='sendmessage("input_{{forloop.counter}}",-->
                        <!--{{forloop.counter}},current_bid_{{forloop.counter}}.innerHTML,-->
                        <!--current_ask_{{forloop.counter}}.innerHTML,-->
@@ -47,6 +52,26 @@
 
         </tr>
     {% endfor %}
+    {% else %}}
+        <tr>
+            <th><center>Seller</center></th>
+            <th><center>Widget</center></th>
+            <th><center>Your Value</center></th>
+        </tr>
+    {% for seller_name,object,ask,res in auction_zip %}
+        <tr id="row_{{forloop.counter}}">
+            <td id="seller_name_{{forloop.counter}}">{{seller_name}}</td>
+            <td id="object_{{forloop.counter}}">{{object}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res}}</td>
+                       <!--onclick='sendmessage("input_{{forloop.counter}}",-->
+                       <!--{{forloop.counter}},current_bid_{{forloop.counter}}.innerHTML,-->
+                       <!--current_ask_{{forloop.counter}}.innerHTML,-->
+                       <!--reservation_{{forloop.counter}}.innerHTML)'-->
+                       <!--type="reset" value="Bid">-->
+
+        </tr>
+    {% endfor %}
+    {% endif %}
   </table>
     <!-- Button for soft close -->
 {% if end_on_timer %}

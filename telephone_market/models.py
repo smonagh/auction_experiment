@@ -33,7 +33,6 @@ class Constants(BaseConstants):
     conversion_rate = 5
     group_split = int(players_per_group / 2)
 
-
 class Auction(Model):
     # Database to record real time auction activity
     subsession_id = models.IntegerField()
@@ -51,7 +50,7 @@ class Auction(Model):
 
 class Subsession(BaseSubsession):
     treatment = models.CharField()
-    def before_session_starts(self):
+    def creating_session(self):
         """Initialize values at the start of the session"""
         if self.round_number == 1:
             self.initial_assignment()

@@ -6,8 +6,9 @@ import dj_database_url
 import otree.settings
 
 #CHANNEL_ROUTING = 'housing_auction_4.routing.channel_routing'
-CHANNEL_ROUTING = 'telephone_market.routing.channel_routing'
+#CHANNEL_ROUTING = 'telephone_market.routing.channel_routing'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+EXTENSION_APPS = ['telephone_market']
 
 # the environment variable OTREE_PRODUCTION controls whether Django runs in
 # DEBUG mode. If OTREE_PRODUCTION==1, then DEBUG=False
@@ -16,7 +17,7 @@ if environ.get('OTREE_PRODUCTION') not in {None, '', '0'}:
 else:
     DEBUG = True
 
-
+DEBUG = True
 
 ADMIN_USERNAME = 'ICES'
 
@@ -26,20 +27,7 @@ ADMIN_PASSWORD = environ.get('OTREE_ADMIN_PASSWORD')
 # don't share this with anybody.
 SECRET_KEY = 'st-ueln282mhvg9k108jo45$=v!6!sf@8(c^!$%m-pj6a0!0=7'
 
-DATABASES = {
-    'default': dj_database_url.config(
-        # Rather than hardcoding the DB parameters here,
-        # it's recommended to set the DATABASE_URL environment variable.
-        # This will allow you to use SQLite locally, and postgres/mysql
-        # on the server
-        # Examples:
-        # export DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/NAME
-        # export DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/NAME
 
-        # fall back to SQLite if the DATABASE_URL env var is missing
-        default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
-    )
-}
 
 # AUTH_LEVEL:
 # If you are launching a study and want visitors to only be able to
@@ -111,6 +99,7 @@ SESSION_CONFIGS = [
          'treatment_string': "telephone_pit",
          'doc': """Telephone pit trading market""",
          'timeout_duration': 60*4, #60*4
+         'complete_info': True,
          'app_sequence': ['telephone_market']},
 
         #MP
@@ -123,6 +112,7 @@ SESSION_CONFIGS = [
                  the form of a list []. Options are minimum_price, sellers_bid, double_auction. 
                  Treatments are played in order entered.""",
          'timeout_duration': 50,
+         'complete_info': True,
         'app_sequence': ['housing_auction_4']},
 
         # SB
@@ -147,6 +137,7 @@ SESSION_CONFIGS = [
                  the form of a list []. Options are minimum_price, sellers_bid, double_auction. 
                  Treatments are played in order entered.""",
         'timeout_duration': 32,
+        'complete_info': True,
         'app_sequence': ['housing_auction_4']},
 ]
 
@@ -171,6 +162,12 @@ ROOMS = [
         'display_name': 'Test Fest Rm 5025',
         'participant_label_file': 'numbers.txt',
     },
+    {
+        'name': 'online',
+        'display_name': 'Online Lab',
+        'use_secure_urls': True,
+        'participant_label_file': 'online.txt'
+    }
 ]
 
 # anything you put after the below line will override

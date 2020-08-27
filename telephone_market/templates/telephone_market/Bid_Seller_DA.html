@@ -24,12 +24,58 @@
 </div>
 
 <table style="width:100%" border="spacing:10px" >
-    <tr>
+
+    {% if complete_info %}
+        <tr>
+            <th><center>Seller</center></th>
+            <th><center>Widget</center></th>
+            <th><center>Buyer 1's Value{% if id_in_group == 1 %} (You) {% endif %}</center></th>
+            <th><center>Buyer 2's Value{% if id_in_group == 3 %} (You) {% endif %}</center></th>
+            <th><center>Buyer 3's Value{% if id_in_group == 5 %} (You) {% endif %}</center></th>
+            <th><center>Seller's Value</center></th>
+        </tr>
+    {% for seller_name,object,ask,res_b1,res_b2,res_b3,res_s,res in auction_zip %}
+        <tr id="row_{{forloop.counter}}">
+            {% if res > 0 %}
+            <td id="seller_name_{{forloop.counter}}">You ({{seller_name}})</td>
+            <td id="object_{{forloop.counter}}">(Your) {{object}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_b1}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_b2}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_b3}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res}}</td>
+            {% else %}
+            <td id="seller_name_{{forloop.counter}}">{{seller_name}}</td>
+            <td id="object_{{forloop.counter}}">{{object}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_b1}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_b2}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_b3}}</td>
+            <td id="reservation_{{forloop.counter}}">{{res_s}}</td>
+            {% endif %}
+
+                <!--{% if res > 0 %}-->
+                <!--<input type="number" placeholder="Enter Minimum Price" id="input_{{forloop.counter}}">-->
+                <!--<br>-->
+                <!--&lt;!&ndash; Input button returns the object_id, the current standing bid,-->
+                     <!--the ask price for the object, and the new input bid to-->
+                     <!--javascript to verify that the bid clears the previous-->
+                     <!--one &ndash;&gt;-->
+                <!--<input id='bid_btn_{{forloop.counter}}'-->
+                       <!--class="btn  btn-large btn-primary next-button"-->
+                       <!--onclick='sendmessage("input_{{forloop.counter}}",-->
+                       <!--{{forloop.counter}},current_bid_{{forloop.counter}}.innerHTML,-->
+                       <!--current_ask_{{forloop.counter}}.innerHTML,-->
+                       <!--reservation_{{forloop.counter}}.innerHTML)'-->
+                       <!--type="reset" value="Submit">-->
+                <!--{% endif %}-->
+
+        </tr>
+    {% endfor %}
+    {% else %}
+   <tr>
         <th><center>Seller</center></th>
         <th><center>Widget</center></th>
         <th><center>Your Value</center></th>
     </tr>
-
     {% for seller_name,object,ask,res in auction_zip %}
         <tr id="row_{{forloop.counter}}">
             {% if res > 0 %}
@@ -60,6 +106,7 @@
 
         </tr>
     {% endfor %}
+    {% endif %}
   </table>
     <!-- Button for soft close -->
 {% if end_on_timer %}

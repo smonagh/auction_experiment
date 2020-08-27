@@ -7,6 +7,12 @@ from ast import literal_eval
 from math import ceil
 import time
 
+class Consent_Form(Page):
+    def is_displayed(self):
+        if self.subsession.round_number == 1:
+            return True
+        return False
+
 class Instructions_Seller(Page):
     """
     Page that displays instructions to sellers
@@ -120,8 +126,25 @@ class Bid(Page):
         res_list = literal_eval(self.player.player_reservations)
         seller_name = ['Seller {}'.format(i) for i in range(1,
                                                     Constants.group_split + 1)]
+        #res_b1 = self.subsession.reservation_assignment(1, 'buyer')
+        #res_b2 = self.subsession.reservation_assignment(3, 'buyer')
+        #res_b3 = self.subsession.reservation_assignment(5, 'buyer')
+
+        #res_s = self.subsession.reservation_assignment(1, 'seller') + self.subsession.reservation_assignment(2, 'buyer')
+        res_b1 = literal_eval(self.group.get_player_by_id(1).player_reservations)
+        res_b2 = literal_eval(self.group.get_player_by_id(3).player_reservations)
+        res_b3 = literal_eval(self.group.get_player_by_id(5).player_reservations)
+
+        res_s = [literal_eval(self.group.get_player_by_id(2).player_reservations)[0],
+                literal_eval(self.group.get_player_by_id(4).player_reservations)[1],
+                literal_eval(self.group.get_player_by_id(6).player_reservations)[2]]
+
         # Create a zip of all four lists
-        auction_zip = zip(seller_name,object_list,ask_list,res_list)
+        if self.session.config['complete_info']:
+            auction_zip = zip(seller_name, object_list, ask_list, res_b1, res_b2, res_b3, res_s, res_list)
+        else:
+            auction_zip = zip(seller_name, object_list, res_list)
+
         return {'player_type':self.player.player_type,
                 'player_id':self.player.id,
                 'id_in_group': self.player.id_in_group,
@@ -136,6 +159,7 @@ class Bid(Page):
                 'offers_to_player': self.player.offers_to_player,
                 'player_res':res_list,
                 'timeout_duration': self.session.config['timeout_duration'],
+                'complete_info': self.session.config['complete_info'],
                 'time_started': self.group.tstmp}
 
 
@@ -236,6 +260,7 @@ class FinalResults(Page):
 
 
 page_sequence = [
+    Consent_Form,
     Instructions_Seller,
     Instructions_Buyer,
     PreWaitPage,

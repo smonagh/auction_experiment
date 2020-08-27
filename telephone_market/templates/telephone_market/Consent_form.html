@@ -1,0 +1,237 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree%}
+
+{% block content %}
+<h1> INFORMED CONSENT FORM </h1>
+<div class="jumbotron">
+
+<h2>RESEARCH PROCEDURES</h2>
+
+<p>This research is being conducted to study decision making.
+    The experiment will last approximately one and half hours (90 minutes).
+    In addition to $10 for showing up on time and participating, you may earn a positive amount of approximately $10 on
+    average, but this amount will vary considerably based on your decisions, chance, and the decisions of others.
+    Participants who do not arrive to the web page on time are not eligible for participation or the show-up fee. You
+    will be paid at the end of the experiment through a deposit to your Venmo account. You are free to ask any questions
+    about how you will be paid (please see the contact information below). Additional earnings will only be paid upon
+    completion of the whole experiment. If you withdraw early, you will keep the $10 show-up fee. If you agree, you will
+    be asked to make decisions in a few moments. </p>
+
+<h2> RISKS </h2>
+
+    <p>There are no foreseeable risks for participating in this research.</p>
+
+<h2> BENEFITS </h2>
+
+    <p>There are no direct personal benefits to you as a participant.</p>
+
+<h2> CONFIDENTIALITY </h2>
+
+    <p>The data in this study will be confidential. All electronic files will be saved confidentially on a password-protected
+    Laptop and in the ICES (Interdisciplinary Center for Economic Science) password-protected and access-restricted local
+    area network. No person-identifiable information will be reported in any published or unpublished work. The data is
+    protected in the local area network as secured by the GMU Netware log in procedures. Access is restricted to the
+        professors and researchers associated with ICES. While it is understood that no computer transmission can be perfectly
+        secure, reasonable efforts will be made to protect the confidentiality of your transmission. Participants may review
+        Google's website for information about their privacy statement regarding Google Forms: <a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a>.
+        Participants may also review Zoom's website for information about their privacy statement: <a href="https://zoom.us/privacy">https://zoom.us/privacy</a>.
+        Identifiers may be removed from the data and the de-identified data could be used for future research without additional consent from participants.</p>
+
+<h2> PARTICIPATION </h2>
+
+    <p>Your participation is voluntary, and you may withdraw from the study at any time and for any reason.
+    To participate in this experiment, you must be 18 years or older. If you decide not to participate or if you withdraw
+        from the study, there is no penalty or loss of benefits to which you are otherwise entitled.</p>
+
+<h2> CONTACT </h2>
+
+    <p>This research is being conducted by Cesar Martinelli and Artur Dolgopolov at George Mason University.
+    They may be reached at 703-993-4853, 703-479-8700 for questions or to report a research-related problem.
+    You may contact the George Mason University Institutional Review Board (IRB) office at 703-993-4121 if you have
+    questions or comments regarding your rights as a participant in the research (IRBNet reference number: 1382818-1).
+    This research has been reviewed according to George Mason University procedures governing your participation in this
+    research. The George Mason University Institutional Review Board has waived the requirement for a signature on
+        this consent form.</p>
+
+  <button class="btn btn-primary" type="submit">I agree</button>
+&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-primary" type="button" onclick="javascript: alert('If you wish to withdraw from the session at this point, please contact the experimenter in Zoom')">I decline</button>
+  </div>
+
+{% endblock %}
+{% block styles %}
+<style>
+.jumbotron p{
+  padding-bottom:1em;
+}
+table a:link {
+	color: #666;
+	font-weight: bold;
+	text-decoration:none;
+}
+table a:visited {
+	color: #999999;
+	font-weight:bold;
+	text-decoration:none;
+}
+table a:active,
+table a:hover {
+	color: #bd5a35;
+	text-decoration:underline;
+}
+table {
+	font-family:Arial, Helvetica, sans-serif;
+	color:#666;
+	font-size:16px;
+	text-shadow: 1px 1px 0px #fff;
+	background:#eaebec;
+	margin:10px;
+	border:#ccc 1px solid;
+	width:100%;
+
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+
+	-moz-box-shadow: 0 1px 2px #d1d1d1;
+	-webkit-box-shadow: 0 1px 2px #d1d1d1;
+	box-shadow: 0 1px 2px #d1d1d1;
+}
+table th {
+	padding:15px 19px 15px 19px;
+	border-top:1px solid #fafafa;
+	border-bottom:1px solid #e0e0e0;
+
+	background: #ededed;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+	background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
+}
+table th:first-child {
+	text-align: left;
+	padding-left:20px;
+}
+table tr:first-child th:first-child {
+	-moz-border-radius-topleft:3px;
+	-webkit-border-top-left-radius:3px;
+	border-top-left-radius:3px;
+}
+table tr:first-child th:last-child {
+	-moz-border-radius-topright:3px;
+	-webkit-border-top-right-radius:3px;
+	border-top-right-radius:3px;
+}
+table tr {
+	text-align: center;
+	padding-left:210px;
+}
+table td:first-child {
+	text-align: left;
+	padding-left:20px;
+	border-left: 0;
+}
+table td {
+	padding:6px;
+	border-top: 1px solid #ffffff;
+	border-bottom:1px solid #e0e0e0;
+	border-left: 1px solid #e0e0e0;
+
+	background: #fafafa;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
+}
+table tr.even td {
+	background: #f6f6f6;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
+	background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
+}
+table tr:last-child td {
+	border-bottom:0;
+}
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft:3px;
+	-webkit-border-bottom-left-radius:3px;
+	border-bottom-left-radius:3px;
+}
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright:3px;
+	-webkit-border-bottom-right-radius:3px;
+	border-bottom-right-radius:3px;
+}
+table tr:hover td {
+	background: #f2f2f2;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
+}
+.btn{
+
+}
+</style>
+<style>
+.otree-chat {
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 30px 0 0 0;
+}
+.otree-chat__messages {
+    height: 150px;
+    overflow: auto;
+    background: #eee;
+    margin: 2px 0 5px 0;
+}
+
+.otree-chat__msg_my .otree-chat__nickname {
+    display: inline-block;
+    color: #808000;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-chat__msg_other .otree-chat__nickname {
+    display: inline-block;
+    color: #008080;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_my .otree-chat__body {
+   display: inline-block;
+    color: #808000;
+    width: 70%;
+    font-weight: bold;
+}
+.otree-bid__msg_other .otree-chat__body {
+    display: inline-block;
+    color: #008080;
+    width: 70%;
+    font-weight: bold;
+}
+.otree-bid__msg_my .otree-chat__nickname {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+}
+.otree-bid__msg_other .otree-chat__nickname {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+}
+.msg-error .otree-chat__nickname {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+    color: red;
+}
+.msg-error .otree-chat__body {
+    display: inline-block;
+    width: 70%;
+    font-weight: bold;
+    color: black;
+}
+.current_offer {
+    color: green;
+    font-weight: bold;
+}
+.highest_bid {
+    color: green;
+    font-weight: bold;
+}
+</style>
+{% endblock %}

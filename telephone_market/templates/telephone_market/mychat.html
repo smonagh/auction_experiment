@@ -1,5 +1,14 @@
 {% block myсhat %}
 <script>
+
+    eid = {{player.participant.id_in_session}} ;
+
+    //var roomName = "{{ room_name|escapejs }}";
+
+
+
+    var $msgdiv = $('.otree-chat__messages');
+
 var ts = new Date().getTime();
 var time_started = {{time_started}};
 if ((ts/1000-time_started)>5){
@@ -19,7 +28,6 @@ if (participantID == 1){
     var bid = {{offers_to_player}};
 }
 var res = {{player_res}};
-
 $(function () {
     $(".page-header").hide();
 
@@ -43,7 +51,16 @@ $(function () {
         return entityMap[s];
       });
     }
+
     var channel = "{{channel}}";
+
+    var chatSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/telephone_market/chat/' + channel + '/');
+
+    console.log(channel);
+
+
     var object_id = {{box_id}};
     var box_id = {{box_id}};
     var socketPath = "/telephone_market/chat/{{channel}}";
@@ -55,7 +72,7 @@ $(function () {
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     var ws_path = ws_scheme + '://' + window.location.host + socketPath;
 
-    var socket = new WebSocket(ws_path); //Reconnecting?
+    //var socket = new WebSocket(ws_path); //Reconnecting?
 
     var $msgdiv = $chatWidget.find('.otree-chat__messages');
     // Handle incoming messages
@@ -76,10 +93,16 @@ $(function () {
      //   timeout_handle = setTimeout(function(){$('#ErrorContainer').hide()},5000);
     }
 
-    socket.onmessage = function (message) {
+    chatSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        //var message = data['text'];
+        var message = data;
+        console.log(4);
+        console.log(data);
         console.log('receieve');
         console.log(message);
-        var messages = JSON.parse(message.data);
+        //var messages = JSON.parse(message);
+        messages=message;
         var messagesHTML = '';
         //for (var i = 0; i < messages.length; i++) {
             var chatMessage = messages;
@@ -132,21 +155,11 @@ $(function () {
         $msgdiv.scrollTop($msgdiv.prop("scrollHeight"));
         updatebuttons();
     };
-    socket.onopen = function () {
-        console.log("Connected to chat socket");
-        console.log(ws_path);
-        // clear message history so we can re-populate
-        $msgdiv.empty();
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
     };
-    // Handle any errors that occur.
-    socket.onerror = function (error) {
-              console.log('WebSocket Error: ');
-              console.log(error);
-    };
-    // Log socket close
-    socket.onclose = function (event) {
-    console.log('disconnected from oTree');
-    };
+
     function sendMessage(is_bid,bidval,bidbody) {
         if (is_bid==0){
             var body = $messageInput.val();
@@ -163,10 +176,10 @@ $(function () {
                 'object_id': {{box_id}}
 
             };
-            if (socket.readyState === 1) {
+
             console.log(data);
-            socket.send(JSON.stringify(data));
-            };
+            chatSocket.send(JSON.stringify(data));
+
             $messageInput.val('');
         } else {
             if (bidval<0) {
@@ -218,10 +231,10 @@ $(function () {
                 'object_id': {{box_id}},
                 'my_id': {{my_id}}
             };
-            if (socket.readyState === 1) {
+
             console.log(data);
-            socket.send(JSON.stringify(data));
-            };
+            chatSocket.send(JSON.stringify(data));
+
             $bidInput.val('');
         }
     }
