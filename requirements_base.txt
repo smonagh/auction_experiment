@@ -1,2 +1,3 @@
-otree>=2.4.5
+#otree>=2.4.5
+otree>=3.04
 numpy>=1.13.3
