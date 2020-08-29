@@ -54,8 +54,11 @@ $(function () {
 
     var channel = "{{channel}}";
 
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+
     var chatSocket = new WebSocket(
-        'ws://' + window.location.host +
+        ws_scheme +
+        '://' + window.location.host +
         '/telephone_market/chat/' + channel + '/');
 
     console.log(channel);
